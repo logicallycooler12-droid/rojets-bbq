@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- ======================================================================
+         PAGE: MENU (services.html)
+         Purpose : Full menu with filters, prices and the order cart.
+         Styles  : styles.css (sections 5, 6, 10)
+         Script  : script.js (menuItems prices, initMenuTabs, cart functions)
+         ====================================================================== -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu | Rojetz BBQ</title>
+    <meta name="description" content="The Rojetz BBQ Station menu: grills, SulitKasalo sharing meals, Simply Siomai, fried chicken, Chami, specialty blends and drip coffee in Lucena City.">
+    <meta name="theme-color" content="#161515">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Menu | Rojetz BBQ Station">
+    <meta property="og:description" content="Freshly grilled, always sulit! See the full Rojetz BBQ Station menu.">
+    <link rel="icon" href="logo.jpg">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+    <!-- ======================================================================
+         PAGE LOADER
+         Purpose : Full-screen logo animation on the first page view of a visit.
+         Styles  : styles.css §12 (.loader-wrapper, .loader-pill, .flame)
+         Script  : script.js "Page Loader": fades out after 0.7s, removed on later pages (sessionStorage key rojetz-seen)
+         ====================================================================== -->
+    <div class="loader-wrapper" id="loader">
+        <div class="loader-pill">
+            <div class="loader-logo"><img src="logo.jpg" alt="Rojetz BBQ logo"></div>
+            <div class="loader-divider"></div>
+            <div class="loader-name">Rojetz <span>BBQ</span></div>
+            <div class="loader-fire">
+                <div class="flame"></div>
+                <div class="flame"></div>
+                <div class="flame"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================================================================
+         HEADER & NAVIGATION
+         Purpose : Logo, main menu, View Menu / Find Us buttons, theme toggle. The .mobile-nav block is the phone version of the same menu.
+         Styles  : styles.css §2-3 (header, nav, .hamburger, .mobile-nav, .btn, .theme-toggle)
+         Script  : script.js "Mobile Hamburger Menu Toggle" (.hamburger toggles .mobile-nav), "Theme Toggle" (#themeToggle, #themeToggleMobile)
+         ====================================================================== -->
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <div class="logo-text">Rojetz <span>BBQ</span></div>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="services.html">Menu</a></li>
+                    <li><a href="gallery.html">Gallery</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+            <button class="hamburger" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+            <div class="nav-buttons">
+                <a href="services.html" class="btn btn-secondary">View Menu</a>
+                <a href="contact.html" class="btn btn-primary">Find Us</a>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+        <div class="mobile-nav">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="services.html">Menu</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <div class="mobile-nav-buttons">
+                <a href="services.html" class="btn btn-secondary">View Menu</a>
+                <a href="contact.html" class="btn btn-primary">Find Us</a>
+                <button class="theme-toggle" id="themeToggleMobile" aria-label="Toggle theme">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ======================================================================
+         MENU SECTION
+         Purpose : Wraps the heading, the filter buttons and every menu category.
+         Styles  : styles.css §5 (.products, .product-grid, .product-card)
+         ====================================================================== -->
+    <section class="products page-top">
+        <div class="container">
+
+            <!-- ======================================================================
+                 MENU HEADING
+                 Purpose : #menuTop is the scroll target used when a filter or a link like services.html#sk is opened.
+                 Styles  : script.js scrollToMenuTop() inside initMenuTabs()
+                 ====================================================================== -->
+            <div class="section-header" id="menuTop">
+                <div class="section-subtitle">Our Menu</div>
+                <h2 class="section-title">Freshly grilled, always sulit!</h2>
+                <p class="section-desc">Grills, sharing meals, siomai, chicken, noodles and drinks.</p>
+            </div>
+
+            <!-- How the menu works:
+               - Two-level filter (same idea as gallery): group first, then category when needed.
+               - data-filter must match each .menu-category data-cat.
+               - Items, prices and sizes follow the Foodpanda store menu. Cart prices come from menuItems in script.js.
+               - Cards without a photo are text-only. To add a photo, put
+               <div class="product-img"><img src="your-photo.jpg" alt="..." loading="lazy"></div>
+               as the first thing inside the card and remove "product-card--text" from its class.
+               - Remaining placeholder categories can be filled when ready. -->
+
+            <!-- ======================================================================
+                 MENU FILTER: LEVEL 1 (GROUPS)
+                 Purpose : Buttons: All / Food / Drinks. data-group-btn is the group name.
+                 Styles  : styles.css §6 (.menu-tabs, .menu-tab)
+                 Script  : script.js initMenuTabs() shows or hides the .menu-category blocks below
+                 ====================================================================== -->
+            <div class="menu-tabs" role="group" aria-label="Menu groups">
+                <div class="menu-tabs-inner gallery-groups">
+                    <button type="button" class="menu-tab" data-group-btn="all" aria-pressed="true">All</button>
+                    <button type="button" class="menu-tab" data-group-btn="food" aria-pressed="false">Food</button>
+                    <button type="button" class="menu-tab" data-group-btn="drinks" aria-pressed="false">Drinks</button>
+                </div>
+            </div>
+
+            <!-- ======================================================================
+                 MENU FILTER: LEVEL 2 (CATEGORIES)
+                 Purpose : One chip per category. data-filter must equal a .menu-category data-cat below, data-group says which group it belongs to. Chips for a missing category hide themselves; the row only shows when a group has more than one category.
+                 Styles  : styles.css §6 (.gallery-sub reused here)
+                 Script  : script.js initMenuTabs()
+                 ====================================================================== -->
+            <div class="gallery-sub" id="menuSub" role="group" aria-label="Menu categories" hidden>
+                <button type="button" class="menu-tab" data-filter="grills" data-group="food" aria-pressed="false" hidden>Grills</button>
+                <button type="button" class="menu-tab" data-filter="siomai" data-group="food" aria-pressed="false" hidden>Simply Siomai</button>
+                <button type="button" class="menu-tab" data-filter="chicken" data-group="food" aria-pressed="false" hidden>Fried Chicken</button>
+                <button type="button" class="menu-tab" data-filter="sk" data-group="food" aria-pressed="false" hidden>SulitKasalo Meals</button>
+                <button type="button" class="menu-tab" data-filter="box" data-group="food" aria-pressed="false" hidden>Boxulit Meals</button>
+                <button type="button" class="menu-tab" data-filter="platters" data-group="food" aria-pressed="false" hidden>Platters</button>
+                <button type="button" class="menu-tab" data-filter="noodles" data-group="food" aria-pressed="false" hidden>Noodles</button>
+                <button type="button" class="menu-tab" data-filter="sizzling" data-group="food" aria-pressed="false" hidden>Sizzling Meals</button>
+                <button type="button" class="menu-tab" data-filter="blends" data-group="drinks" aria-pressed="false" hidden>Specialty Blends</button>
+                <button type="button" class="menu-tab" data-filter="coffee" data-group="drinks" aria-pressed="false" hidden>Drip Coffee</button>
+            </div>
+
+            <!-- ======================================================================
+                 MENU HINT
+                 Purpose : One-line note under the filters about Foodpanda prices.
+                 Styles  : styles.css §6 (.menu-hint)
+                 ====================================================================== -->
+            <p class="menu-hint">Pick a group, then a category if you want a smaller list. Prices follow our Foodpanda menu and may differ in store.</p>
+
+            <!-- ======================================================================
+                 CATEGORY: grills
+                 Purpose : Grills (Food): BBQ, isaw, liempo, hotdog, sausage, tenga.
+                 Styles  : styles.css §5 (.menu-category, .category-title, .product-card)
+                 Tab     : data-filter="grills" in the #menuSub chips above (name must match)
+                 Prices  : a card with data-id gets its price and Add to Cart button from the menuItems list in script.js (same id)
+                 ====================================================================== -->
+            <div class="menu-category" data-cat="grills">
+                <h3 class="category-title">Grills</h3>
+                <p class="menu-cat-note">Grilled with our signature BBQ sauce and spiced sukang tuba.</p>
+                <div class="product-grid">
+                    <div class="product-card" data-id="g1">
+                        <div class="product-img"><img src="bbq.jpg" alt="Pork BBQ skewers" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">BESTSELLER</div>
+                            <h3 class="product-title">Rojet'z Pork BBQ</h3>
+                            <p class="product-desc">Classic sweet-savory skewers, flame-grilled</p>
+                            <div class="product-footer"><div class="product-price">₱289 / box of 5</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-id="g2">
+                        <div class="product-img"><img src="Chicken BBQ.webp" alt="Chicken BBQ skewers" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">JUICY</div>
+                            <h3 class="product-title">Chicken BBQ</h3>
+                            <p class="product-desc">Juicy and well-seasoned</p>
+                            <div class="product-footer"><div class="product-price">₱289 / box of 5</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-id="g3">
+                        <div class="product-img"><img src="liempo.jpg" alt="Grilled liempo over yellow rice" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">SHARING</div>
+                            <h3 class="product-title">Inihaw na Liempo</h3>
+                            <p class="product-desc">Grilled pork belly, good for sharing</p>
+                            <div class="product-footer"><div class="product-price">₱555 / box of 4</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-id="g4">
+                        <div class="product-img"><img src="hotdawg.jpg" alt="Grilled red jumbo hotdogs with dipping sauces" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">TENDER</div>
+                            <h3 class="product-title">Jumbo Hotdog</h3>
+                            <p class="product-desc">Tender and juicy, grilled</p>
+                            <div class="product-footer"><div class="product-price">₱239 / box of 5</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-id="g5">
+                        <div class="product-img"><img src="Hungarian Sausage.webp" alt="Hungarian sausage" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">SPECIAL</div>
+                            <h3 class="product-title">Hungarian Sausage</h3>
+                            <p class="product-desc">Made with a special recipe</p>
+                            <div class="product-footer"><div class="product-price">₱489 / box of 4</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-id="g6">
+                        <div class="product-img"><img src="Tenga.webp" alt="Grilled tenga pork ears" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">GRILLED</div>
+                            <h3 class="product-title">Tenga</h3>
+                            <p class="product-desc">Grilled pork ears</p>
+                            <div class="product-footer"><div class="product-price">₱279 / box of 5</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-id="g7">
+                        <div class="product-img"><img src="Isaw.webp" alt="Isaw skewers on the grill" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">FAVORITE</div>
+                            <h3 class="product-title">Isaw</h3>
+                            <p class="product-desc">Crispy grilled intestines, a Lucena favorite</p>
+                            <div class="product-footer"><div class="product-price">₱140 / box of 5</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ======================================================================
+                 CATEGORY: siomai
+                 Purpose : Simply Siomai (Food).
+                 Styles  : styles.css §5 (.menu-category, .category-title, .product-card)
+                 Tab     : data-filter="siomai" in the #menuSub chips above (name must match)
+                 Prices  : a card with data-id gets its price and Add to Cart button from the menuItems list in script.js (same id)
+                 ====================================================================== -->
+            <div class="menu-category" data-cat="siomai">
+                <h3 class="category-title">Simply Siomai</h3>
+                <p class="menu-cat-note">Simply Siomai by Rojet'z.</p>
+                <div class="product-grid">
+                    <div class="product-card" data-id="s1">
+                        <div class="product-img"><img src="Simply Pork Siomai.webp" alt="Simply Pork Siomai" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">PORK</div>
+                            <h3 class="product-title">Simply Pork Siomai</h3>
+                            <p class="product-desc">Pure meat, no fillers. Also in a box of 3.</p>
+                            <div class="product-footer"><div class="product-price">₱166 / box of 6</div></div>
+                        </div>
+                    </div>
+
+                    <div class="product-card" data-id="s2">
+                        <div class="product-img"><img src="Simply Chicken Siomai.webp" alt="Simply Chicken Siomai" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">CHICKEN</div>
+                            <h3 class="product-title">Simply Chicken Siomai</h3>
+                            <p class="product-desc">Pure meat, no fillers. Also in a box of 3.</p>
+                            <div class="product-footer"><div class="product-price">₱166 / box of 6</div></div>
+                        </div>
+                    </div>
+
+                    <div class="product-card" data-id="s3">
+                        <div class="product-img"><img src="Mixed Siomai - Pork and Chicken.webp" alt="Mixed Pork and Chicken Siomai" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">MIXED</div>
+                            <h3 class="product-title">Mixed Siomai (Pork & Chicken)</h3>
+                            <p class="product-desc">Pork and chicken siomai together</p>
+                            <div class="product-footer"><div class="product-price">₱324 / 1 dozen</div></div>
+                        </div>
+                    </div>
+
+                    <div class="product-card" data-id="s4">
+                        <div class="product-img"><img src="Simply Siomai Wonton Style.webp" alt="Simply Siomai wonton-style in a bowl" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">WONTON</div>
+                            <h3 class="product-title">Simply Siomai Wonton-Style</h3>
+                            <p class="product-desc">Simply Siomai served wonton-style in a bowl</p>
+                            <div class="product-footer"><div class="product-price">₱175 / bowl</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ======================================================================
+                 CATEGORY: chicken
+                 Purpose : Fried Chicken (Food).
+                 Styles  : styles.css §5 (.menu-category, .category-title, .product-card)
+                 Tab     : data-filter="chicken" in the #menuSub chips above (name must match)
+                 Prices  : a card with data-id gets its price and Add to Cart button from the menuItems list in script.js (same id)
+                 ====================================================================== -->
+            <div class="menu-category" data-cat="chicken">
+                <h3 class="category-title">Fried Chicken</h3>
+                <div class="product-grid">
+                    <div class="product-card" data-id="f1">
+                        <div class="product-img"><img src="Half Fried Chicken.webp" alt="Half fried chicken" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">HALF</div>
+                            <h3 class="product-title">Half Fried Chicken</h3>
+                            <p class="product-desc">Served with our original chicken sauce</p>
+                            <div class="product-footer"><div class="product-price">₱289</div></div>
+                        </div>
+                    </div>
+
+                    <div class="product-card" data-id="f2">
+                        <div class="product-img"><img src="Jumbo-Fried-Chicken.webp" alt="Jumbo fried chicken" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">JUMBO</div>
+                            <h3 class="product-title">Jumbo Fried Chicken</h3>
+                            <p class="product-desc">Served with our original chicken sauce</p>
+                            <div class="product-footer"><div class="product-price">₱569</div></div>
+                        </div>
+                    </div>
+
+                    <div class="product-card" data-id="f3">
+                        <div class="product-img"><img src="Sulit Cuts Fried Chicken - Box of 4.webp" alt="Sulit cuts fried chicken with rice" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">SULIT</div>
+                            <h3 class="product-title">Sulit Cuts Fried Chicken</h3>
+                            <p class="product-desc">Four sulit cuts, served with our original chicken sauce</p>
+                            <div class="product-footer"><div class="product-price">₱399 / box of 4</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ======================================================================
+                 CATEGORY: sk
+                 Purpose : SulitKasalo Meals SK1-SK9 (Food): sharing meals.
+                 Styles  : styles.css §5 (.menu-category, .category-title, .product-card)
+                 Tab     : data-filter="sk" in the #menuSub chips above (name must match)
+                 Prices  : a card with data-id gets its price and Add to Cart button from the menuItems list in script.js (same id)
+                 ====================================================================== -->
+            <div class="menu-category" data-cat="sk">
+                <h3 class="category-title">SulitKasalo Meals</h3>
+                <p class="menu-cat-note">Sarap pagsaluhan, sulit anytime! Nine sharing meals you can customize.</p>
+                <div class="product-grid">
+                    <div class="product-card" data-id="sk1">
+                        <div class="product-img"><img src="SulitKasalo.jpg" alt="Sulit Kasalo 1: 1 dozen Rojet'z BBQ" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">SK1</div>
+                            <h3 class="product-title">Sulit Kasalo 1 (SK1)</h3>
+                            <p class="product-desc">1 dozen Rojet'z BBQ</p>
+                            <div class="product-footer"><div class="product-price">₱718</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-id="sk2">
+                        <div class="product-img"><img src="sk2.jpg" alt="Sulit Kasalo 2: 6 pcs Rojet'z BBQ, 6 pcs TJ jumbo hotdog, 6 pcs isaw" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">SK2</div>
+                            <h3 class="product-title">Sulit Kasalo 2 (SK2)</h3>
+                            <p class="product-desc">6 pcs Rojet'z BBQ, 6 pcs TJ jumbo hotdog, 6 pcs isaw</p>
+                            <div class="product-footer"><div class="product-price">₱865</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-id="sk3">
+                        <div class="product-img"><img src="sk3.jpg" alt="Sulit Kasalo 3: 6 pcs Rojet'z BBQ + 1 dozen Simply Siomai" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">SK3</div>
+                            <h3 class="product-title">Sulit Kasalo 3 (SK3)</h3>
+                            <p class="product-desc">6 pcs Rojet'z BBQ + 1 dozen Simply Siomai</p>
+                            <div class="product-footer"><div class="product-price">₱695</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-id="sk4">
+                        <div class="product-img"><img src="sk4.jpg" alt="Sulit Kasalo 4: Inihaw na liempo sharing + half fried chicken" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">SK4</div>
+                            <h3 class="product-title">Sulit Kasalo 4 (SK4)</h3>
+                            <p class="product-desc">Inihaw na liempo sharing + half fried chicken</p>
+                            <div class="product-footer"><div class="product-price">₱870</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-id="sk5">
+                        <div class="product-img"><img src="sk5.jpg" alt="Sulit Kasalo 5: 10 pcs Rojet'z BBQ + 10 pcs isaw" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">SK5</div>
+                            <h3 class="product-title">Sulit Kasalo 5 (SK5)</h3>
+                            <p class="product-desc">10 pcs Rojet'z BBQ + 10 pcs isaw</p>
+                            <div class="product-footer"><div class="product-price">₱955</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-id="sk6">
+                        <div class="product-img"><img src="sk6.jpg" alt="Sulit Kasalo 6: 6 pcs buffalo wings + 1 dozen classic shanghai" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">SK6</div>
+                            <h3 class="product-title">Sulit Kasalo 6 (SK6)</h3>
+                            <p class="product-desc">6 pcs buffalo wings + 1 dozen classic shanghai</p>
+                            <div class="product-footer"><div class="product-price">₱828</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-id="sk7">
+                        <div class="product-img"><img src="sk7.jpg" alt="Sulit Kasalo 7: 3 sticks (6 pcs) Lucban longganisa + pork tapa and tocino sharing" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">SK7</div>
+                            <h3 class="product-title">Sulit Kasalo 7 (SK7)</h3>
+                            <p class="product-desc">3 sticks (6 pcs) Lucban longganisa + pork tapa and tocino sharing</p>
+                            <div class="product-footer"><div class="product-price">₱820</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-id="sk8">
+                        <div class="product-img"><img src="sk8.jpg" alt="Sulit Kasalo 8: 6 pcs tenga + 10 pcs isaw" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">SK8</div>
+                            <h3 class="product-title">Sulit Kasalo 8 (SK8)</h3>
+                            <p class="product-desc">6 pcs tenga + 10 pcs isaw</p>
+                            <div class="product-footer"><div class="product-price">₱708</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-id="sk9">
+                        <div class="product-img"><img src="sk9.jpg" alt="Sulit Kasalo 9: Kasalo Java Rice, good for 6!" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">SK9</div>
+                            <h3 class="product-title">Sulit Kasalo 9 (SK9)</h3>
+                            <p class="product-desc">Kasalo Java Rice, good for 6!</p>
+                            <div class="product-footer"><div class="product-price">₱255</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ======================================================================
+                 CATEGORY: box
+                 Purpose : Boxulit Meals (Food): rice meals in a box. Cards without data-id have no price yet.
+                 Styles  : styles.css §5 (.menu-category, .category-title, .product-card)
+                 Tab     : data-filter="box" in the #menuSub chips above (name must match)
+                 Prices  : a card with data-id gets its price and Add to Cart button from the menuItems list in script.js (same id)
+                 ====================================================================== -->
+            <div class="menu-category" data-cat="box">
+                <h3 class="category-title">Boxulit Meals</h3>
+                <p class="menu-cat-note">Rice meals boxed to go. Ask us for today's viands and prices.</p>
+                <div class="product-grid">
+                    <div class="product-card">
+                        <div class="product-img"><img src="box1.jpg" alt="Boxulit chicken fillet meals" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">BOXULIT</div>
+                            <h3 class="product-title">Boxulit Chicken Fillet Meal</h3>
+                            <p class="product-desc">Rice and crispy chicken fillet in a sauce, boxed to go</p>
+                            <div class="product-footer"><div class="product-price">Ask us</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-img"><img src="box2.jpg" alt="Boxulit BBQ meals with mixed vegetables" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">BOXULIT</div>
+                            <h3 class="product-title">Boxulit BBQ & Mixed Skewers Meal</h3>
+                            <p class="product-desc">Two BBQ skewers with rice and mixed vegetables</p>
+                            <div class="product-footer"><div class="product-price">Ask us</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-img"><img src="box3.jpg" alt="Boxulit egg and viand meals" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">BOXULIT</div>
+                            <h3 class="product-title">Boxulit Egg & Viand Meal</h3>
+                            <p class="product-desc">Garlic rice, fried egg and your viand</p>
+                            <div class="product-footer"><div class="product-price">Ask us</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-img"><img src="box4.jpg" alt="Boxulit grilled liempo meals" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">BOXULIT</div>
+                            <h3 class="product-title">Boxulit Grilled Liempo Meal</h3>
+                            <p class="product-desc">Grilled liempo with rice</p>
+                            <div class="product-footer"><div class="product-price">Ask us</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-img"><img src="box5.jpg" alt="Boxulit pork meals with rice" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">BOXULIT</div>
+                            <h3 class="product-title">Boxulit Assorted Viand Meal</h3>
+                            <p class="product-desc">Rice with assorted viands, boxed to go</p>
+                            <div class="product-footer"><div class="product-price">Ask us</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-img"><img src="box6.jpg" alt="Boxulit BBQ and siomai meals" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">BOXULIT</div>
+                            <h3 class="product-title">Boxulit BBQ & Siomai Meal</h3>
+                            <p class="product-desc">BBQ skewer on rice with siomai and calamansi</p>
+                            <div class="product-footer"><div class="product-price">Ask us</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-img"><img src="box7.jpg" alt="Boxulit chicken leg meals" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">BOXULIT</div>
+                            <h3 class="product-title">Boxulit Chicken Leg Meal</h3>
+                            <p class="product-desc">Chicken leg in sauce with rice</p>
+                            <div class="product-footer"><div class="product-price">Ask us</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ======================================================================
+                 CATEGORY: platters
+                 Purpose : Platters B1-B8 and Family Java Rice (Food).
+                 Styles  : styles.css §5 (.menu-category, .category-title, .product-card)
+                 Tab     : data-filter="platters" in the #menuSub chips above (name must match)
+                 Prices  : a card with data-id gets its price and Add to Cart button from the menuItems list in script.js (same id)
+                 ====================================================================== -->
+            <div class="menu-category" data-cat="platters">
+                <h3 class="category-title">Platters</h3>
+                <p class="menu-cat-note">Big platters for sharing. Prices follow our Foodpanda menu and may differ in store.</p>
+                <div class="product-grid">
+                    <div class="product-card" data-id="p1">
+                        <div class="product-img"><img src="b1.jpg" alt="50 pieces of Rojet'z pork BBQ on a platter" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">B1</div>
+                            <h3 class="product-title">B1 Platter</h3>
+                            <p class="product-desc">50pcs. Rojet'z BBQ</p>
+                            <div class="product-footer"><div class="product-price">₱1530</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-id="p2">
+                        <div class="product-img"><img src="b2.jpg" alt="24 pieces of fried chicken on a banana leaf" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">B2</div>
+                            <h3 class="product-title">B2 Platter</h3>
+                            <p class="product-desc">24pcs. Fried Chicken</p>
+                            <div class="product-footer"><div class="product-price">₱1120</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-id="p3">
+                        <div class="product-img"><img src="b3.jpg" alt="Platters of Rojet'z BBQ with fried chicken" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">B3</div>
+                            <h3 class="product-title">B3 Platter</h3>
+                            <p class="product-desc">50pcs. Rojet'z BBQ + 12pcs. Fried Chicken</p>
+                            <div class="product-footer"><div class="product-price">₱2080</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-id="p4">
+                        <div class="product-img"><img src="b4.jpg" alt="Assorted BBQ, tenga and isaw on a banana leaf" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">B4</div>
+                            <h3 class="product-title">B4 Platter</h3>
+                            <p class="product-desc">10pcs. Chicken BBQ + 10pcs. Pork BBQ + 20pcs. Tenga + 20pcs. Isaw</p>
+                            <div class="product-footer"><div class="product-price">₱1560</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-id="p5">
+                        <div class="product-img"><img src="b5.jpg" alt="Grilled liempo over java rice" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">B5</div>
+                            <h3 class="product-title">B5 Platter</h3>
+                            <p class="product-desc">10pcs. Liempo + Family Java Rice</p>
+                            <div class="product-footer"><div class="product-price">₱968</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-id="p6">
+                        <div class="product-img"><img src="b6.jpg" alt="Platter of siomai with calamansi" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">B6</div>
+                            <h3 class="product-title">B6 Platter</h3>
+                            <p class="product-desc">51pcs. Siomai (chicken, pork or mixed)</p>
+                            <div class="product-footer"><div class="product-price">₱795</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-id="p7">
+                        <div class="product-img"><img src="b7.jpg" alt="Platter of BBQ and Simply Siomai" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">B7</div>
+                            <h3 class="product-title">B7 Platter</h3>
+                            <p class="product-desc">30pcs. Rojet'z BBQ + 30pcs. Simply Siomai</p>
+                            <div class="product-footer"><div class="product-price">₱1390</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-id="p8m">
+                        <div class="product-img"><img src="b8.jpg" alt="Chami Lucena noodles with calamansi" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">B8</div>
+                            <h3 class="product-title">B8 Chami Lucena (Medium)</h3>
+                            <p class="product-desc">Chami Lucena, medium</p>
+                            <div class="product-footer"><div class="product-price">₱398</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-id="p8l">
+                        <div class="product-img"><img src="b8.jpg" alt="Chami Lucena noodles with calamansi" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">B8</div>
+                            <h3 class="product-title">B8 Chami Lucena (Large)</h3>
+                            <p class="product-desc">Chami Lucena, large</p>
+                            <div class="product-footer"><div class="product-price">₱548</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-id="pjr">
+                        <div class="product-img"><img src="family-java-rice.webp" alt="Java rice topped with garlic on banana leaf" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">SIDE</div>
+                            <h3 class="product-title">Family Java Rice</h3>
+                            <p class="product-desc">Good for 10 to 12 pax</p>
+                            <div class="product-footer"><div class="product-price">₱248</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ======================================================================
+                 CATEGORY: noodles
+                 Purpose : Noodles / Chami (Food).
+                 Styles  : styles.css §5 (.menu-category, .category-title, .product-card)
+                 Tab     : data-filter="noodles" in the #menuSub chips above (name must match)
+                 Prices  : a card with data-id gets its price and Add to Cart button from the menuItems list in script.js (same id)
+                 ====================================================================== -->
+            <div class="menu-category" data-cat="noodles">
+                <h3 class="category-title">Noodles</h3>
+                <div class="product-grid">
+                    <div class="product-card">
+                        <div class="product-img"><img src="chami.jpg" alt="Chami noodles with vegetables and calamansi" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">NOODLES</div>
+                            <h3 class="product-title">Chami</h3>
+                            <p class="product-desc">Freshly cooked upon order. No-meat version available.</p>
+                            <div class="product-footer"><div class="product-price">Ask us</div></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ======================================================================
+                 CATEGORY: sizzling
+                 Purpose : Sizzling Meals (Food). Cards without data-id have no price yet.
+                 Styles  : styles.css §5 (.menu-category, .category-title, .product-card)
+                 Tab     : data-filter="sizzling" in the #menuSub chips above (name must match)
+                 Prices  : a card with data-id gets its price and Add to Cart button from the menuItems list in script.js (same id)
+                 ====================================================================== -->
+            <div class="menu-category" data-cat="sizzling">
+                <h3 class="category-title">Sizzling Meals</h3>
+                <p class="menu-cat-note">Sizzling plates with garlic rice. Ask us for prices.</p>
+                <div class="product-grid">
+                    <div class="product-card">
+                        <img src="sizzling.jpg" alt="Sizzling Chk Fillet" class="sizzle-left" loading="lazy">
+                        <div class="product-info">
+                            <div class="product-tag">NEW</div>
+                            <h3 class="product-title">Sizzling Chk Fillet</h3>
+                            <p class="product-desc">Crispy chicken fillet with garlic rice. Pick your sauce: Sweet Sriracha, Honey BBQ, Teriyaki or Classic Gravy.</p>
+                            <div class="product-footer"><div class="product-price">Ask us</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                        <img src="sizzling.jpg" alt="Sizzling Lechon SSG" class="sizzle-right" loading="lazy">
+                        <div class="product-info">
+                            <div class="product-tag">NEW</div>
+                            <h3 class="product-title">Sizzling Lechon SSG</h3>
+                            <p class="product-desc">Sizzling lechon sisig topped with an egg, served with garlic rice.</p>
+                            <div class="product-footer"><div class="product-price">Ask us</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ======================================================================
+                 CATEGORY: blends
+                 Purpose : Specialty Blends (Drinks): 22oz drinks.
+                 Styles  : styles.css §5 (.menu-category, .category-title, .product-card)
+                 Tab     : data-filter="blends" in the #menuSub chips above (name must match)
+                 Prices  : a card with data-id gets its price and Add to Cart button from the menuItems list in script.js (same id)
+                 ====================================================================== -->
+            <div class="menu-category" data-cat="blends">
+                <h3 class="category-title">Specialty Blends</h3>
+                <p class="menu-cat-note">All 22oz.</p>
+                <div class="product-grid">
+                    <div class="product-card" data-id="b1">
+                        <div class="product-img"><img src="Citrus Moringa.webp" alt="Citrus Moringa specialty blend" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">22OZ</div>
+                            <h3 class="product-title">Citrus Moringa</h3>
+                            <p class="product-desc">Citrus with moringa</p>
+                            <div class="product-footer"><div class="product-price">₱139</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-id="b2">
+                        <div class="product-img"><img src="Sakura Bliss.webp" alt="Sakura Blizz specialty blend" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">22OZ</div>
+                            <h3 class="product-title">Sakura Blizz</h3>
+                            <p class="product-desc">Iced specialty blend</p>
+                            <div class="product-footer"><div class="product-price">₱159</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-id="b3">
+                        <div class="product-img"><img src="coco.webp" alt="Coco Aloe specialty blend" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">22OZ</div>
+                            <h3 class="product-title">Coco Aloe</h3>
+                            <p class="product-desc">Refreshing and subtly sweet</p>
+                            <div class="product-footer"><div class="product-price">₱159</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-id="b4">
+                        <div class="product-img"><img src="Berry Smash.webp" alt="Berry Smash specialty blend" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">22OZ</div>
+                            <h3 class="product-title">Berry Smash</h3>
+                            <p class="product-desc">Berries with crushed ice</p>
+                            <div class="product-footer"><div class="product-price">₱159</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-id="b5">
+                        <div class="product-img"><img src="Passion Fruit.webp" alt="Passion Fruit specialty blend" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">22OZ</div>
+                            <h3 class="product-title">Passion Fruit</h3>
+                            <p class="product-desc">Tangy passion fruit</p>
+                            <div class="product-footer"><div class="product-price">₱139</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-id="b6">
+                        <div class="product-img"><img src="Choco Chill.webp" alt="Choco Chill specialty blend" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">22OZ</div>
+                            <h3 class="product-title">Choco Chill</h3>
+                            <p class="product-desc">Chocolate blended with ice</p>
+                            <div class="product-footer"><div class="product-price">₱159</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-id="b7">
+                        <div class="product-img"><img src="Lemonada.webp" alt="Lemonada specialty blend" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">22OZ</div>
+                            <h3 class="product-title">Lemonada</h3>
+                            <p class="product-desc">Classic lemon drink</p>
+                            <div class="product-footer"><div class="product-price">₱139</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-id="b8">
+                        <div class="product-img"><img src="Yakumangga.webp" alt="Yakumangga iced drink with Yakult" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">22OZ</div>
+                            <h3 class="product-title">Yakumangga</h3>
+                            <p class="product-desc">Mango with Yakult</p>
+                            <div class="product-footer"><div class="product-price">₱159</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-id="b9">
+                        <div class="product-img"><img src="cuculime.webp" alt="Cuculime specialty blend" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">22OZ</div>
+                            <h3 class="product-title">Cuculime</h3>
+                            <p class="product-desc">Sweet and tangy</p>
+                            <div class="product-footer"><div class="product-price">₱139</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-id="b10">
+                        <div class="product-img"><img src="Creamy Matcha.webp" alt="Creamy Matcha specialty blend" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">22OZ</div>
+                            <h3 class="product-title">Creamy Matcha</h3>
+                            <p class="product-desc">Velvety and sweet matcha</p>
+                            <div class="product-footer"><div class="product-price">₱179</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-id="b11">
+                        <div class="product-img"><img src="Scarlet Mint Tea.webp" alt="Scarlet Mint Tea specialty blend" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">22OZ</div>
+                            <h3 class="product-title">Scarlet Mint Tea</h3>
+                            <p class="product-desc">Herbal tea with mint</p>
+                            <div class="product-footer"><div class="product-price">₱139</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-id="b12">
+                        <div class="product-img"><img src="Yakulychee.webp" alt="Yakulychee iced drink with Yakult" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">22OZ</div>
+                            <h3 class="product-title">Yakulychee</h3>
+                            <p class="product-desc">Lychee with Yakult</p>
+                            <div class="product-footer"><div class="product-price">₱159</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-id="b13">
+                        <div class="product-img"><img src="Yakulada.webp" alt="Yakulada iced drink with Yakult and lemon" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">22OZ</div>
+                            <h3 class="product-title">Yakulada</h3>
+                            <p class="product-desc">Lemonada with Yakult</p>
+                            <div class="product-footer"><div class="product-price">₱159</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ======================================================================
+                 CATEGORY: coffee
+                 Purpose : Drip Coffee (Drinks).
+                 Styles  : styles.css §5 (.menu-category, .category-title, .product-card)
+                 Tab     : data-filter="coffee" in the #menuSub chips above (name must match)
+                 Prices  : a card with data-id gets its price and Add to Cart button from the menuItems list in script.js (same id)
+                 ====================================================================== -->
+            <div class="menu-category" data-cat="coffee">
+                <h3 class="category-title">Drip Coffee</h3>
+                <p class="menu-cat-note">Premium barako beans from Baguio.</p>
+                <div class="product-grid">
+                    <div class="product-card" data-id="c1">
+                        <div class="product-img"><img src="OG BLack.webp" alt="OG Black drip coffee" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">22OZ</div>
+                            <h3 class="product-title">OG Black</h3>
+                            <p class="product-desc">Iced original black</p>
+                            <div class="product-footer"><div class="product-price">₱139</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-id="c2">
+                        <div class="product-img"><img src="Sweet Black.webp" alt="Sweet Black drip coffee" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">22OZ</div>
+                            <h3 class="product-title">Sweet Black</h3>
+                            <p class="product-desc">Iced sweet black</p>
+                            <div class="product-footer"><div class="product-price">₱159</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-id="c3">
+                        <div class="product-img"><img src="Milky Drink.webp" alt="Milky Drip coffee" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">22OZ</div>
+                            <h3 class="product-title">Milky Drip</h3>
+                            <p class="product-desc">Iced milky latte</p>
+                            <div class="product-footer"><div class="product-price">₱159</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-id="c4">
+                        <div class="product-img"><img src="Dirty-Matcha.webp" alt="Dirty Matcha drip coffee" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">22OZ</div>
+                            <h3 class="product-title">Dirty Matcha</h3>
+                            <p class="product-desc">Iced matcha latte</p>
+                            <div class="product-footer"><div class="product-price">₱168</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-id="c5">
+                        <div class="product-img"><img src="Vanilla Milky.webp" alt="Vanilla Milky drip coffee" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">22OZ</div>
+                            <h3 class="product-title">Vanilla Milky</h3>
+                            <p class="product-desc">Iced vanilla latte</p>
+                            <div class="product-footer"><div class="product-price">₱179</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-id="c6">
+                        <div class="product-img"><img src="Choco Latte.webp" alt="Choco Latte drip coffee" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">22OZ</div>
+                            <h3 class="product-title">Choco Latte</h3>
+                            <p class="product-desc">Iced café mocha</p>
+                            <div class="product-footer"><div class="product-price">₱179</div></div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-id="c7">
+                        <div class="product-img"><img src="Premium Hot Malaysian Coffee.webp" alt="Hot Malaysian Coffee" loading="lazy"></div>
+                        <div class="product-info">
+                            <div class="product-tag">16OZ HOT</div>
+                            <h3 class="product-title">Hot Malaysian Coffee</h3>
+                            <p class="product-desc">Premium hot Malaysian coffee</p>
+                            <div class="product-footer"><div class="product-price">₱179</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================================================================
+         FOOTER
+         Purpose : Brand line, social links, quick links, branch addresses and hours. Same block on every page.
+         Styles  : styles.css §12 (footer, .footer-content, .social-links)
+         Script  : script.js "Footer Year" fills <span id="year">
+         ====================================================================== -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>About Rojetz</h3>
+                    <p id="orderMessage"></p>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/rojetzbbqstation" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://www.instagram.com/rojetzbbqstation" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="services.html">Menu</a></li>
+                        <li><a href="gallery.html">Gallery</a></li>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <ul class="footer-links">
+                        <li><i class="fa-solid fa-location-dot"></i> Calmar Homes Branch<br>Ph5a Kalayaan Extension, Calmar Homes<br>Banahaw Street, Brgy. Mayao Kanluran<br>Lucena City, Quezon</li>
+                        <li><i class="fa-solid fa-store"></i> Booth #69, Mercato Lucena (Night Market)</li>
+                        <li><i class="fa-solid fa-clock"></i> 12:30 P.M. – 10:30 P.M. </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">&copy; <span id="year">2026</span> Rojetz BBQ Station | Lucena City, Quezon</div>
+        </div>
+    </footer>
+
+    <!-- ======================================================================
+         ORDER CART
+         Purpose : Three parts: the bottom bar (#stickyCart), the dark overlay (#cartOverlay) and the slide-in panel (#cartPanel). Items are filled in by script.js.
+         Styles  : styles.css §10 (.sticky-cart, .cart-overlay, .cart-panel)
+         Script  : script.js cart functions (addToCart, showCartPanel, placeOrder...) and the Cart Event Listeners
+         ====================================================================== -->
+    <!-- Cart -->
+    <div class="sticky-cart" id="stickyCart">
+        <div class="sticky-cart-info">
+            <span id="cartCount">0</span> items · <strong id="cartTotal">₱0</strong>
+        </div>
+        <button class="sticky-cart-btn" id="openCartBtn">View Cart</button>
+    </div>
+    <div class="cart-overlay" id="cartOverlay"></div>
+    <div class="cart-panel" id="cartPanel">
+        <div class="cart-panel-header">
+            <h3>Your Order</h3>
+            <button class="cart-close" id="closeCartBtn" aria-label="Close cart">&times;</button>
+        </div>
+        <div id="cartItems"></div>
+        <div class="cart-total" id="cartPanelTotal">Total: ₱0</div>
+        <div class="cart-actions">
+            <input type="text" id="customerName" placeholder="Your name">
+            <button class="btn btn-primary" id="placeOrderBtn">Place Order</button>
+            <a class="btn btn-secondary foodpanda-link" target="_blank" rel="noopener noreferrer" hidden>Order on Foodpanda</a>
+            <button class="btn btn-secondary" id="clearCartBtn">Clear Cart</button>
+
+        </div>
+        <p class="footer-tagline">Lucena's Favorite Ihaw-ihaw. Sarap Sulit... Mapapaulit!</p>
+        <p class="cart-note">Place Order copies your order and opens our Messenger chat. Paste it there to confirm.</p>
+    </div>
+
+    <!-- ======================================================================
+         TOAST MESSAGE
+         Purpose : Small pop-up message, for example "Added to cart".
+         Styles  : styles.css §12 (.toast)
+         Script  : script.js showToast()
+         ====================================================================== -->
+    <div id="toast" class="toast">Added to cart!</div>
+    <script src="script.js"></script>
+</body>
+</html>

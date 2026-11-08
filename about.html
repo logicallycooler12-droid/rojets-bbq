@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- ======================================================================
+         PAGE: ABOUT (about.html)
+         Purpose : Brand story, partners, photo teaser and customer reviews.
+         Styles  : styles.css (sections 7, 8)
+         Script  : script.js (scroll fade-in only)
+         ====================================================================== -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us | Rojetz BBQ</title>
+    <meta name="description" content="The story of Rojetz BBQ Station, Lucena's favorite ihaw-ihaw, plus our partners and collaborations. Affordable, freshly grilled BBQ, isaw and siomai in Lucena City.">
+    <meta name="theme-color" content="#161515">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="About Us | Rojetz BBQ Station">
+    <meta property="og:description" content="Sarap Sulit... Mapapaulit! Read the story of Lucena's favorite ihaw-ihaw.">
+    <link rel="icon" href="logo.jpg">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+    <div class="loader-wrapper" id="loader">
+        <div class="loader-pill">
+            <div class="loader-logo"><img src="logo.jpg" alt="Rojetz BBQ logo"></div>
+            <div class="loader-divider"></div>
+            <div class="loader-name">Rojetz <span>BBQ</span></div>
+            <div class="loader-fire">
+                <div class="flame"></div>
+                <div class="flame"></div>
+                <div class="flame"></div>
+            </div>
+        </div>
+    </div>
+
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <div class="logo-text">Rojetz <span>BBQ</span></div>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="services.html">Menu</a></li>
+                    <li><a href="gallery.html">Gallery</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+            <button class="hamburger" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+            <div class="nav-buttons">
+                <a href="services.html" class="btn btn-secondary">View Menu</a>
+                <a href="contact.html" class="btn btn-primary">Find Us</a>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+        <div class="mobile-nav">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="services.html">Menu</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <div class="mobile-nav-buttons">
+                <a href="services.html" class="btn btn-secondary">View Menu</a>
+                <a href="contact.html" class="btn btn-primary">Find Us</a>
+                <button class="theme-toggle" id="themeToggleMobile" aria-label="Toggle theme">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <section class="locations page-top">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-subtitle">About Rojetz</div>
+                <h2 class="section-title">Lucena's Favorite Ihaw-ihaw</h2>
+                <p class="section-desc">Our Story</p>
+            </div>
+            <div class="location-card story-card">
+                <div class="location-info">
+                    <p>Rojetz BBQ Station started with a simple passion: to serve the best tasting, most affordable, and consistently delicious grilled food in Lucena City.</p>
+                    <p>Known as <strong>"Lucena's Favorite Ihaw-ihaw"</strong>, we take pride in our slogan <em>"Sarap Sulit... Mapapaulit!"</em> — because once you try our BBQ and isaw, you'll keep coming back.</p>
+                    <p>We also offer Simply Siomai, SulitKasalo sharing meals, fried chicken, Specialty Blends and drip coffee. Whether you're grabbing a quick merienda or ordering a full meal via Foodpanda, we're here to satisfy your cravings.</p>
+                    <h3 class="why-title">Why Choose Us?</h3>
+                    <ul class="why-list">
+                        <li>Freshly grilled every order</li>
+                        <li>Affordable & value-for-money</li>
+                        <li>Friendly service (even late night!)</li>
+                        <li>Available on Foodpanda</li>
+                        <li>Also found at Mercato Lucena night market</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="sect-dark" id="partners">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-subtitle">Better Together</div>
+                <h2 class="section-title">Partners &amp; Collaborations</h2>
+                <p class="section-desc">The brands and places that help us serve Lucena.</p>
+            </div>
+            <div class="partner-grid">
+                <div class="partner-card">
+                    <i class="fa-solid fa-bowl-food"></i>
+                    <h3>Simply Siomai</h3>
+                    <p class="partner-sub">by Rojet'z</p>
+                    <p>Our own siomai line, made with pure meat and no fillers. Choose pork, chicken, a mixed dozen or the wonton-style bowl.</p>
+                    <a href="services.html#siomai">See Simply Siomai →</a>
+                </div>
+                <div class="partner-card">
+                    <i class="fa-solid fa-handshake"></i>
+                    <h3>Chami Lucena</h3>
+                    <p class="partner-sub">with La Reina Elena Noodles & Sauces</p>
+                    <p>Our official partner for Chami, Lucena's well-known noodle dish. Freshly cooked upon order, with a no-meat version.</p>
+                    <a href="services.html#noodles">See the noodles →</a>
+                </div>
+                <div class="partner-card">
+                    <i class="fa-solid fa-store"></i>
+                    <h3>Mercato Lucena</h3>
+                    <p class="partner-sub">Night market, Booth #69</p>
+                    <p>Find our skewers, siomai and specialty blends at the Mercato Lucena night market, 6:30 PM to 12:00 MN.</p>
+                    <a href="contact.html">Hours and directions →</a>
+                </div>
+                <div class="partner-card">
+                    <i class="fa-solid fa-motorcycle"></i>
+                    <h3>Foodpanda</h3>
+                    <p class="partner-sub">Delivery</p>
+                    <p>Order from our Calmar Homes store for delivery. Check the app for current promos and deals.</p>
+                    <a href="https://www.foodpanda.ph/restaurant/e7ij/rojetz-bbq-station-calmar-homes?lat=13.9603&lng=121.61661" target="_blank" rel="noopener noreferrer">Order on Foodpanda →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="sect-light">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-subtitle">Gallery</div>
+                <h2 class="section-title">Moments From Our Grill</h2>
+                <p class="section-desc">See more of our food and our night market stall.</p>
+            </div>
+            <div class="mosaic mosaic--3">
+                <a href="gallery.html"><img src="Grills.jpg" alt="All nine SulitKasalo meals in a grid" loading="lazy"></a>
+                <a href="gallery.html"><img src="t4.jpg" alt="Rojetz BBQ stall with grilled skewers, hotdogs and Manggachee" loading="lazy"></a>
+                <a href="gallery.html"><img src="Mercato Stall.jpg" alt="Chami noodles with vegetables and calamansi" loading="lazy"></a>
+            </div>
+            <div class="section-cta"><a href="gallery.html" class="btn btn-primary">See the Full Gallery</a></div>
+        </div>
+    </section>
+
+    <section class="sect-light" id="reviews">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-subtitle">Kind Words</div>
+                <h2 class="section-title">What Customers Say</h2>
+                <p class="section-desc">Reviews of loyal customers.</p>
+            </div>
+            <div class="review-list">
+                <article class="review-row">
+                    <img class="review-photo" src="KianPogi.jpg" alt="Photo of Kian Carlo N. Bathan" loading="lazy">
+                    <blockquote class="review-body">
+                        <i class="fa-solid fa-quote-left"></i>
+                        <p>kung hindi tayo para sa isa’t isa. Pwede paisa?</p>
+                        <div class="review-by"><strong>Kian Carlo N. Bathan</strong><span>SHC Student</span></div>
+                    </blockquote>
+                </article>
+                <article class="review-row">
+                    <img class="review-photo" src="KuyaPogi.jpg" alt="Photo of Karl Saniel" loading="lazy">
+                    <blockquote class="review-body">
+                        <i class="fa-solid fa-quote-left"></i>
+                        <p>Aanhin mo ang maraming pera kung yung face card ng teacher mo sa UTS bawing bawi na.</p>
+                        <div class="review-by"><strong>Karl Saniel</strong><span>SHC Student</span></div>
+                    </blockquote>
+                </article>
+                <article class="review-row">
+                    <img class="review-photo" src="arat chess.jpg" alt="Photo of Jiro Danganan" loading="lazy">
+                    <blockquote class="review-body">
+                        <i class="fa-solid fa-quote-left"></i>
+                        <p>Amazing website 😍, Tara chess.</p>
+                        <div class="review-by"><strong>Jiro Danganan</strong><span>SHC Student</span></div>
+                    </blockquote>
+                </article>
+                <article class="review-row">
+                    <img class="review-photo" src="checkmatein26.jpg" alt="Photo of Reuben Flavier" loading="lazy">
+                    <blockquote class="review-body">
+                        <i class="fa-solid fa-quote-left"></i>
+                        <p>Smokey Sarap.</p>
+                        <div class="review-by"><strong>Reuben Flavier</strong><span>SHC Student</span></div>
+                    </blockquote>
+                </article>
+                <article class="review-row">
+                    <img class="review-photo" src="royalmaster.jpg" alt="Photo of Jancel Buama" loading="lazy">
+                    <blockquote class="review-body">
+                        <i class="fa-solid fa-quote-left"></i>
+                        <p>Kulang ng royaL</p>
+                        <div class="review-by"><strong>Jancel Buama</strong><span>SHC Student</span></div>
+                    </blockquote>
+                </article>
+                <article class="review-row">
+                    <img class="review-photo" src="GenePogi.jpg" alt="Photo of Genesis Jimenez" loading="lazy">
+                    <blockquote class="review-body">
+                        <i class="fa-solid fa-quote-left"></i>
+                        <p>gwapo sa umaga pogi sa hapon handsome sa gabi</p>
+                        <div class="review-by"><strong>Genesis Jimenez</strong><span>SHC Student</span></div>
+                    </blockquote>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>About Rojetz</h3>
+                    <p class="footer-tagline">Lucena's Favorite Ihaw-ihaw. Sarap Sulit... Mapapaulit!</p>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/rojetzbbqstation" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://www.instagram.com/rojetzbbqstation" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="services.html">Menu</a></li>
+                        <li><a href="gallery.html">Gallery</a></li>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <ul class="footer-links">
+                        <li><i class="fa-solid fa-location-dot"></i> Calmar Homes Branch<br>Ph5a Kalayaan Extension, Calmar Homes<br>Banahaw Street, Brgy. Mayao Kanluran<br>Lucena City, Quezon</li>
+                        <li><i class="fa-solid fa-store"></i> Booth #69, Mercato Lucena (Night Market)</li>
+                        <li><i class="fa-solid fa-clock"></i> 12:30 P.M. – 10:30 P.M. </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">&copy; <span id="year">2026</span> Rojetz BBQ Station | Lucena City, Quezon</div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

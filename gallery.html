@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- ======================================================================
+         PAGE: GALLERY (gallery.html)
+         Purpose : Photo mosaic with two-level filters and a popup viewer.
+         Styles  : styles.css (sections 6, 11)
+         Script  : script.js initGallery()
+         ====================================================================== -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery | Rojetz BBQ</title>
+    <meta name="description" content="Photos from Rojetz BBQ Station in Lucena City: grills, siomai, fried chicken, SulitKasalo, boxulit, noodles, drinks and our Mercato Lucena stall.">
+    <meta name="theme-color" content="#161515">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Gallery | Rojetz BBQ Station">
+    <meta property="og:description" content="Fresh off the grill: photos of our food and our night market stall.">
+    <link rel="icon" href="logo.jpg">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+    <!-- ======================================================================
+         PAGE LOADER
+         Purpose : Full-screen logo animation on the first page view of a visit.
+         Styles  : styles.css §12 (.loader-wrapper, .loader-pill, .flame)
+         Script  : script.js "Page Loader": fades out after 0.7s, removed on later pages (sessionStorage key rojetz-seen)
+         ====================================================================== -->
+    <div class="loader-wrapper" id="loader">
+        <div class="loader-pill">
+            <div class="loader-logo"><img src="logo.jpg" alt="Rojetz BBQ logo"></div>
+            <div class="loader-divider"></div>
+            <div class="loader-name">Rojetz <span>BBQ</span></div>
+            <div class="loader-fire">
+                <div class="flame"></div>
+                <div class="flame"></div>
+                <div class="flame"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================================================================
+         HEADER & NAVIGATION
+         Purpose : Logo, main menu, View Menu / Find Us buttons, theme toggle. The .mobile-nav block is the phone version of the same menu.
+         Styles  : styles.css §2-3 (header, nav, .hamburger, .mobile-nav, .btn, .theme-toggle)
+         Script  : script.js "Mobile Hamburger Menu Toggle" (.hamburger toggles .mobile-nav), "Theme Toggle" (#themeToggle, #themeToggleMobile)
+         ====================================================================== -->
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <div class="logo-text">Rojetz <span>BBQ</span></div>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="services.html">Menu</a></li>
+                    <li><a href="gallery.html">Gallery</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+            <button class="hamburger" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+            <div class="nav-buttons">
+                <a href="services.html" class="btn btn-secondary">View Menu</a>
+                <a href="contact.html" class="btn btn-primary">Find Us</a>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+        <div class="mobile-nav">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="services.html">Menu</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <div class="mobile-nav-buttons">
+                <a href="services.html" class="btn btn-secondary">View Menu</a>
+                <a href="contact.html" class="btn btn-primary">Find Us</a>
+                <button class="theme-toggle" id="themeToggleMobile" aria-label="Toggle theme">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ======================================================================
+         GALLERY SECTION
+         Purpose : Heading, filter buttons, photo grid and a Facebook link.
+         Styles  : styles.css §11
+         ====================================================================== -->
+    <section class="sect-dark page-top">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-subtitle">Gallery</div>
+                <h2 class="section-title">Fresh Off the Grill</h2>
+                <p class="section-desc">Tap a photo to see it bigger.</p>
+            </div>
+            <!-- Two-level filter: pick a group, then (if the group has more than one category with photos) a category.
+               To add a category: add a button below with data-filter (same as the photos' data-cat) and the right data-group.
+               Buttons for categories with no photos hide themselves, so Events and People appear once you add photos. -->
+
+            <!-- ======================================================================
+                 GALLERY FILTER: LEVEL 1 (GROUPS)
+                 Purpose : Buttons: All / Food / Drinks / Places & Events (data-group-btn).
+                 Styles  : styles.css §6 (.gallery-groups, .menu-tab)
+                 Script  : script.js initGallery() render()
+                 ====================================================================== -->
+            <div class="gallery-groups" role="group" aria-label="Photo groups">
+                <button type="button" class="menu-tab" data-group-btn="all" aria-pressed="true">All</button>
+                <button type="button" class="menu-tab" data-group-btn="food" aria-pressed="false">Food</button>
+                <button type="button" class="menu-tab" data-group-btn="drinks" aria-pressed="false">Drinks</button>
+                <button type="button" class="menu-tab" data-group-btn="places" aria-pressed="false">Places &amp; Events</button>
+            </div>
+
+            <!-- ======================================================================
+                 GALLERY FILTER: LEVEL 2 (CATEGORIES)
+                 Purpose : One chip per category. data-filter must equal the photos' data-cat, data-group says which group it belongs to. Chips with no photos hide themselves and each chip shows its photo count.
+                 Styles  : styles.css §6 (.gallery-sub)
+                 Script  : script.js initGallery()
+                 ====================================================================== -->
+            <div class="gallery-sub" id="gallerySub" role="group" aria-label="Photo categories" hidden>
+                <button type="button" class="menu-tab" data-filter="grills" data-group="food" aria-pressed="false" hidden>Grills</button>
+                <button type="button" class="menu-tab" data-filter="siomai" data-group="food" aria-pressed="false" hidden>Simply Siomai</button>
+                <button type="button" class="menu-tab" data-filter="chicken" data-group="food" aria-pressed="false" hidden>Fried Chicken</button>
+                <button type="button" class="menu-tab" data-filter="sk" data-group="food" aria-pressed="false" hidden>Sulit Kasalo</button>
+                <button type="button" class="menu-tab" data-filter="box" data-group="food" aria-pressed="false" hidden>Boxulit Meals</button>
+                <button type="button" class="menu-tab" data-filter="platters" data-group="food" aria-pressed="false" hidden>Platters</button>
+                <button type="button" class="menu-tab" data-filter="sizzling" data-group="food" aria-pressed="false" hidden>Sizzling Meals</button>
+                <button type="button" class="menu-tab" data-filter="noodles" data-group="food" aria-pressed="false" hidden>Noodles</button>
+                <button type="button" class="menu-tab" data-filter="blends" data-group="drinks" aria-pressed="false" hidden>Specialty Blends</button>
+                <button type="button" class="menu-tab" data-filter="coffee" data-group="drinks" aria-pressed="false" hidden>Drip Coffee</button>
+                <button type="button" class="menu-tab" data-filter="branch" data-group="places" aria-pressed="false" hidden>Branch</button>
+                <button type="button" class="menu-tab" data-filter="events" data-group="places" aria-pressed="false" hidden>Events</button>
+                <button type="button" class="menu-tab" data-filter="people" data-group="places" aria-pressed="false" hidden>People</button>
+            </div>
+
+            <!-- ======================================================================
+                 PHOTO GRID (MOSAIC)
+                 Purpose : Each photo is one <button class="gallery-item">. Photos are kept in the same order as the filters: Food, then Drinks, then Places & Events.
+                 Styles  : styles.css §11 (.gallery-grid--mosaic and tile classes is-featured / is-tall / is-wide)
+                 Script  : script.js initGallery() reads data-cat (filter), data-full (big image) and data-caption (popup text)
+                 Add a photo : copy one block inside its category, change data-full, data-caption, the img src / alt and the .cap text.
+                 Make it big : add is-featured (2x2), is-tall (1x2) or is-wide (2x1) after gallery-item in the class list.
+                 ====================================================================== -->
+            <div class="gallery-grid gallery-grid--mosaic" id="galleryGrid">
+                <!-- ======================================================================
+                     GROUP: FOOD
+                     ====================================================================== -->
+
+                <!-- Grills  (data-cat="grills", 6 photos) -->
+                <button type="button" class="gallery-item is-featured" data-cat="grills" data-full="bbq.jpg" data-caption="Pork BBQ, fresh off the grill">
+                    <img src="bbq.jpg" alt="Pork BBQ skewers stacked on a banana leaf" loading="lazy">
+                    <span class="cap">Pork BBQ</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="grills" data-full="Chicken BBQ.webp" data-caption="Chicken BBQ">
+                    <img src="Chicken BBQ.webp" alt="Chicken BBQ skewers" loading="lazy">
+                    <span class="cap">Chicken BBQ</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="grills" data-full="Hungarian Sausage.webp" data-caption="Hungarian Sausage">
+                    <img src="Hungarian Sausage.webp" alt="Hungarian sausage" loading="lazy">
+                    <span class="cap">Hungarian Sausage</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="grills" data-full="Tenga.webp" data-caption="Tenga">
+                    <img src="Tenga.webp" alt="Grilled tenga pork ears" loading="lazy">
+                    <span class="cap">Tenga</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="grills" data-full="Isaw.webp" data-caption="Isaw">
+                    <img src="Isaw.webp" alt="Isaw skewers on the grill" loading="lazy">
+                    <span class="cap">Isaw</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="grills" data-full="Grills.jpg" data-caption="Fresh BBQ grilling on-site">
+                    <img src="Grills.jpg" alt="Pork BBQ skewers grilling over hot coals" loading="lazy">
+                    <span class="cap">On-the-Grill</span>
+                </button>
+
+                <!-- Simply Siomai  (data-cat="siomai", 4 photos) -->
+                <button type="button" class="gallery-item" data-cat="siomai" data-full="Simply Pork Siomai.webp" data-caption="Simply Pork Siomai">
+                    <img src="Simply Pork Siomai.webp" alt="Simply Pork Siomai" loading="lazy">
+                    <span class="cap">Simply Pork Siomai</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="siomai" data-full="Simply Chicken Siomai.webp" data-caption="Simply Chicken Siomai">
+                    <img src="Simply Chicken Siomai.webp" alt="Simply Chicken Siomai" loading="lazy">
+                    <span class="cap">Simply Chicken Siomai</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="siomai" data-full="Mixed Siomai - Pork and Chicken.webp" data-caption="Mixed Siomai (Pork & Chicken)">
+                    <img src="Mixed Siomai - Pork and Chicken.webp" alt="Mixed Pork and Chicken Siomai" loading="lazy">
+                    <span class="cap">Mixed Siomai</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="siomai" data-full="Simply Siomai Wonton Style.webp" data-caption="Simply Siomai Wonton-Style">
+                    <img src="Simply Siomai Wonton Style.webp" alt="Simply Siomai wonton-style in a bowl" loading="lazy">
+                    <span class="cap">Siomai Wonton-Style</span>
+                </button>
+
+                <!-- Fried Chicken  (data-cat="chicken", 3 photos) -->
+                <button type="button" class="gallery-item" data-cat="chicken" data-full="Half Fried Chicken.webp" data-caption="Half Fried Chicken">
+                    <img src="Half Fried Chicken.webp" alt="Half fried chicken" loading="lazy">
+                    <span class="cap">Half Fried Chicken</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="chicken" data-full="Jumbo-Fried-Chicken.webp" data-caption="Jumbo Fried Chicken">
+                    <img src="Jumbo-Fried-Chicken.webp" alt="Jumbo fried chicken" loading="lazy">
+                    <span class="cap">Jumbo Fried Chicken</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="chicken" data-full="Sulit Cuts Fried Chicken - Box of 4.webp" data-caption="Sulit Cuts Fried Chicken">
+                    <img src="Sulit Cuts Fried Chicken - Box of 4.webp" alt="Sulit cuts fried chicken with rice" loading="lazy">
+                    <span class="cap">Sulit Cuts Fried Chicken</span>
+                </button>
+
+                <!-- Sulit Kasalo  (data-cat="sk", 9 photos) -->
+                <button type="button" class="gallery-item is-featured" data-cat="sk" data-full="SulitKasalo.jpg" data-caption="SK1 - 1 Dozen Rojetz BBQ">
+                    <img src="SulitKasalo.jpg" alt="Sulit Kasalo SK1 platter" loading="lazy">
+                    <span class="cap">SK1 - 1 Dozen BBQ</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="sk" data-full="sk2.jpg" data-caption="SK2 - BBQ, Jumbo Hotdog & Isaw">
+                    <img src="sk2.jpg" alt="Sulit Kasalo SK2 platter" loading="lazy">
+                    <span class="cap">SK2 - BBQ, Hotdog & Isaw</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="sk" data-full="sk3.jpg" data-caption="SK3 - BBQ & Simply Siomai">
+                    <img src="sk3.jpg" alt="Sulit Kasalo SK3 platter" loading="lazy">
+                    <span class="cap">SK3 - BBQ & Siomai</span>
+                </button>
+                <button type="button" class="gallery-item is-tall" data-cat="sk" data-full="sk4.jpg" data-caption="SK4 - Liempo & Half Fried Chicken">
+                    <img src="sk4.jpg" alt="Sulit Kasalo SK4 platter" loading="lazy">
+                    <span class="cap">SK4 - Liempo & Chicken</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="sk" data-full="sk5.jpg" data-caption="SK5 - BBQ & Isaw">
+                    <img src="sk5.jpg" alt="Sulit Kasalo SK5 platter" loading="lazy">
+                    <span class="cap">SK5 - BBQ & Isaw</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="sk" data-full="sk6.jpg" data-caption="SK6 - Buffalo Wings & Shanghai">
+                    <img src="sk6.jpg" alt="Sulit Kasalo SK6 platter" loading="lazy">
+                    <span class="cap">SK6 - Wings & Shanghai</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="sk" data-full="sk7.jpg" data-caption="SK7 - Tapa, Tocino & Longganisa">
+                    <img src="sk7.jpg" alt="Sulit Kasalo SK7 platter" loading="lazy">
+                    <span class="cap">SK7 - Tapa & Longganisa</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="sk" data-full="sk8.jpg" data-caption="SK8 - Tenga & Isaw">
+                    <img src="sk8.jpg" alt="Sulit Kasalo SK8 platter" loading="lazy">
+                    <span class="cap">SK8 - Tenga & Isaw</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="sk" data-full="sk9.jpg" data-caption="SK9 - Kasalo Java Rice">
+                    <img src="sk9.jpg" alt="Sulit Kasalo SK9 platter" loading="lazy">
+                    <span class="cap">SK9 - Kasalo Java Rice</span>
+                </button>
+
+                <!-- Boxulit Meals  (data-cat="box", 7 photos) -->
+                <button type="button" class="gallery-item" data-cat="box" data-full="box1.jpg" data-caption="Boxulit Chicken Fillet Meal">
+                    <img src="box1.jpg" alt="Boxulit chicken fillet meal" loading="lazy">
+                    <span class="cap">Boxulit Chicken Fillet</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="box" data-full="box2.jpg" data-caption="Boxulit BBQ & Mixed Skewers Meal">
+                    <img src="box2.jpg" alt="Boxulit BBQ and mixed skewers meal" loading="lazy">
+                    <span class="cap">Boxulit BBQ & Skewers</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="box" data-full="box3.jpg" data-caption="Boxulit Egg & Viand Meal">
+                    <img src="box3.jpg" alt="Boxulit egg and viand meal" loading="lazy">
+                    <span class="cap">Boxulit Egg & Viand</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="box" data-full="box4.jpg" data-caption="Boxulit Grilled Liempo Meal">
+                    <img src="box4.jpg" alt="Boxulit grilled liempo meal" loading="lazy">
+                    <span class="cap">Boxulit Grilled Liempo</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="box" data-full="box5.jpg" data-caption="Boxulit Assorted Viand Meal">
+                    <img src="box5.jpg" alt="Boxulit assorted viand meal" loading="lazy">
+                    <span class="cap">Boxulit Assorted Viand</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="box" data-full="box6.jpg" data-caption="Boxulit BBQ & Siomai Meal">
+                    <img src="box6.jpg" alt="Boxulit BBQ and siomai meal" loading="lazy">
+                    <span class="cap">Boxulit BBQ & Siomai</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="box" data-full="box7.jpg" data-caption="Boxulit Chicken Leg Meal">
+                    <img src="box7.jpg" alt="Boxulit chicken leg meal" loading="lazy">
+                    <span class="cap">Boxulit Chicken Leg</span>
+                </button>
+
+                <!-- Platters  (data-cat="platters", 12 photos) -->
+                <button type="button" class="gallery-item is-wide" data-cat="platters" data-full="bbq-siomai.jpg" data-caption="Siomai & BBQ platter">
+                    <img src="bbq-siomai.jpg" alt="Platter of siomai, pork BBQ, liempo and isaw" loading="lazy">
+                    <span class="cap">Siomai & BBQ platter</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="platters" data-full="hotdawg.jpg" data-caption="Hotdog & BBQ platter">
+                    <img src="hotdawg.jpg" alt="Grilled hotdogs and BBQ with dipping sauces" loading="lazy">
+                    <span class="cap">Hotdog & BBQ platter</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="platters" data-full="liempo.jpg" data-caption="Liempo rice platter">
+                    <img src="liempo.jpg" alt="Grilled liempo over yellow rice" loading="lazy">
+                    <span class="cap">Liempo rice platter</span>
+                </button>
+                <button type="button" class="gallery-item is-tall" data-cat="platters" data-full="b1.jpg" data-caption="B1 - 50pcs. Rojet'z BBQ">
+                    <img src="b1.jpg" alt="50 pieces of Rojet'z pork BBQ on a platter" loading="lazy">
+                    <span class="cap">B1 Platter</span>
+                </button>
+                <button type="button" class="gallery-item is-tall" data-cat="platters" data-full="b2.jpg" data-caption="B2 - 24pcs. Fried Chicken">
+                    <img src="b2.jpg" alt="24 pieces of fried chicken on a banana leaf" loading="lazy">
+                    <span class="cap">B2 Platter</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="platters" data-full="b3.jpg" data-caption="B3 - 50pcs. Rojet'z BBQ + 12pcs. Fried Chicken">
+                    <img src="b3.jpg" alt="Platters of Rojet'z BBQ with fried chicken" loading="lazy">
+                    <span class="cap">B3 Platter</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="platters" data-full="b4.jpg" data-caption="B4 - 10pcs. Chicken BBQ + 10pcs. Pork BBQ + 20pcs. Tenga + 20pcs. Isaw">
+                    <img src="b4.jpg" alt="Assorted BBQ, tenga and isaw on a banana leaf" loading="lazy">
+                    <span class="cap">B4 Platter</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="platters" data-full="b5.jpg" data-caption="B5 - 10pcs. Liempo + Family Java Rice">
+                    <img src="b5.jpg" alt="Grilled liempo over java rice" loading="lazy">
+                    <span class="cap">B5 Platter</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="platters" data-full="b6.jpg" data-caption="B6 - 51pcs. Siomai (chicken, pork or mixed)">
+                    <img src="b6.jpg" alt="Platter of siomai with calamansi" loading="lazy">
+                    <span class="cap">B6 Platter</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="platters" data-full="b7.jpg" data-caption="B7 - 30pcs. Rojet'z BBQ + 30pcs. Simply Siomai">
+                    <img src="b7.jpg" alt="Platter of BBQ and Simply Siomai" loading="lazy">
+                    <span class="cap">B7 Platter</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="platters" data-full="b8.jpg" data-caption="B8 - Chami Lucena">
+                    <img src="b8.jpg" alt="Chami Lucena noodles with calamansi" loading="lazy">
+                    <span class="cap">B8 Chami Lucena</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="platters" data-full="family-java-rice.webp" data-caption="Family Java Rice">
+                    <img src="family-java-rice.webp" alt="Java rice topped with garlic on banana leaf" loading="lazy">
+                    <span class="cap">Family Java Rice</span>
+                </button>
+
+                <!-- Sizzling Meals  (data-cat="sizzling", 1 photos) -->
+                <button type="button" class="gallery-item is-featured" data-cat="sizzling" data-full="sizzling.jpg" data-caption="New: Sizzling Chk Fillet & Lechon SSG">
+                    <img src="sizzling.jpg" alt="Sizzling chicken fillet and lechon sisig" loading="lazy">
+                    <span class="cap">Sizzling Meals</span>
+                </button>
+
+                <!-- Noodles  (data-cat="noodles", 2 photos) -->
+                <button type="button" class="gallery-item is-wide" data-cat="noodles" data-full="chami.jpg" data-caption="Chami, freshly cooked upon order">
+                    <img src="chami.jpg" alt="Chami noodles with vegetables and calamansi" loading="lazy">
+                    <span class="cap">Chami</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="noodles" data-full="Chami B8.jpg" data-caption="Chami Lucena Noodles">
+                    <img src="Chami B8.jpg" alt="Chami Lucena noodles close-up with calamansi" loading="lazy">
+                    <span class="cap">Chami Lucena Close-up</span>
+                </button>
+
+                <!-- ======================================================================
+                     GROUP: DRINKS
+                     ====================================================================== -->
+
+                <!-- Specialty Blends  (data-cat="blends", 14 photos) -->
+                <button type="button" class="gallery-item" data-cat="blends" data-full="yaku-series.jpg" data-caption="Yaku Series drinks">
+                    <img src="yaku-series.jpg" alt="Yakulychee and Yakumangga iced drinks" loading="lazy">
+                    <span class="cap">Yaku Series</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="blends" data-full="Citrus Moringa.webp" data-caption="Citrus Moringa">
+                    <img src="Citrus Moringa.webp" alt="Citrus Moringa specialty blend" loading="lazy">
+                    <span class="cap">Citrus Moringa</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="blends" data-full="Sakura Bliss.webp" data-caption="Sakura Bliss">
+                    <img src="Sakura Bliss.webp" alt="Sakura Bliss drink" loading="lazy">
+                    <span class="cap">Sakura Bliss</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="blends" data-full="coco.webp" data-caption="Coco Aloe">
+                    <img src="coco.webp" alt="Coco Aloe drink" loading="lazy">
+                    <span class="cap">Coco Aloe</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="blends" data-full="Berry Smash.webp" data-caption="Berry Smash">
+                    <img src="Berry Smash.webp" alt="Berry Smash drink" loading="lazy">
+                    <span class="cap">Berry Smash</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="blends" data-full="Passion Fruit.webp" data-caption="Passion Fruit">
+                    <img src="Passion Fruit.webp" alt="Passion Fruit drink" loading="lazy">
+                    <span class="cap">Passion Fruit</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="blends" data-full="Choco Chill.webp" data-caption="Choco Chill">
+                    <img src="Choco Chill.webp" alt="Choco Chill drink" loading="lazy">
+                    <span class="cap">Choco Chill</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="blends" data-full="Lemonada.webp" data-caption="Lemonada">
+                    <img src="Lemonada.webp" alt="Lemonada drink" loading="lazy">
+                    <span class="cap">Lemonada</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="blends" data-full="Yakumangga.webp" data-caption="Yakumangga">
+                    <img src="Yakumangga.webp" alt="Yakumangga drink" loading="lazy">
+                    <span class="cap">Yakumangga</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="blends" data-full="cuculime.webp" data-caption="Cuculime">
+                    <img src="cuculime.webp" alt="Cuculime drink" loading="lazy">
+                    <span class="cap">Cuculime</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="blends" data-full="Creamy Matcha.webp" data-caption="Creamy Matcha">
+                    <img src="Creamy Matcha.webp" alt="Creamy Matcha drink" loading="lazy">
+                    <span class="cap">Creamy Matcha</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="blends" data-full="Scarlet Mint Tea.webp" data-caption="Scarlet Mint Tea">
+                    <img src="Scarlet Mint Tea.webp" alt="Scarlet Mint Tea" loading="lazy">
+                    <span class="cap">Scarlet Mint Tea</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="blends" data-full="Yakulychee.webp" data-caption="Yakulychee">
+                    <img src="Yakulychee.webp" alt="Yakulychee drink" loading="lazy">
+                    <span class="cap">Yakulychee</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="blends" data-full="Yakulada.webp" data-caption="Yakulada">
+                    <img src="Yakulada.webp" alt="Yakulada drink" loading="lazy">
+                    <span class="cap">Yakulada</span>
+                </button>
+
+                <!-- Drip Coffee  (data-cat="coffee", 7 photos) -->
+                <button type="button" class="gallery-item" data-cat="coffee" data-full="OG BLack.webp" data-caption="OG Black">
+                    <img src="OG BLack.webp" alt="OG Black coffee" loading="lazy">
+                    <span class="cap">OG Black</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="coffee" data-full="Sweet Black.webp" data-caption="Sweet Black">
+                    <img src="Sweet Black.webp" alt="Sweet Black coffee" loading="lazy">
+                    <span class="cap">Sweet Black</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="coffee" data-full="Milky Drink.webp" data-caption="Milky Drip">
+                    <img src="Milky Drink.webp" alt="Milky Drip coffee" loading="lazy">
+                    <span class="cap">Milky Drip</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="coffee" data-full="Dirty-Matcha.webp" data-caption="Dirty Matcha">
+                    <img src="Dirty-Matcha.webp" alt="Dirty Matcha coffee" loading="lazy">
+                    <span class="cap">Dirty Matcha</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="coffee" data-full="Vanilla Milky.webp" data-caption="Vanilla Milky">
+                    <img src="Vanilla Milky.webp" alt="Vanilla Milky coffee" loading="lazy">
+                    <span class="cap">Vanilla Milky</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="coffee" data-full="Choco Latte.webp" data-caption="Choco Latte">
+                    <img src="Choco Latte.webp" alt="Choco Latte" loading="lazy">
+                    <span class="cap">Choco Latte</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="coffee" data-full="Premium Hot Malaysian Coffee.webp" data-caption="Hot Malaysian Coffee">
+                    <img src="Premium Hot Malaysian Coffee.webp" alt="Hot Malaysian Coffee" loading="lazy">
+                    <span class="cap">Hot Malaysian Coffee</span>
+                </button>
+
+                <!-- ======================================================================
+                     GROUP: PLACES & EVENTS
+                     ====================================================================== -->
+
+                <!-- Branch  (data-cat="branch", 10 photos) -->
+                <button type="button" class="gallery-item" data-cat="branch" data-full="t4.jpg" data-caption="Our stall at the night market">
+                    <img src="t4.jpg" alt="Rojetz BBQ stall at the night market" loading="lazy">
+                    <span class="cap">Night market stall</span>
+                </button>
+                <button type="button" class="gallery-item is-featured" data-cat="branch" data-full="merc.jpg" data-caption="Mercato Lucena at night">
+                    <img src="merc.jpg" alt="Mercato Lucena night market entrance" loading="lazy">
+                    <span class="cap">Mercato Lucena</span>
+                </button>
+                <button type="button" class="gallery-item is-wide" data-cat="branch" data-full="Mercato Stall.jpg" data-caption="Grilling at the Mercato stall">
+                    <img src="Mercato Stall.jpg" alt="Grilling at the Mercato stall" loading="lazy">
+                    <span class="cap">Grilling at Mercato</span>
+                </button>
+                <button type="button" class="gallery-item is-wide" data-cat="branch" data-full="FoodDisplay1.jpg" data-caption="Ready-to-serve food display and platters">
+                    <img src="FoodDisplay1.jpg" alt="Wooden table displaying packed food platters and boxes" loading="lazy">
+                    <span class="cap">Food Display Spread</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="branch" data-full="Mercato5.jpg" data-caption="Foodie Street Hub Stall at Pacific Mall Lucena">
+                    <img src="Mercato5.jpg" alt="Night market food stall setup with steamers and banners" loading="lazy">
+                    <span class="cap">Foodie Street Hub Stall</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="branch" data-full="Mercato1.jpg" data-caption="Mercato Lucena Night Market Vibe">
+                    <img src="Mercato1.jpg" alt="Night market street view with blue tents and customers" loading="lazy">
+                    <span class="cap">Night Market Street View</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="branch" data-full="Mercato2.jpg" data-caption="Family Dining at Mercato Stall">
+                    <img src="Mercato2.jpg" alt="Family and friends eating at outdoor wooden table at Mercato" loading="lazy">
+                    <span class="cap">Mercato Table Gathering</span>
+                </button>
+                <button type="button" class="gallery-item is-wide" data-cat="branch" data-full="Mercato6.jpg" data-caption="Mercato Lucena Stall #69: Chami Lucena and Simply Siomai">
+                    <img src="Mercato6.jpg" alt="Rojetz stall at Mercato Lucena with Chami Lucena and Simply Siomai signs and grilled skewers" loading="lazy">
+                    <span class="cap">Stall #69 Display</span>
+                </button>
+                <button type="button" class="gallery-item is-featured" data-cat="branch" data-full="Mercato7.jpg" data-caption="Our crew serving at the Mercato Lucena stall">
+                    <img src="Mercato7.jpg" alt="Rojetz crew serving at the blue Mercato Lucena tent at night" loading="lazy">
+                    <span class="cap">Mercato Crew</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="branch" data-full="Mercato8.jpg" data-caption="Chami Lucena menu and Mercato Lucena Stall No. 69">
+                    <img src="Mercato8.jpg" alt="Chami Lucena menu board beside the Mercato Lucena Stall No. 69 sign" loading="lazy">
+                    <span class="cap">Stall No. 69</span>
+                </button>
+
+                <!-- People  (data-cat="people", 5 photos) -->
+                <button type="button" class="gallery-item" data-cat="people" data-full="Calmar1.jpg" data-caption="Special Guests Dining at Calmar Branch">
+                    <img src="Calmar1.jpg" alt="Special guests dining at Calmar Homes Branch" loading="lazy">
+                    <span class="cap">Special Guests at Calmar</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="people" data-full="Calmar2.jpg" data-caption="Group Dining at Calmar Branch">
+                    <img src="Calmar2.jpg" alt="Group of friends dining at Calmar Homes Branch" loading="lazy">
+                    <span class="cap">Group Feast at Calmar</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="people" data-full="Calmar3.jpg" data-caption="Enjoying Drinks at Calmar Branch">
+                    <img src="Calmar3.jpg" alt="Customers holding drinks at Calmar branch" loading="lazy">
+                    <span class="cap">Drinks & Chill</span>
+                </button>
+                <button type="button" class="gallery-item is-wide" data-cat="people" data-full="Calmar4.jpg" data-caption="Large Gathering at Calmar Branch">
+                    <img src="Calmar4.jpg" alt="Large group gathering at Calmar Homes Branch" loading="lazy">
+                    <span class="cap">Calmar Branch Gathering</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="people" data-full="Mercato3.jpg" data-caption="Diners at Mercato Lucena Night Market">
+                    <img src="Mercato3.jpg" alt="Customers eating at Mercato Lucena night market stall" loading="lazy">
+                    <span class="cap">Mercato Diners</span>
+                </button>
+
+                <!-- Events & Collaborations  (data-cat="events", 4 photos) -->
+                <button type="button" class="gallery-item" data-cat="events" data-full="Collab2.jpg" data-caption="Now Available on GrabFood">
+                    <img src="Collab2.jpg" alt="GrabFood partnership delivery announcement" loading="lazy">
+                    <span class="cap">GrabFood Delivery</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="events" data-full="Collab3.jpg" data-caption="Pickleball Paradise Event Partner">
+                    <img src="Collab3.jpg" alt="Pickleball Paradise partnership at Batis Aramin Resort" loading="lazy">
+                    <span class="cap">Pickleball Partnership</span>
+                </button>
+                <button type="button" class="gallery-item" data-cat="events" data-full="Mercato4.jpg" data-caption="Mercato Lucena Night Market Grand Opening">
+                    <img src="Mercato4.jpg" alt="Mercato Lucena night market opening in front of UnionBank" loading="lazy">
+                    <span class="cap">Mercato Grand Opening</span>
+                </button>
+                <button type="button" class="gallery-item is-featured" data-cat="events" data-full="OldEvent1.jpg" data-caption="Pasayahan sa Lucena 2026 Celebration">
+                    <img src="OldEvent1.jpg" alt="Happy Fiesta Lucena celebration setup with grilled platters" loading="lazy">
+                    <span class="cap">Pasayahan sa Lucena Fiesta</span>
+                </button>
+            </div>
+
+            <!-- ======================================================================
+                 FACEBOOK LINK
+                 Purpose : Button under the grid.
+                 Styles  : styles.css §5 (.section-cta)
+                 ====================================================================== -->
+            <div class="section-cta">
+                <a href="https://www.facebook.com/rojetzbbqstation" target="_blank" rel="noopener noreferrer" class="btn btn-primary">More Photos on Facebook</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================================================================
+         POPUP VIEWER (LIGHTBOX)
+         Purpose : Full-screen photo viewer opened by clicking a tile. Arrows / swipe / keyboard move between the photos that are currently visible.
+         Styles  : styles.css §11 (.lightbox, .lb-btn, .lb-count)
+         Script  : script.js initGallery() show(), open(), close(); the photo counter (.lb-count) is created by the script
+         ====================================================================== -->
+    <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer" hidden>
+        <button type="button" class="lb-btn lb-close" id="lbClose" aria-label="Close photo">&times;</button>
+        <button type="button" class="lb-btn lb-prev" id="lbPrev" aria-label="Previous photo">&#8249;</button>
+        <figure>
+            <img id="lbImg" src="" alt="">
+            <figcaption id="lbCap"></figcaption>
+        </figure>
+        <button type="button" class="lb-btn lb-next" id="lbNext" aria-label="Next photo">&#8250;</button>
+    </div>
+
+    <!-- ======================================================================
+         FOOTER
+         Purpose : Brand line, social links, quick links, branch addresses and hours. Same block on every page.
+         Styles  : styles.css §12 (footer, .footer-content, .social-links)
+         Script  : script.js "Footer Year" fills <span id="year">
+         ====================================================================== -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>About Rojetz</h3>
+                    <p class="footer-tagline">Lucena's Favorite Ihaw-ihaw. Sarap Sulit... Mapapaulit!</p>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/rojetzbbqstation" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://www.instagram.com/rojetzbbqstation" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="services.html">Menu</a></li>
+                        <li><a href="gallery.html">Gallery</a></li>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <ul class="footer-links">
+                        <li><i class="fa-solid fa-location-dot"></i> Calmar Homes Branch<br>Ph5a Kalayaan Extension, Calmar Homes<br>Banahaw Street, Brgy. Mayao Kanluran<br>Lucena City, Quezon</li>
+                        <li><i class="fa-solid fa-store"></i> Booth #69, Mercato Lucena (Night Market)</li>
+                        <li><i class="fa-solid fa-clock"></i> 12:30 P.M. – 10:30 P.M. </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">&copy; <span id="year">2026</span> Rojetz BBQ Station | Lucena City, Quezon</div>
+        </div>
+    </footer>
+
+    <!-- ======================================================================
+         SCRIPT
+         Purpose : Loads script.js. At the bottom of that file the init calls wire up everything on this page; parts that do not apply to this page are skipped automatically.
+         ====================================================================== -->
+    <script src="script.js"></script>
+</body>
+</html>
