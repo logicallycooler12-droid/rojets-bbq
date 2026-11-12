@@ -2,15 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!-- ======================================================================
-         PAGE: HOME (index.html)
-         Purpose : Landing — hero, highlights, menu tiles, SulitKasalo showcase,
-                   story, events, partners, gallery teaser, find-us.
-         Styles  : styles.css
-         Script  : script.js (events, Foodpanda links, scroll fade-in)
-         ====================================================================== -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rojetz BBQ Station | Lucena's Favorite Ihaw-ihaw</title>
+    <title>Rojetz BBQ</title>
     <meta name="description" content="Rojetz BBQ Station, Lucena's favorite ihaw-ihaw. SulitKasalo sharing meals, BBQ, isaw, Simply Siomai, fried chicken, Chami and specialty drinks in Lucena City.">
     <meta name="theme-color" content="#161515">
     <meta property="og:type" content="website">
@@ -44,15 +37,12 @@
 </head>
 <body>
 
-    <!-- ======================================================================
-         PAGE LOADER
-         ====================================================================== -->
-    <div class="loader-wrapper" id="loader">
-        <div class="loader-pill">
-            <div class="loader-logo"><img src="logo.jpg" alt="Rojetz BBQ logo"></div>
-            <div class="loader-divider"></div>
-            <div class="loader-name">Rojetz <span>BBQ</span></div>
-            <div class="loader-fire">
+    <div class="pageLoader" id="pageLoader">
+        <div class="loaderCard">
+            <div class="loaderLogo"><img src="logo.jpg" alt="Rojetz BBQ logo"></div>
+            <div class="loaderDivider"></div>
+            <div class="loaderName">Rojetz <span>BBQ</span></div>
+            <div class="loaderFlames">
                 <div class="flame"></div>
                 <div class="flame"></div>
                 <div class="flame"></div>
@@ -60,13 +50,10 @@
         </div>
     </div>
 
-    <!-- ======================================================================
-         HEADER & NAVIGATION
-         ====================================================================== -->
     <header>
-        <div class="container header-container">
+        <div class="container headerContainer">
             <a href="index.html" class="logo">
-                <div class="logo-text">Rojetz <span>BBQ</span></div>
+                <div class="logoText">Rojetz <span>BBQ</span></div>
             </a>
             <nav>
                 <ul>
@@ -80,15 +67,15 @@
             <button class="hamburger" aria-label="Toggle menu">
                 <span></span><span></span><span></span>
             </button>
-            <div class="nav-buttons">
-                <a href="services.html" class="btn btn-secondary">View Menu</a>
-                <a href="contact.html" class="btn btn-primary">Find Us</a>
-                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+            <div class="navButtons">
+                <a href="services.html" class="button secondaryButton">View Menu</a>
+                <a href="contact.html" class="button primaryButton">Find Us</a>
+                <button class="themeButton" id="themeButton" aria-label="Toggle theme">
                     <i class="fas fa-moon"></i>
                 </button>
             </div>
         </div>
-        <div class="mobile-nav">
+        <div class="mobileMenu">
             <ul>
                 <li><a href="index.html">Home</a></li>
                 <li><a href="services.html">Menu</a></li>
@@ -96,48 +83,46 @@
                 <li><a href="about.html">About</a></li>
                 <li><a href="contact.html">Contact</a></li>
             </ul>
-            <div class="mobile-nav-buttons">
-                <a href="services.html" class="btn btn-secondary">View Menu</a>
-                <a href="contact.html" class="btn btn-primary">Find Us</a>
-                <button class="theme-toggle" id="themeToggleMobile" aria-label="Toggle theme">
+            <div class="mobileMenuButtons">
+                <a href="services.html" class="button secondaryButton">View Menu</a>
+                <a href="contact.html" class="button primaryButton">Find Us</a>
+                <button class="themeButton" id="themeButtonMobile" aria-label="Toggle theme">
                     <i class="fas fa-moon"></i>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- ======================================================================
-         HERO
-         ====================================================================== -->
     <section class="hero" id="home">
+        <video class="heroVideo" autoplay muted loop playsinline preload="metadata" poster="photos/hero-grill.jpg" aria-hidden="true">
+            <source src="photos/hero-grill.webm" type="video/webm">
+            <source src="photos/hero-grill.mp4" type="video/mp4">
+        </video>
         <div class="container">
-            <div class="hero-content">
-                <div class="hero-subtitle">Lucena's Favorite Since 2009</div>
-                <h1 class="hero-title">
+            <div class="heroContent">
+                <div class="heroLabel">Lucena's Favorite Since 2009</div>
+                <h1 class="heroTitle">
                     Charcoal-Grilled Favorites<br>
                     <span>Made Fresh Every Day</span>
                 </h1>
-                <p class="hero-text">
+                <p class="heroText">
                     Sarap Sulit... Mapapaulit! Experience the best ihaw-ihaw in Lucena City.
                 </p>
-                <div class="hero-buttons">
-                    <a href="services.html" class="btn btn-primary">View Menu</a>
-                    <a href="contact.html" class="btn btn-secondary">Find Us</a>
-                    <a class="btn btn-secondary foodpanda-link" target="_blank" rel="noopener noreferrer" hidden>Order on Foodpanda</a>
+                <div class="heroButtons">
+                    <a href="services.html" class="button primaryButton">View Menu</a>
+                    <a href="contact.html" class="button secondaryButton">Find Us</a>
+                    <a class="button secondaryButton foodpandaButton" target="_blank" rel="noopener noreferrer" hidden>Order on Foodpanda</a>
                 </div>
             </div>
-            <div class="hero-image">
+            <div class="heroImages">
                 <img src="bbq-siomai.jpg" alt="Platter of siomai, pork BBQ and isaw on a banana leaf">
-                <img class="hero-inset" src="bbq.jpg" alt="Pork BBQ skewers">
+                <img class="heroInset" src="bbq.jpg" alt="Pork BBQ skewers">
             </div>
         </div>
     </section>
 
-    <!-- ======================================================================
-         HIGHLIGHTS STRIP
-         ====================================================================== -->
-    <section class="highlights" aria-label="Why Rojetz">
-        <div class="container highlights-grid">
+    <section class="highlightsBar" aria-label="Why Rojetz">
+        <div class="container highlightsGrid">
             <div class="highlight"><i class="fa-solid fa-fire"></i><div><strong>Est. 2009</strong><span>Lucena's favorite ihaw-ihaw</span></div></div>
             <div class="highlight"><i class="fa-solid fa-drumstick-bite"></i><div><strong>Freshly grilled</strong><span>Every single order</span></div></div>
             <div class="highlight"><i class="fa-solid fa-peso-sign"></i><div><strong>Sarap Sulit</strong><span>Sharing meals from ₱255</span></div></div>
@@ -145,160 +130,144 @@
         </div>
     </section>
 
-    <!-- ======================================================================
-         EXPLORE THE MENU
-         ====================================================================== -->
-    <section class="sect-light" id="explore">
+    <section class="lightSection" id="exploreMenu">
         <div class="container">
-            <div class="section-header">
-                <div class="section-subtitle">What's Cooking</div>
-                <h2 class="section-title">Explore the Menu</h2>
-                <p class="section-desc">Pick a craving and jump straight to it.</p>
+            <div class="sectionHeader">
+                <div class="sectionLabel">What's Cooking</div>
+                <h2 class="sectionTitle">Explore the Menu</h2>
+                <p class="sectionText">Pick a craving and jump straight to it.</p>
             </div>
-            <div class="explore-grid">
-                <a class="explore-tile" href="services.html#grills">
+            <div class="menuTileGrid">
+                <a class="menuTile" href="services.html#grills">
                     <img src="bbq.jpg" alt="Pork BBQ skewers" loading="lazy">
-                    <div class="explore-label"><h3>Grills</h3><p>BBQ, isaw, liempo & more</p></div>
+                    <div class="menuTileLabel"><h3>Grills</h3><p>BBQ, isaw, liempo & more</p></div>
                 </a>
-                <a class="explore-tile" href="services.html#sk">
+                <a class="menuTile" href="services.html#sulitKasalo">
                     <img src="SK All Images.jpg" alt="Nine SulitKasalo sharing meals" loading="lazy">
-                    <div class="explore-label"><h3>SulitKasalo Meals</h3><p>Nine sharing meals</p></div>
+                    <div class="menuTileLabel"><h3>SulitKasalo Meals</h3><p>Nine sharing meals</p></div>
                 </a>
-                <a class="explore-tile" href="services.html#siomai">
+                <a class="menuTile" href="services.html#simplySiomai">
                     <img src="bbq-siomai.jpg" alt="Siomai and BBQ platter" loading="lazy">
-                    <div class="explore-label"><h3>Simply Siomai</h3><p>Pork, chicken & mixed</p></div>
+                    <div class="menuTileLabel"><h3>Simply Siomai</h3><p>Pork, chicken & mixed</p></div>
                 </a>
-                <a class="explore-tile" href="services.html#chicken">
+                <a class="menuTile" href="services.html#friedChicken">
                     <img src="sk4.jpg" alt="Fried chicken with liempo" loading="lazy">
-                    <div class="explore-label"><h3>Fried Chicken</h3><p>Half, jumbo & sulit cuts</p></div>
+                    <div class="menuTileLabel"><h3>Fried Chicken</h3><p>Half, jumbo & sulit cuts</p></div>
                 </a>
-                <a class="explore-tile" href="services.html#noodles">
+                <a class="menuTile" href="services.html#noodles">
                     <img src="chami.jpg" alt="Chami noodles" loading="lazy">
-                    <div class="explore-label"><h3>Noodles</h3><p>Freshly cooked Chami</p></div>
+                    <div class="menuTileLabel"><h3>Noodles</h3><p>Freshly cooked Chami</p></div>
                 </a>
-                <a class="explore-tile" href="services.html#blends">
+                <a class="menuTile" href="services.html#specialtyBlends">
                     <img src="yaku-series.jpg" alt="Specialty Blends iced drinks" loading="lazy">
-                    <div class="explore-label"><h3>Specialty Blends</h3><p>12 iced favorites</p></div>
+                    <div class="menuTileLabel"><h3>Specialty Blends</h3><p>12 iced favorites</p></div>
                 </a>
             </div>
         </div>
     </section>
 
-    <!-- ======================================================================
-         SULITKASALO SHOWCASE
-         ====================================================================== -->
-    <section class="products" id="products">
+    <section class="menuSection" id="featuredMeals">
         <div class="container">
-            <div class="section-header">
-                <div class="section-subtitle">Sarap Pagsaluhan, Sulit Anytime</div>
-                <h2 class="section-title">SulitKasalo Meals</h2>
-                <p class="section-desc">Nine sharing meals, ready for the whole table. Customize your favorites!</p>
+            <div class="sectionHeader">
+                <div class="sectionLabel">Sarap Pagsaluhan, Sulit Anytime</div>
+                <h2 class="sectionTitle">SulitKasalo Meals</h2>
+                <p class="sectionText">Nine sharing meals, ready for the whole table. Customize your favorites!</p>
             </div>
-            <div class="product-grid">
-                <div class="product-card" data-id="sk1">
-                    <div class="product-img"><img src="SulitKasalo.jpg" alt="Sulit Kasalo 1: 1 dozen Rojet'z BBQ" loading="lazy"></div>
-                    <div class="product-info">
-                        <div class="product-tag">SK1</div>
-                        <h3 class="product-title">Sulit Kasalo 1 (SK1)</h3>
-                        <p class="product-desc">1 dozen Rojet'z BBQ</p>
-                        <div class="product-footer"><div class="product-price">₱718</div></div>
+            <div class="menuGrid">
+                <div class="menuCard" data-itemid="sulitKasalo1">
+                    <div class="menuCardImage"><img src="SulitKasalo.jpg" alt="Sulit Kasalo 1: 1 dozen Rojet'z BBQ" loading="lazy"></div>
+                    <div class="menuCardBody">
+                        <div class="menuCardTag">SK1</div>
+                        <h3 class="menuCardTitle">Sulit Kasalo 1 (SK1)</h3>
+                        <p class="menuCardText">1 dozen Rojet'z BBQ</p>
+                        <div class="menuCardFooter"><div class="menuCardPrice">₱718</div></div>
                     </div>
                 </div>
-                <div class="product-card" data-id="sk3">
-                    <div class="product-img"><img src="sk3.jpg" alt="Sulit Kasalo 3: 6 pcs Rojet'z BBQ + 1 dozen Simply Siomai" loading="lazy"></div>
-                    <div class="product-info">
-                        <div class="product-tag">SK3</div>
-                        <h3 class="product-title">Sulit Kasalo 3 (SK3)</h3>
-                        <p class="product-desc">6 pcs Rojet'z BBQ + 1 dozen Simply Siomai</p>
-                        <div class="product-footer"><div class="product-price">₱695</div></div>
+                <div class="menuCard" data-itemid="sulitKasalo3">
+                    <div class="menuCardImage"><img src="sk3.jpg" alt="Sulit Kasalo 3: 6 pcs Rojet'z BBQ + 1 dozen Simply Siomai" loading="lazy"></div>
+                    <div class="menuCardBody">
+                        <div class="menuCardTag">SK3</div>
+                        <h3 class="menuCardTitle">Sulit Kasalo 3 (SK3)</h3>
+                        <p class="menuCardText">6 pcs Rojet'z BBQ + 1 dozen Simply Siomai</p>
+                        <div class="menuCardFooter"><div class="menuCardPrice">₱695</div></div>
                     </div>
                 </div>
-                <div class="product-card" data-id="sk5">
-                    <div class="product-img"><img src="sk5.jpg" alt="Sulit Kasalo 5: 10 pcs Rojet'z BBQ + 10 pcs isaw" loading="lazy"></div>
-                    <div class="product-info">
-                        <div class="product-tag">SK5</div>
-                        <h3 class="product-title">Sulit Kasalo 5 (SK5)</h3>
-                        <p class="product-desc">10 pcs Rojet'z BBQ + 10 pcs isaw</p>
-                        <div class="product-footer"><div class="product-price">₱955</div></div>
+                <div class="menuCard" data-itemid="sulitKasalo5">
+                    <div class="menuCardImage"><img src="sk5.jpg" alt="Sulit Kasalo 5: 10 pcs Rojet'z BBQ + 10 pcs isaw" loading="lazy"></div>
+                    <div class="menuCardBody">
+                        <div class="menuCardTag">SK5</div>
+                        <h3 class="menuCardTitle">Sulit Kasalo 5 (SK5)</h3>
+                        <p class="menuCardText">10 pcs Rojet'z BBQ + 10 pcs isaw</p>
+                        <div class="menuCardFooter"><div class="menuCardPrice">₱955</div></div>
                     </div>
                 </div>
             </div>
-            <div class="section-cta"><a href="services.html#sk" class="btn btn-primary">See All 9 SulitKasalo Meals</a></div>
+            <div class="sectionAction"><a href="services.html#sulitKasalo" class="button primaryButton">See All 9 SulitKasalo Meals</a></div>
         </div>
     </section>
 
-    <!-- ======================================================================
-         STORY TEASER
-         ====================================================================== -->
-    <section class="story-teaser">
+    <section class="storySection">
         <div class="container">
-            <div class="story-content">
-                <div class="story-text">
-                    <div class="section-subtitle">Our Story</div>
-                    <h2 class="section-title">From Simple Passion to Lucena's Favorite</h2>
+            <div class="storyLayout">
+                <div class="storyText">
+                    <div class="sectionLabel">Our Story</div>
+                    <h2 class="sectionTitle">From Simple Passion to Lucena's Favorite</h2>
                     <p>Rojetz BBQ Station started with one goal — to serve the best tasting, most affordable, and consistently delicious grilled food in Lucena City.</p>
                     <p>What began as a small passion project has grown into a local favorite known for its slogan: <strong>"Sarap Sulit... Mapapaulit!"</strong></p>
-                    <a href="about.html" class="btn btn-primary">Read Our Full Story</a>
+                    <a href="about.html" class="button primaryButton">Read Our Full Story</a>
                 </div>
-                <div class="story-image">
+                <div class="storyImage">
                     <img src="t4.jpg" alt="Rojetz BBQ stall with grilled skewers and drinks" loading="lazy">
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ======================================================================
-         CURRENT EVENTS & PROMOS
-         Cards built by script.js renderEvents() into #eventsGrid
-         ====================================================================== -->
-    <section class="sect-dark" id="events">
+    <section class="darkSection" id="currentEvents">
         <div class="container">
-            <div class="section-header">
-                <div class="section-subtitle">What's Happening</div>
-                <h2 class="section-title">Current Events</h2>
-                <p class="section-desc">Our latest promos and where to find us. Daily updates are on our Facebook page.</p>
+            <div class="sectionHeader">
+                <div class="sectionLabel">What's Happening</div>
+                <h2 class="sectionTitle">Current Events</h2>
+                <p class="sectionText">Our latest promos and where to find us. Daily updates are on our Facebook page.</p>
             </div>
-            <div class="events-grid" id="eventsGrid"></div>
-            <div class="section-cta"><a href="https://www.facebook.com/rojetzbbqstation" target="_blank" rel="noopener noreferrer" class="btn btn-primary">More Updates on Facebook</a></div>
+            <div class="eventsGrid" id="eventsGrid"></div>
+            <div class="sectionAction"><a href="https://www.facebook.com/rojetzbbqstation" target="_blank" rel="noopener noreferrer" class="button primaryButton">More Updates on Facebook</a></div>
         </div>
     </section>
 
-    <!-- ======================================================================
-         PARTNERS & COLLABORATIONS
-         ====================================================================== -->
-    <section class="sect-light" id="partners">
+    <section class="lightSection" id="partners">
         <div class="container">
-            <div class="section-header">
-                <div class="section-subtitle">Better Together</div>
-                <h2 class="section-title">Partners &amp; Collaborations</h2>
-                <p class="section-desc">The brands and places that help us serve Lucena.</p>
+            <div class="sectionHeader">
+                <div class="sectionLabel">Better Together</div>
+                <h2 class="sectionTitle">Partners &amp; Collaborations</h2>
+                <p class="sectionText">The brands and places that help us serve Lucena.</p>
             </div>
-            <div class="partner-grid">
-                <div class="partner-card">
+            <div class="partnerGrid">
+                <div class="partnerCard">
                     <i class="fa-solid fa-bowl-food"></i>
                     <h3>Simply Siomai</h3>
-                    <p class="partner-sub">by Rojet'z</p>
+                    <p class="partnerLabel">by Rojet'z</p>
                     <p>Our own siomai line, made with pure meat and no fillers. Choose pork, chicken, a mixed dozen or the wonton-style bowl.</p>
-                    <a href="services.html#siomai">See Simply Siomai →</a>
+                    <a href="services.html#simplySiomai">See Simply Siomai →</a>
                 </div>
-                <div class="partner-card">
+                <div class="partnerCard">
                     <i class="fa-solid fa-handshake"></i>
                     <h3>Chami Lucena</h3>
-                    <p class="partner-sub">with La Reina Elena Noodles & Sauces</p>
+                    <p class="partnerLabel">with La Reina Elena Noodles & Sauces</p>
                     <p>Our official partner for Chami, Lucena's well-known noodle dish. Freshly cooked upon order, with a no-meat version.</p>
                     <a href="services.html#noodles">See the noodles →</a>
                 </div>
-                <div class="partner-card">
+                <div class="partnerCard">
                     <i class="fa-solid fa-store"></i>
                     <h3>Mercato Lucena</h3>
-                    <p class="partner-sub">Night market, Booth #69</p>
+                    <p class="partnerLabel">Night market, Booth #69</p>
                     <p>Find our skewers, siomai and specialty blends at the Mercato Lucena night market, 6:30 PM to 12:00 MN.</p>
                     <a href="contact.html">Hours and directions →</a>
                 </div>
-                <div class="partner-card">
+                <div class="partnerCard">
                     <i class="fa-solid fa-motorcycle"></i>
                     <h3>Foodpanda</h3>
-                    <p class="partner-sub">Delivery</p>
+                    <p class="partnerLabel">Delivery</p>
                     <p>Order from our Calmar Homes store for delivery. Check the app for current promos and deals.</p>
                     <a href="https://www.foodpanda.ph/restaurant/e7ij/rojetz-bbq-station-calmar-homes?lat=13.9603&lng=121.61661" target="_blank" rel="noopener noreferrer">Order on Foodpanda →</a>
                 </div>
@@ -306,17 +275,14 @@
         </div>
     </section>
 
-    <!-- ======================================================================
-         GALLERY TEASER
-         ====================================================================== -->
-    <section class="sect-dark" id="gallery-teaser">
+    <section class="darkSection" id="galleryPreview">
         <div class="container">
-            <div class="section-header">
-                <div class="section-subtitle">From Our Grill</div>
-                <h2 class="section-title">A Taste of Rojetz</h2>
-                <p class="section-desc">A few of our favorite plates and nights.</p>
+            <div class="sectionHeader">
+                <div class="sectionLabel">From Our Grill</div>
+                <h2 class="sectionTitle">A Taste of Rojetz</h2>
+                <p class="sectionText">A few of our favorite plates and nights.</p>
             </div>
-            <div class="mosaic">
+            <div class="photoPreview">
                 <a href="gallery.html"><img src="bbq.jpg" alt="Pork BBQ skewers stacked on a banana leaf" loading="lazy"></a>
                 <a href="gallery.html"><img src="sk5.jpg" alt="Sulit Kasalo 5: 10 pcs Rojet'z BBQ + 10 pcs isaw" loading="lazy"></a>
                 <a href="gallery.html"><img src="chami.jpg" alt="Chami noodles with vegetables and calamansi" loading="lazy"></a>
@@ -324,78 +290,69 @@
                 <a href="gallery.html"><img src="yaku-series.jpg" alt="Yakulychee and Yakumangga iced drinks" loading="lazy"></a>
                 <a href="gallery.html"><img src="merc.jpg" alt="Mercato Lucena night market entrance at night" loading="lazy"></a>
             </div>
-            <div class="section-cta cta-buttons">
-                <a href="gallery.html" class="btn btn-primary">See the Full Gallery</a>
-                <a href="https://www.facebook.com/rojetzbbqstation" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">Follow Us on Facebook</a>
+            <div class="sectionAction buttonRow">
+                <a href="gallery.html" class="button primaryButton">See the Full Gallery</a>
+                <a href="https://www.facebook.com/rojetzbbqstation" target="_blank" rel="noopener noreferrer" class="button secondaryButton">Follow Us on Facebook</a>
             </div>
         </div>
     </section>
 
-    <!-- ======================================================================
-         CLOSING CALL TO ACTION
-         ====================================================================== -->
-    <section class="final-cta">
+    <section class="closingSection">
         <div class="container">
             <h2>Craving something smoky?</h2>
             <p>Visit us today or order via Foodpanda for the best ihaw-ihaw experience.</p>
-            <div class="cta-buttons">
-                <a href="contact.html" class="btn btn-primary">Find Our Location</a>
-                <a href="services.html" class="btn btn-secondary">View Full Menu</a>
-                <a class="btn btn-secondary foodpanda-link" target="_blank" rel="noopener noreferrer" hidden>Order on Foodpanda</a>
+            <div class="buttonRow">
+                <a href="contact.html" class="button primaryButton">Find Our Location</a>
+                <a href="services.html" class="button secondaryButton">View Full Menu</a>
+                <a class="button secondaryButton foodpandaButton" target="_blank" rel="noopener noreferrer" hidden>Order on Foodpanda</a>
             </div>
         </div>
     </section>
 
-    <!-- ======================================================================
-         FIND US
-         ====================================================================== -->
-    <section class="sect-dark" id="find-us">
+    <section class="darkSection" id="findUs">
         <div class="container">
-            <div class="section-header">
-                <div class="section-subtitle">Come Hungry</div>
-                <h2 class="section-title">Find Us</h2>
-                <p class="section-desc">Two places to get your ihaw-ihaw fix.</p>
+            <div class="sectionHeader">
+                <div class="sectionLabel">Come Hungry</div>
+                <h2 class="sectionTitle">Find Us</h2>
+                <p class="sectionText">Two places to get your ihaw-ihaw fix.</p>
             </div>
-            <div class="find-grid">
-                <div class="find-card">
-                    <img class="find-photo" src="Calmar5.jpg" alt="Calmar Celeb" loading="lazy">
-                    <div class="find-body">
+            <div class="visitGrid">
+                <div class="visitCard">
+                    <img class="visitPhoto" src="Calmar5.jpg" alt="Calmar Celeb" loading="lazy">
+                    <div class="visitBody">
                         <h3>Calmar Homes Branch</h3>
                         <p><i class="fa-solid fa-location-dot"></i>Ph5a Kalayaan Extension, Calmar Homes, Banahaw Street, Brgy. Mayao Kanluran, Lucena City, Quezon</p>
-                        <p><i class="fa-solid fa-clock"></i>    12:30 PM – 10:30 PM</p>
-                        <a href="https://www.google.com/maps/search/?api=1&query=Banahaw+Street+Brgy+Mayao+Kanluran+Lucena+City+Quezon" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Open in Google Maps</a>
+                        <p><i class="fa-solid fa-clock"></i>12:30 PM – 10:30 PM</p>
+                        <a href="https://www.google.com/maps/search/?api=1&query=Banahaw+Street+Brgy+Mayao+Kanluran+Lucena+City+Quezon" target="_blank" rel="noopener noreferrer" class="button primaryButton">Open in Google Maps</a>
                     </div>
                 </div>
-                <div class="find-card">
-                    <img class="find-photo" src="merc.jpg" alt="Mercato Lucena night market entrance at night" loading="lazy">
-                    <div class="find-body">
+                <div class="visitCard">
+                    <img class="visitPhoto" src="merc.jpg" alt="Mercato Lucena night market entrance at night" loading="lazy">
+                    <div class="visitBody">
                         <h3>Mercato Lucena</h3>
                         <p><i class="fa-solid fa-store"></i>Booth #69, Mercato Lucena (Night Market)</p>
                         <p><i class="fa-solid fa-clock"></i>6:30 PM – 12:00 MN</p>
-                        <a href="contact.html" class="btn btn-primary">Contact &amp; Hours</a>
+                        <a href="contact.html" class="button primaryButton">Contact &amp; Hours</a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ======================================================================
-         FOOTER
-         ====================================================================== -->
     <footer>
         <div class="container">
-            <div class="footer-content">
-                <div class="footer-column">
+            <div class="footerContent">
+                <div class="footerColumn">
                     <h3>About Rojetz</h3>
-                    <p class="footer-tagline">Lucena's Favorite Ihaw-ihaw. Sarap Sulit... Mapapaulit!</p>
-                    <div class="social-links">
+                    <p class="footerTagline">Lucena's Favorite Ihaw-ihaw. Sarap Sulit... Mapapaulit!</p>
+                    <div class="socialLinks">
                         <a href="https://www.facebook.com/rojetzbbqstation" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
                         <a href="https://www.instagram.com/rojetzbbqstation" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
                     </div>
                 </div>
-                <div class="footer-column">
+                <div class="footerColumn">
                     <h3>Quick Links</h3>
-                    <ul class="footer-links">
+                    <ul class="footerLinks">
                         <li><a href="index.html">Home</a></li>
                         <li><a href="services.html">Menu</a></li>
                         <li><a href="gallery.html">Gallery</a></li>
@@ -403,16 +360,16 @@
                         <li><a href="contact.html">Contact</a></li>
                     </ul>
                 </div>
-                <div class="footer-column">
+                <div class="footerColumn">
                     <h3>Contact Us</h3>
-                    <ul class="footer-links">
+                    <ul class="footerLinks">
                         <li><i class="fa-solid fa-location-dot"></i> Calmar Homes Branch<br>Ph5a Kalayaan Extension, Calmar Homes<br>Banahaw Street, Brgy. Mayao Kanluran<br>Lucena City, Quezon</li>
                         <li><i class="fa-solid fa-store"></i> Booth #69, Mercato Lucena (Night Market)</li>
-                        <li><i class="fa-solid fa-clock"></i> 12:30 P.M. – 10:30 P.M. </li>
+                        <li><i class="fa-solid fa-clock"></i> 12:30 P.M. – 10:30 P.M.</li>
                     </ul>
                 </div>
             </div>
-            <div class="copyright">&copy; <span id="year">2026</span> Rojetz BBQ Station | Lucena City, Quezon</div>
+            <div class="copyright">&copy; <span id="currentYear">2026</span> Rojetz BBQ Station | Lucena City, Quezon</div>
         </div>
     </footer>
 
