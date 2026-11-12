@@ -1,25 +1,11 @@
-/* Rojetz BBQ Station - styles.css (shared by all five pages)
-   TABLE OF CONTENTS: 1 Variables/Base | 2 Header/Nav | 3 Buttons/Theme | 4 Hero |
-   5 Cards | 6 Menu+Gallery filters | 7 Index sections | 8 Story/Reviews | 9 Contact |
-   10 Cart | 11 Gallery+Lightbox | 12 Footer/Loader/Toast | 13 Animations |
-   14 Light theme | 15 Responsive.
-   Each section header says which page/element it styles ("Used by") and which
-   script.js section drives it. Appended at the end: review cards and lightbox slide.
-   ========================================================================== */
-
-/* ==========================================================================
-   1. Variables & Base
-   Colors, fonts, resets. Used by: every page (all other sections read these --variables).
-   ========================================================================== */
 :root {
-    --dark: #3E2723;
-    --medium: #6F4E37;
-    --light: #C4A484;
-    --accent: #D2B48C;
+    --darkBrown: #3E2723;
+    --mediumBrown: #6F4E37;
+    --tan: #D2B48C;
     --cream: #F5F5DC;
     --gold: #D4AF37;
-    --text-dark: #2C2416;
-    --text-light: #f3f3f3;
+    --textDark: #2C2416;
+    --textLight: #f3f3f3;
 }
 
 * {
@@ -31,7 +17,7 @@
 body {
     font-family: 'Montserrat', sans-serif;
     background: var(--cream);
-    color: var(--text-dark);
+    color: var(--textDark);
     line-height: 1.7;
     overflow-x: hidden;
 }
@@ -47,17 +33,15 @@ section[id],
     scroll-margin-top: 80px;
 }
 
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
     font-family: 'Playfair Display', serif;
     font-weight: 700;
     letter-spacing: 0.5px;
 }
 
-
-/* ==========================================================================
-   2. Header & Navigation
-   Used by: <header>, nav, .hamburger, .mobile-nav on every page. Script: §3-4.
-   ========================================================================== */
 header {
     background: #161515;
     position: fixed;
@@ -68,7 +52,7 @@ header {
     transition: all 0.4s ease;
 }
 
-.header-container {
+.headerContainer {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -80,7 +64,7 @@ header {
     text-decoration: none;
 }
 
-.logo-text {
+.logoText {
     font-family: 'Playfair Display', serif;
     font-size: 28px;
     font-weight: 700;
@@ -88,7 +72,7 @@ header {
     letter-spacing: 1px;
 }
 
-.logo-text span {
+.logoText span {
     color: var(--gold);
 }
 
@@ -127,7 +111,7 @@ nav a:hover::after {
     width: 100%;
 }
 
-.nav-buttons {
+.navButtons {
     display: flex;
     gap: 15px;
     align-items: center;
@@ -165,45 +149,40 @@ nav a:hover::after {
     transform: translateY(-8px) rotate(-45deg);
 }
 
-.mobile-nav {
+.mobileMenu {
     display: none;
     background: #161515;
     padding: 20px;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.mobile-nav.active {
+.mobileMenu.active {
     display: block;
 }
 
-.mobile-nav ul {
+.mobileMenu ul {
     list-style: none;
     margin-bottom: 20px;
 }
 
-.mobile-nav ul li {
+.mobileMenu ul li {
     margin-bottom: 15px;
 }
 
-.mobile-nav ul a {
+.mobileMenu ul a {
     color: var(--cream);
     text-decoration: none;
     font-weight: 600;
     font-size: 18px;
 }
 
-.mobile-nav-buttons {
+.mobileMenuButtons {
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
 
-
-/* ==========================================================================
-   3. Buttons & Theme Toggle
-   Used by: .btn variants everywhere, #themeToggle in the header. Script: §7b.
-   ========================================================================== */
-.btn {
+.button {
     display: inline-block;
     padding: 10px 24px;
     border-radius: 30px;
@@ -215,39 +194,48 @@ nav a:hover::after {
     font-size: 15px;
 }
 
-.btn-primary {
-    background: var(--medium);
+.primaryButton {
+    background: var(--mediumBrown);
     color: white;
 }
 
-.btn-primary:hover {
-    background: var(--dark);
+.primaryButton:hover {
+    background: var(--darkBrown);
     transform: translateY(-3px);
 }
 
-.btn-secondary {
+.secondaryButton {
     background: transparent;
-    color: var(--medium);
-    border: 2px solid var(--medium);
+    color: var(--mediumBrown);
+    border: 2px solid var(--mediumBrown);
 }
 
-.btn-secondary:hover {
+.secondaryButton:hover {
     background: rgba(111, 78, 55, 0.1);
     transform: translateY(-3px);
 }
 
-header .btn-secondary,
-.mobile-nav .btn-secondary {
+.button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.button:disabled:hover {
+    transform: none;
+}
+
+header .secondaryButton,
+.mobileMenu .secondaryButton {
     color: var(--cream);
     border-color: var(--cream);
 }
 
-header .btn-secondary:hover,
-.mobile-nav .btn-secondary:hover {
+header .secondaryButton:hover,
+.mobileMenu .secondaryButton:hover {
     background: rgba(245, 245, 220, 0.12);
 }
 
-.theme-toggle {
+.themeButton {
     background: transparent;
     border: 2px solid var(--gold);
     color: var(--gold);
@@ -262,16 +250,11 @@ header .btn-secondary:hover,
     transition: all 0.3s ease;
 }
 
-.theme-toggle:hover {
+.themeButton:hover {
     background: var(--gold);
     color: #161515;
 }
 
-
-/* ==========================================================================
-   4. Hero
-   Used by: index.html .hero and page banners (.page-hero).
-   ========================================================================== */ 
 .hero {
     height: auto;
     min-height: 100vh;
@@ -290,9 +273,7 @@ header .btn-secondary:hover,
     z-index: -1;
 }
 
-/* Hero background video (index.html .hero-video): darkened so the text stays readable.
-   Hidden for visitors who prefer reduced motion (the dark gradient shows instead). */
-.hero-video {
+.heroVideo {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -301,10 +282,6 @@ header .btn-secondary:hover,
     z-index: -1;
     filter: brightness(0.38) saturate(1.1);
     pointer-events: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .hero-video { display: none; }
 }
 
 .hero::after {
@@ -323,13 +300,13 @@ header .btn-secondary:hover,
     gap: 40px;
 }
 
-.hero-content {
+.heroContent {
     max-width: 600px;
-    color: var(--text-light);
+    color: var(--textLight);
     animation: fadeInUp 1s ease-out;
 }
 
-.hero-subtitle {
+.heroLabel {
     display: inline-block;
     font-size: 14px;
     font-weight: 600;
@@ -339,7 +316,7 @@ header .btn-secondary:hover,
     margin-bottom: 15px;
 }
 
-.hero-subtitle::before {
+.heroLabel::before {
     content: '';
     display: inline-block;
     width: 50px;
@@ -349,7 +326,7 @@ header .btn-secondary:hover,
     vertical-align: middle;
 }
 
-.hero-title {
+.heroTitle {
     font-family: 'Playfair Display', serif;
     font-size: 3.8rem;
     font-weight: 700;
@@ -358,44 +335,44 @@ header .btn-secondary:hover,
     color: white;
 }
 
-.hero-title span {
+.heroTitle span {
     color: var(--gold);
     font-size: 2.4rem;
 }
 
-.hero-text {
+.heroText {
     font-size: 1.1rem;
     color: #d1c7b8;
     margin-bottom: 30px;
     max-width: 480px;
 }
 
-.hero-buttons {
+.heroButtons {
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
 }
 
-.hero-buttons .btn-secondary {
+.heroButtons .secondaryButton {
     color: var(--gold);
     border-color: var(--gold);
     background: transparent;
 }
 
-.hero-buttons .btn-secondary:hover {
+.heroButtons .secondaryButton:hover {
     background: rgba(212, 175, 55, 0.15);
     color: var(--gold);
     border-color: var(--gold);
 }
 
-.hero-image {
+.heroImages {
     flex: 1;
     max-width: 500px;
     position: relative;
     animation: fadeInUp 1s ease-out 0.3s both;
 }
 
-.hero-image img {
+.heroImages img {
     width: 100%;
     height: auto;
     max-height: 72vh;
@@ -404,7 +381,7 @@ header .btn-secondary:hover,
     object-fit: cover;
 }
 
-.hero-image .hero-inset {
+.heroImages .heroInset {
     position: absolute;
     left: -8%;
     bottom: -5%;
@@ -416,31 +393,44 @@ header .btn-secondary:hover,
     box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
 }
 
-
-/* ==========================================================================
-   5. Sections, Products & Cards
-   Used by: services.html .product-card / .menu-category, index.html showcase. Script: §9 (prices, cart buttons).
-   ========================================================================== */
-.products {
-    padding: 120px 0;
-    position: relative;
-    background-color: #161515;
+.menuSection,
+.darkSection,
+.contactSection {
+    background: #161515;
     border-top: 4px solid var(--gold);
 }
 
-.section-header {
+.lightSection,
+.storySection,
+.closingSection,
+.aboutIntro {
+    background: var(--cream);
+}
+
+.storySection,
+.closingSection,
+.aboutIntro {
+    padding: 100px 0;
+}
+
+.menuSection {
+    padding: 120px 0;
+    position: relative;
+}
+
+.sectionHeader {
     text-align: center;
     max-width: 700px;
     margin: 0 auto 70px;
 }
 
-.section-subtitle {
+.sectionLabel {
     font-size: 20px;
     color: var(--gold);
     margin-bottom: 15px;
 }
 
-.section-title {
+.sectionTitle {
     font-size: 42px;
     color: var(--gold);
     margin-bottom: 20px;
@@ -448,7 +438,7 @@ header .btn-secondary:hover,
     display: inline-block;
 }
 
-.section-title::after {
+.sectionTitle::after {
     content: '';
     position: absolute;
     bottom: -10px;
@@ -459,92 +449,116 @@ header .btn-secondary:hover,
     background: var(--gold);
 }
 
-.section-desc {
+.sectionText {
     font-size: 18px;
-    color: var(--text-light);
+    color: var(--textLight);
 }
 
-.section-cta {
+.sectionAction {
     text-align: center;
     margin-top: 44px;
 }
 
-.category-title {
+.darkSection,
+.lightSection {
+    padding: 100px 0;
+    position: relative;
+}
+
+.darkSection {
+    color: var(--textLight);
+}
+
+.darkSection .sectionTitle {
+    color: var(--gold);
+}
+
+.darkSection .sectionText {
+    color: var(--textLight);
+}
+
+.lightSection {
+    color: var(--textDark);
+}
+
+.lightSection .sectionTitle {
+    color: var(--darkBrown);
+}
+
+.lightSection .sectionLabel {
+    color: #7A5C0A;
+}
+
+.lightSection .sectionText {
+    color: var(--textDark);
+}
+
+section.pageTop {
+    padding-top: 140px;
+}
+
+.categoryTitle {
     color: var(--gold);
     font-size: 24px;
     margin: 50px 0 25px;
     text-align: left;
 }
 
-.menu-cat-note {
+.categoryNote {
     margin: -6px 0 22px;
     opacity: 0.8;
     font-size: 0.95rem;
     color: #d1c7b8;
 }
 
-.product-grid {
+.menuGrid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 30px;
 }
 
-.product-card {
+.menuCard {
     display: flex;
     flex-direction: column;
     height: 100%;
-    background: var(--dark);
+    background: var(--darkBrown);
     border-radius: 15px;
     overflow: hidden;
     transition: all 0.4s ease;
     position: relative;
 }
 
-.product-card:hover {
+.menuCard:hover {
     transform: translateY(-15px);
     border: 2px solid var(--gold);
 }
 
-.product-img {
+.menuCardImage {
     height: 220px;
     flex-shrink: 0;
     overflow: hidden;
 }
 
-.product-img img {
+.menuCardImage img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform 0.5s ease;
 }
 
-.product-card:hover .product-img img {
+.menuCardImage .focusLeft {
+    object-position: left center;
+}
+
+.menuCardImage .focusRight {
+    object-position: right center;
+}
+
+.menuCard:hover .menuCardImage img {
     transform: scale(1.05);
 }
 
-.product-img--placeholder {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    background: linear-gradient(135deg, #2a1d15, #161515);
-    color: var(--gold);
-}
-
-.product-img--placeholder i {
-    font-size: 48px;
-    opacity: 0.85;
-}
-
-.product-img--placeholder span {
-    font-size: 13px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: var(--accent);
-}
-
-.product-info {
+.menuCardBody {
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -552,41 +566,31 @@ header .btn-secondary:hover,
     position: relative;
 }
 
-.product-tag {
+.menuCardTag {
     position: absolute;
     top: -20px;
     right: 25px;
     background: var(--gold);
-    color: var(--text-dark);
+    color: var(--textDark);
     padding: 8px 18px;
     border-radius: 20px;
     font-weight: 600;
     font-size: 14px;
 }
 
-.product-card--text .product-tag {
-    top: 20px;
-    left: 25px;
-    right: auto;
-}
-
-.product-card--text .product-info {
-    padding-top: 58px;
-}
-
-.product-title {
+.menuCardTitle {
     font-size: 24px;
-    color: var(--text-light);
+    color: var(--textLight);
     margin-bottom: 10px;
 }
 
-.product-desc {
-    color: var(--text-light);
+.menuCardText {
+    color: var(--textLight);
     margin-bottom: 20px;
     font-size: 16px;
 }
 
-.product-footer {
+.menuCardFooter {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -594,18 +598,13 @@ header .btn-secondary:hover,
     padding-top: 12px;
 }
 
-.product-price {
+.menuCardPrice {
     font-size: 24px;
     font-weight: 700;
     color: var(--gold);
 }
 
-.rating {
-    color: var(--gold);
-    font-size: 16px;
-}
-
-.add-to-cart-btn {
+.addToCartButton {
     background: var(--gold);
     color: #2C2416;
     border: none;
@@ -619,27 +618,12 @@ header .btn-secondary:hover,
     width: 100%;
 }
 
-.add-to-cart-btn:hover {
+.addToCartButton:hover {
     background: #c9a227;
     transform: translateY(-2px);
 }
 
-.placeholder-card {
-    border: 2px dashed rgba(212, 175, 55, 0.55);
-}
-
-.placeholder-card .product-tag {
-    background: transparent;
-    color: var(--gold);
-    border: 1px solid var(--gold);
-}
-
-
-/* ==========================================================================
-   6. Menu filters (two-level: groups + categories)
-   Used by: services.html #menuSub / .menu-tabs and gallery.html .gallery-groups / #gallerySub. Script: §10, §11.
-   ========================================================================== */
-.menu-tabs {
+.menuFilterBar {
     position: sticky;
     top: 72px;
     z-index: 900;
@@ -649,12 +633,15 @@ header .btn-secondary:hover,
     border-bottom: none;
 }
 
-.menu-tabs-inner,
-.menu-tabs .gallery-groups {
+.filterGroups {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
     justify-content: center;
+    margin: 0 0 14px;
+}
+
+.menuFilterBar .filterGroups {
     overflow-x: auto;
     padding-bottom: 4px;
     scrollbar-width: thin;
@@ -662,7 +649,11 @@ header .btn-secondary:hover,
     width: 100%;
 }
 
-.menu-tab {
+.filterGroups:has(+ .categoryChips[hidden]) {
+    margin-bottom: 32px;
+}
+
+.filterButton {
     flex: 0 0 auto;
     background: transparent;
     border: 2px solid var(--gold);
@@ -676,58 +667,53 @@ header .btn-secondary:hover,
     transition: background 0.2s ease, color 0.2s ease;
 }
 
-.menu-tab:hover {
+.filterButton:hover {
     background: rgba(212, 175, 55, 0.15);
 }
 
-.menu-tab[aria-pressed="true"] {
+.filterButton[aria-pressed="true"] {
     background: var(--gold);
-    color: var(--text-dark);
+    color: var(--textDark);
 }
 
-.menu-tab:focus-visible {
+.filterButton:focus-visible {
     outline: 3px solid var(--cream);
     outline-offset: 2px;
 }
 
-.menu-hint {
+.menuHint {
     text-align: center;
-    color: var(--accent);
+    color: var(--tan);
     font-size: 15px;
     margin-top: 8px;
     margin-bottom: 36px;
 }
 
-.menu-category[hidden] {
+.menuCategory[hidden] {
     display: none;
 }
 
-.menu-category + .menu-category {
+.menuCategory + .menuCategory {
     margin-top: 20px;
 }
 
-.menu-tabs + .gallery-sub {
+.menuFilterBar + .categoryChips {
     margin-top: 10px;
     margin-bottom: 18px;
 }
 
-.menu-tabs + .gallery-sub[hidden] + .menu-hint {
+.menuFilterBar + .categoryChips[hidden] + .menuHint {
     margin-top: 8px;
 }
 
-
-/* ==========================================================================
-   7. Highlights, Explore, Events, Find, Partners
-   Used by: index.html (highlights, explore, #events, #find-us, #partners), about.html partners. Script: §2.
-   ========================================================================== */
-.highlights {
+.highlightsBar {
     background: #161515;
     border-top: 1px solid rgba(212, 175, 55, 0.3);
     border-bottom: 1px solid rgba(212, 175, 55, 0.3);
     padding: 26px 0;
 }
 
-.highlights-grid {
+.highlightsGrid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
     gap: 22px;
@@ -737,7 +723,7 @@ header .btn-secondary:hover,
     display: flex;
     align-items: center;
     gap: 14px;
-    color: var(--text-light);
+    color: var(--textLight);
 }
 
 .highlight i {
@@ -760,50 +746,13 @@ header .btn-secondary:hover,
     color: #d1c7b8;
 }
 
-.sect-dark,
-.sect-light {
-    padding: 100px 0;
-    position: relative;
-}
-
-.sect-dark {
-    background: #161515;
-    border-top: 4px solid var(--gold);
-    color: var(--text-light);
-}
-
-.sect-dark .section-title {
-    color: var(--gold);
-}
-
-.sect-dark .section-desc {
-    color: var(--text-light);
-}
-
-.sect-light {
-    background: var(--cream);
-    color: var(--text-dark);
-}
-
-.sect-light .section-title {
-    color: var(--dark);
-}
-
-.sect-light .section-subtitle {
-    color: #7A5C0A;
-}
-
-.sect-light .section-desc {
-    color: var(--text-dark);
-}
-
-.explore-grid {
+.menuTileGrid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
 }
 
-.explore-tile {
+.menuTile {
     position: relative;
     display: block;
     aspect-ratio: 4 / 3;
@@ -814,7 +763,7 @@ header .btn-secondary:hover,
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.14);
 }
 
-.explore-tile img {
+.menuTile img {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -823,23 +772,23 @@ header .btn-secondary:hover,
     transition: transform 0.5s ease;
 }
 
-.explore-tile::after {
+.menuTile::after {
     content: '';
     position: absolute;
     inset: 0;
     background: linear-gradient(to top, rgba(11, 7, 5, 0.88), rgba(11, 7, 5, 0.05) 62%);
 }
 
-.explore-tile:hover img {
+.menuTile:hover img {
     transform: scale(1.06);
 }
 
-.explore-tile:focus-visible {
+.menuTile:focus-visible {
     outline: 3px solid var(--gold);
     outline-offset: 3px;
 }
 
-.explore-label {
+.menuTileLabel {
     position: absolute;
     left: 20px;
     right: 20px;
@@ -847,51 +796,56 @@ header .btn-secondary:hover,
     z-index: 1;
 }
 
-.explore-label h3 {
+.menuTileLabel h3 {
     font-size: 24px;
     color: #ffffff;
     margin: 0;
 }
 
-.explore-label p {
+.menuTileLabel p {
     font-size: 14px;
     color: #e6dccb;
     margin: 0;
 }
 
-.events-grid {
+.eventsGrid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 30px;
 }
 
-.event-card {
-    background: var(--dark);
+.noEvents {
+    grid-column: 1 / -1;
+    text-align: center;
+}
+
+.eventCard {
+    background: var(--darkBrown);
     border-radius: 15px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
 }
 
-.event-media {
+.eventImage {
     position: relative;
     height: 190px;
     background: linear-gradient(135deg, #2a1d15, #161515);
 }
 
-.event-media img {
+.eventImage img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
 }
 
-.event-badge {
+.eventDate {
     position: absolute;
     top: 14px;
     left: 14px;
     background: var(--gold);
-    color: var(--text-dark);
+    color: var(--textDark);
     border-radius: 10px;
     padding: 6px 12px;
     font-weight: 700;
@@ -902,14 +856,14 @@ header .btn-secondary:hover,
     text-align: center;
 }
 
-.event-badge .day {
+.eventDate .eventDay {
     display: block;
     font-family: 'Playfair Display', serif;
     font-size: 24px;
     line-height: 1.1;
 }
 
-.event-body {
+.eventBody {
     padding: 22px 22px 26px;
     display: flex;
     flex-direction: column;
@@ -917,7 +871,7 @@ header .btn-secondary:hover,
     flex: 1;
 }
 
-.event-tag {
+.eventLabel {
     font-size: 12px;
     font-weight: 700;
     letter-spacing: 1.5px;
@@ -925,32 +879,32 @@ header .btn-secondary:hover,
     color: var(--gold);
 }
 
-.event-title {
+.eventTitle {
     font-size: 22px;
-    color: var(--text-light);
+    color: var(--textLight);
     margin: 0;
 }
 
-.event-meta {
+.eventDetails {
     list-style: none;
     display: grid;
     gap: 4px;
     font-size: 14px;
-    color: var(--accent);
+    color: var(--tan);
 }
 
-.event-meta i {
+.eventDetails i {
     width: 20px;
     color: var(--gold);
 }
 
-.event-desc {
+.eventText {
     font-size: 15px;
-    color: var(--text-light);
+    color: var(--textLight);
     margin: 0;
 }
 
-.event-link {
+.eventLink {
     margin-top: auto;
     padding-top: 8px;
     color: var(--gold);
@@ -958,17 +912,17 @@ header .btn-secondary:hover,
     text-decoration: none;
 }
 
-.event-link:hover {
+.eventLink:hover {
     text-decoration: underline;
 }
 
-.find-grid {
+.visitGrid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 30px;
 }
 
-.find-card {
+.visitCard {
     background: #ffffff;
     border-radius: 15px;
     overflow: hidden;
@@ -978,23 +932,14 @@ header .btn-secondary:hover,
     flex-direction: column;
 }
 
-.find-photo {
+.visitPhoto {
     width: 100%;
     height: 200px;
     object-fit: cover;
     display: block;
 }
 
-.find-photo--map {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #2a1d15, #161515);
-    color: var(--gold);
-    font-size: 54px;
-}
-
-.find-body {
+.visitBody {
     padding: 26px;
     display: flex;
     flex-direction: column;
@@ -1002,34 +947,34 @@ header .btn-secondary:hover,
     flex: 1;
 }
 
-.find-body h3 {
+.visitBody h3 {
     font-size: 24px;
-    color: var(--dark);
+    color: var(--darkBrown);
     margin: 0;
 }
 
-.find-body p {
-    color: var(--text-dark);
+.visitBody p {
+    color: var(--textDark);
     margin: 0;
 }
 
-.find-body i {
+.visitBody i {
     color: #7A5C0A;
     width: 20px;
 }
 
-.find-body .btn {
+.visitBody .button {
     align-self: flex-start;
     margin-top: auto;
 }
 
-.partner-grid {
+.partnerGrid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 24px;
 }
 
-.partner-card {
+.partnerCard {
     background: #fff;
     border: 1px solid rgba(128, 128, 128, 0.25);
     border-radius: 14px;
@@ -1039,48 +984,48 @@ header .btn-secondary:hover,
     gap: 8px;
 }
 
-.partner-card > i {
+.partnerCard > i {
     font-size: 1.8rem;
-    color: var(--medium);
+    color: var(--mediumBrown);
 }
 
-.partner-card h3 {
+.partnerCard h3 {
     margin: 0;
 }
 
-.partner-card .partner-sub {
+.partnerCard .partnerLabel {
     font-size: 0.85rem;
     font-weight: 700;
-    color: var(--medium);
+    color: var(--mediumBrown);
     margin: 0;
 }
 
-.partner-card p {
+.partnerCard p {
     margin: 0;
     font-size: 0.95rem;
     line-height: 1.55;
 }
 
-.partner-card a {
+.partnerCard a {
     margin-top: auto;
     padding-top: 10px;
     font-weight: 700;
-    color: var(--medium);
+    color: var(--mediumBrown);
     text-decoration: none;
 }
 
-.sect-dark .partner-card {
+.darkSection .partnerCard {
     background: #fff;
-    color: var(--text-dark);
+    color: var(--textDark);
 }
 
-.mosaic {
+.photoPreview {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 14px;
 }
 
-.mosaic a {
+.photoPreview a {
     position: relative;
     display: block;
     aspect-ratio: 1;
@@ -1088,7 +1033,8 @@ header .btn-secondary:hover,
     overflow: hidden;
 }
 
-.mosaic img {
+.photoPreview img,
+.galleryItem img {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -1096,101 +1042,49 @@ header .btn-secondary:hover,
     transition: transform 0.5s ease;
 }
 
-.mosaic a:hover img {
+.photoPreview a:hover img {
     transform: scale(1.06);
 }
 
-.mosaic a:focus-visible {
+.photoPreview a:focus-visible {
     outline: 3px solid var(--gold);
     outline-offset: 3px;
 }
 
-
-/* ==========================================================================
-   8. Story, Reviews, CTA, Locations
-   Used by: index.html story teaser and final CTA, about.html story and #reviews.
-   ========================================================================== */
-.story-teaser {
-    padding: 100px 0;
-    background: var(--cream);
-}
-
-.story-content {
+.storyLayout {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 60px;
     align-items: center;
 }
 
-.story-image {
+.storyImage {
     order: -1;
 }
 
-.story-image img {
+.storyImage img {
     width: 100%;
     border-radius: 15px;
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
 }
 
-.story-text .section-title {
-    color: var(--dark);
+.storyText .sectionTitle {
+    color: var(--darkBrown);
     text-align: left;
 }
 
-.story-text .section-title::after {
+.storyText .sectionTitle::after {
     left: 0;
     transform: none;
 }
 
-.story-text p {
+.storyText p {
     margin-bottom: 20px;
-    color: var(--text-dark);
+    color: var(--textDark);
     font-size: 17px;
 }
 
-.reviews {
-    padding: 100px 0;
-    background: #161515;
-    border-top: 4px solid var(--gold);
-}
-
-.reviews .section-title {
-    color: var(--gold);
-}
-
-.reviews-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 30px;
-}
-
-.review-card {
-    background: var(--dark);
-    padding: 35px 30px;
-    border-radius: 15px;
-    border-top: 3px solid var(--gold);
-}
-
-.review-card .stars {
-    color: var(--gold);
-    font-size: 20px;
-    margin-bottom: 15px;
-}
-
-.review-card p {
-    color: var(--text-light);
-    font-size: 16px;
-    margin-bottom: 20px;
-    line-height: 1.6;
-}
-
-.review-card h4 {
-    color: var(--accent);
-    font-size: 15px;
-    font-weight: 600;
-}
-
-.review-list {
+.reviewList {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-auto-rows: 1fr;
@@ -1199,7 +1093,7 @@ header .btn-secondary:hover,
     margin: 0 auto;
 }
 
-.review-row {
+.reviewCard {
     display: grid;
     grid-template-columns: 72px 1fr;
     grid-template-areas: "avatar by" "text text";
@@ -1213,86 +1107,79 @@ header .btn-secondary:hover,
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
 }
 
-.review-photo {
+.reviewPhoto {
     grid-area: avatar;
     width: 72px;
     height: 72px;
     border-radius: 50%;
     object-fit: cover;
     display: block;
-    background: var(--accent);
+    background: var(--tan);
 }
 
-.review-body {
+.reviewBody {
     display: contents;
 }
 
-.review-body > i {
+.reviewBody > i {
     display: none;
 }
 
-.review-by {
+.reviewAuthor {
     grid-area: by;
     align-self: center;
     display: flex;
     flex-direction: column;
     font-size: 1.15rem;
-    color: var(--text-dark);
+    color: var(--textDark);
 }
 
-.review-by span {
+.reviewAuthor span {
     font-size: 0.95rem;
     opacity: 0.7;
 }
 
-.review-body p {
+.reviewBody p {
     grid-area: text;
     margin: 0;
     font-size: 1.08rem;
     line-height: 1.65;
-    color: var(--text-dark);
+    color: var(--textDark);
 }
 
-.final-cta {
-    padding: 100px 0;
-    background: var(--cream);
+.closingSection {
     text-align: center;
 }
 
-.final-cta h2 {
+.closingSection h2 {
     font-size: 2.5rem;
-    color: var(--dark);
+    color: var(--darkBrown);
     margin-bottom: 15px;
 }
 
-.final-cta p {
+.closingSection p {
     font-size: 18px;
-    color: var(--text-dark);
+    color: var(--textDark);
     margin-bottom: 30px;
 }
 
-.cta-buttons {
+.buttonRow {
     display: flex;
     gap: 15px;
     justify-content: center;
     flex-wrap: wrap;
 }
 
-.locations {
-    padding: 100px 0;
-    background: var(--cream);
+.aboutIntro .sectionTitle {
+    color: var(--darkBrown);
 }
 
-.locations .section-title {
-    color: var(--dark);
+.aboutIntro .sectionText {
+    color: var(--textDark);
 }
 
-.locations .section-desc {
-    color: var(--text-dark);
-}
-
-.location-card {
-    max-width: 600px;
+.introCard {
+    max-width: 800px;
     margin: 0 auto;
     background: white;
     padding: 40px;
@@ -1301,72 +1188,72 @@ header .btn-secondary:hover,
     border-top: 4px solid var(--gold);
 }
 
-.location-info h3 {
+.introText h3 {
     font-size: 24px;
-    color: var(--dark);
+    color: var(--darkBrown);
+    margin-top: 30px;
     margin-bottom: 20px;
 }
 
-.location-info p {
+.introText p {
     margin-bottom: 12px;
-    color: var(--text-dark);
+    color: var(--textDark);
 }
 
-.location-info i {
+.introText i {
     color: var(--gold);
     margin-right: 10px;
     width: 20px;
 }
 
-
-/* ==========================================================================
-   9. Contact & Forms
-   Used by: contact.html form, receipt and map. Script: §7.
-   ========================================================================== */
-.contact {
-    padding: 100px 0;
-    background: #161515;
-    border-top: 4px solid var(--gold);
+.introText ul {
+    margin-left: 20px;
+    margin-top: 15px;
+    color: var(--textDark);
 }
 
-.contact-grid {
+.contactSection {
+    padding: 100px 0;
+}
+
+.contactCards {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 30px;
     margin-bottom: 50px;
-    align-items: start; /* each card is only as tall as its own content (no empty space) */
+    align-items: start;
 }
 
-.contact-item {
+.contactCard {
     text-align: left;
     padding: 40px 25px;
-    background: var(--dark);
+    background: var(--darkBrown);
     border-radius: 15px;
     transition: all 0.3s ease;
 }
 
-.contact-item:hover {
+.contactCard:hover {
     transform: translateY(-8px);
     border: 2px solid var(--gold);
 }
 
-.contact-item i {
+.contactCard i {
     font-size: 36px;
     color: var(--gold);
     margin-bottom: 15px;
 }
 
-.contact-item h3 {
-    color: var(--text-light);
+.contactCard h3 {
+    color: var(--textLight);
     margin-bottom: 10px;
     font-size: 20px;
 }
 
-.contact-item p {
-    color: var(--accent);
+.contactCard p {
+    color: var(--tan);
 }
 
-.contact-bottom {
+.contactLayout {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 40px;
@@ -1374,64 +1261,57 @@ header .btn-secondary:hover,
     margin-top: 10px;
 }
 
-.contact-form {
-    background: var(--dark);
+.formPanel {
+    background: var(--darkBrown);
     padding: 40px;
     border-radius: 15px;
     border-top: 4px solid var(--gold);
     height: 100%;
 }
 
-.form-group {
+.formField {
     margin-bottom: 20px;
 }
 
-.form-group label {
+.formField label {
     display: block;
     color: var(--gold);
     margin-bottom: 8px;
     font-weight: 600;
 }
 
-.form-group input,
-.form-group textarea {
+.formField input,
+.formField textarea {
     width: 100%;
     padding: 12px 15px;
     border: none;
     border-radius: 8px;
     background: #2a2a2a;
-    color: var(--text-light);
+    color: var(--textLight);
     font-family: inherit;
     font-size: 15px;
 }
 
-.form-group input:focus,
-.form-group textarea:focus {
+.formField input:focus,
+.formField textarea:focus {
     outline: 2px solid var(--gold);
 }
 
-.error {
+.fieldError {
     color: #ff6b6b;
     font-size: 13px;
     display: block;
     margin-top: 5px;
 }
 
-.success {
-    color: #4caf50;
-    font-size: 15px;
-    margin-top: 15px;
-    text-align: center;
-}
-
-.form-note {
+.formNote {
     font-size: 14px;
-    color: var(--accent);
+    color: var(--tan);
     margin-top: 12px;
     text-align: center;
 }
 
-.contact-photo {
+.contactPhoto {
     display: block;
     width: 100%;
     height: 140px;
@@ -1440,21 +1320,20 @@ header .btn-secondary:hover,
     margin-top: 16px;
 }
 
-/* Square banner (Calmar Banner.jpg): show the whole picture so its text is not cropped */
-.contact-photo--banner {
+.contactPhotoSquare {
     height: auto;
     aspect-ratio: 1 / 1;
 }
 
-.map-container {
+.mapBox {
     border-radius: 15px;
     overflow: hidden;
     border-top: 4px solid var(--gold);
-    background: var(--dark);
+    background: var(--darkBrown);
     min-height: 450px;
 }
 
-.map-container iframe {
+.mapBox iframe {
     width: 100%;
     height: 100%;
     min-height: 450px;
@@ -1462,49 +1341,54 @@ header .btn-secondary:hover,
     display: block;
 }
 
-.form-receipt .receipt-icon {
+.mapLinkRow {
+    text-align: center;
+    margin-top: 16px;
+}
+
+.facebookRow {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.receiptPanel .receiptIcon {
     font-size: 44px;
     color: var(--gold);
     margin-bottom: 10px;
 }
 
-.form-receipt h3 {
+.receiptPanel h3 {
     color: var(--gold);
     font-size: 26px;
     margin-bottom: 6px;
 }
 
-.form-receipt .receipt-ref {
-    color: var(--accent);
+.receiptPanel .receiptHint {
+    color: var(--tan);
     font-size: 14px;
     margin-bottom: 22px;
 }
 
-.form-receipt dl {
+.receiptPanel dl {
     display: grid;
     gap: 14px;
     margin: 0 0 26px;
 }
 
-.form-receipt dt {
+.receiptPanel dt {
     color: var(--gold);
     font-weight: 600;
     font-size: 14px;
 }
 
-.form-receipt dd {
+.receiptPanel dd {
     margin: 0;
-    color: var(--text-light);
+    color: var(--textLight);
     white-space: pre-wrap;
     overflow-wrap: anywhere;
 }
 
-
-/* ==========================================================================
-   10. Cart
-   Used by: services.html #stickyCart, #cartPanel, #cartOverlay. Script: §9.
-   ========================================================================== */
-.sticky-cart {
+.cartBar {
     position: fixed;
     bottom: 0;
     left: 0;
@@ -1520,19 +1404,19 @@ header .btn-secondary:hover,
     border-top: 3px solid var(--gold);
 }
 
-.sticky-cart.visible {
+.cartBar.visible {
     display: flex;
 }
 
-.sticky-cart-info {
+.cartBarInfo {
     font-size: 15px;
 }
 
-.sticky-cart-info strong {
+.cartBarInfo strong {
     color: var(--gold);
 }
 
-.sticky-cart-btn {
+.cartBarButton {
     background: var(--gold);
     color: #2C2416;
     border: none;
@@ -1542,14 +1426,14 @@ header .btn-secondary:hover,
     cursor: pointer;
 }
 
-.cart-panel {
+.cartPanel {
     position: fixed;
     bottom: -100%;
     left: 0;
     right: 0;
     max-height: 75vh;
     background: #1a1a1a;
-    color: var(--text-light);
+    color: var(--textLight);
     border-radius: 20px 20px 0 0;
     z-index: 1000;
     transition: bottom 0.35s ease;
@@ -1558,23 +1442,23 @@ header .btn-secondary:hover,
     border-top: 4px solid var(--gold);
 }
 
-.cart-panel.open {
+.cartPanel.open {
     bottom: 0;
 }
 
-.cart-panel-header {
+.cartPanelHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
 }
 
-.cart-panel-header h3 {
+.cartPanelHeader h3 {
     color: var(--gold);
     font-size: 22px;
 }
 
-.cart-close {
+.cartCloseButton {
     background: none;
     border: none;
     color: var(--gold);
@@ -1582,20 +1466,22 @@ header .btn-secondary:hover,
     cursor: pointer;
 }
 
-.cart-item {
+.emptyCart {
+    text-align: center;
+    opacity: 0.7;
+}
+
+.cartItem {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 14px 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.cart-item {
+    flex-wrap: wrap;
     gap: 12px;
 }
 
-/* Photo beside each ordered item (script.js showCartPanel() copies it from the menu card) */
-.cart-item-img {
+.cartItemImage {
     width: 56px;
     height: 56px;
     flex: 0 0 56px;
@@ -1603,19 +1489,29 @@ header .btn-secondary:hover,
     object-fit: cover;
 }
 
-.cart-item-name {
+.cartItemName {
     font-weight: 600;
     flex: 1;
     min-width: 0;
 }
 
-.cart-item-controls {
+.cartItemNote {
+    flex: 1 0 100%;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #444;
+    background: #2a2a2a;
+    color: white;
+    font-size: 13px;
+}
+
+.cartItemControls {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-.cart-item-controls button {
+.cartItemControls button {
     width: 32px;
     height: 32px;
     border-radius: 50%;
@@ -1626,7 +1522,7 @@ header .btn-secondary:hover,
     cursor: pointer;
 }
 
-.cart-total {
+.cartPanelTotal {
     margin-top: 20px;
     font-size: 20px;
     font-weight: 700;
@@ -1634,40 +1530,159 @@ header .btn-secondary:hover,
     text-align: right;
 }
 
-.cart-actions {
+.cartActions {
     margin-top: 25px;
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
 
-.cart-actions input {
+.cartActions input,
+.cartActions textarea,
+.cartItemNote {
     padding: 12px 15px;
     border-radius: 8px;
     border: 1px solid #444;
     background: #2a2a2a;
     color: white;
     font-size: 15px;
+    font-family: inherit;
 }
 
-.cart-actions .btn {
+.cartActions .button {
     width: 100%;
     text-align: center;
 }
 
-.cart-panel .btn-secondary {
+.cartPanel .secondaryButton {
     color: var(--gold);
     border-color: var(--gold);
 }
 
-.cart-note {
+.cartNote {
     font-size: 13px;
     opacity: 0.75;
     text-align: center;
     margin-top: 14px;
 }
 
-.cart-overlay {
+.orderStatus {
+    margin-top: 15px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.orderReceipt {
+    margin-top: 10px;
+    padding: 20px;
+    border: 2px dashed var(--gold);
+    border-radius: 12px;
+}
+
+.orderReceiptTitle {
+    color: var(--gold);
+    font-size: 22px;
+    text-align: center;
+    margin-bottom: 4px;
+}
+
+.orderReceiptMeta {
+    text-align: center;
+    font-size: 13px;
+    opacity: 0.8;
+    margin-bottom: 14px;
+}
+
+.orderReceiptLine {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 6px 0;
+    border-bottom: 1px dotted rgba(128, 128, 128, 0.5);
+    font-size: 14px;
+}
+
+.orderReceiptNote {
+    margin-top: 10px;
+    font-size: 13px;
+    font-style: italic;
+}
+
+.orderReceiptTotal {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 12px;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--gold);
+}
+
+.orderReceiptFooter {
+    margin-top: 12px;
+    font-size: 12px;
+    opacity: 0.75;
+    text-align: center;
+}
+
+.orderReceiptButtons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.orderReceiptButtons .button {
+    width: 100%;
+    text-align: center;
+}
+
+.orderHistory {
+    margin-top: 28px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(128, 128, 128, 0.35);
+}
+
+.orderHistoryTitle {
+    color: var(--gold);
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.orderHistoryItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+    font-size: 14px;
+}
+
+.orderHistoryItem button,
+.orderHistoryClear {
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.orderHistoryClear {
+    margin-top: 8px;
+    border-color: transparent;
+    text-decoration: underline;
+}
+
+.emptyCartBox {
+    text-align: center;
+}
+
+.emptyCartButton {
+    margin-top: 12px;
+}
+
+.cartOverlay {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.5);
@@ -1675,58 +1690,23 @@ header .btn-secondary:hover,
     display: none;
 }
 
-.cart-overlay.visible {
+.cartOverlay.visible {
     display: block;
 }
 
-#orderMessage.ok {
+.orderStatus.orderSuccess {
     color: #4caf50;
 }
 
-#orderMessage.err {
+.orderStatus.orderFailure {
     color: #ff6b6b;
 }
 
-.foodpanda-link[hidden] {
+.foodpandaButton[hidden] {
     display: none;
 }
 
-
-/* ==========================================================================
-   11. Gallery
-   Used by: gallery.html grid, mosaic tiles and #lightbox; teasers on index/about. Script: §11.
-   ========================================================================== */
-.gallery-filters {
-    position: sticky;
-    top: 72px;
-    z-index: 900;
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 10px;
-    justify-content: flex-start;
-    margin: 0 0 28px;
-    padding: 12px 0;
-    overflow-x: auto;
-    scrollbar-width: thin;
-    background: #161515;
-    border-bottom: 1px solid rgba(212, 175, 55, 0.25);
-}
-
-.gallery-filters--sticky {
-    top: 74px;
-    z-index: 20;
-    background: var(--cream);
-}
-
-.gallery-groups {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-    margin: 0 0 14px;
-}
-
-.gallery-sub {
+.categoryChips {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
@@ -1739,27 +1719,25 @@ header .btn-secondary:hover,
     border-radius: 14px;
 }
 
-.gallery-sub[hidden],
-.gallery-sub .menu-tab[hidden] {
+.categoryChips[hidden],
+.categoryChips .filterButton[hidden] {
     display: none;
 }
 
-.gallery-sub .menu-tab {
+.categoryChips .filterButton {
     font-size: 0.85rem;
     padding: 6px 14px;
 }
 
-.gallery-groups:has(+ .gallery-sub[hidden]) {
-    margin-bottom: 32px;
-}
-
-.gallery-grid {
+.galleryGrid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    grid-auto-rows: 230px;
+    grid-auto-flow: dense;
 }
 
-.gallery-item {
+.galleryItem {
     display: block;
     width: 100%;
     margin: 0;
@@ -1770,31 +1748,24 @@ header .btn-secondary:hover,
     border-radius: 12px;
     overflow: hidden;
     position: relative;
-    aspect-ratio: 1;
+    aspect-ratio: auto;
+    height: 100%;
 }
 
-.gallery-item[hidden] {
+.galleryItem[hidden] {
     display: none;
 }
 
-.gallery-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.5s ease;
-}
-
-.gallery-item:hover img {
+.galleryItem:hover img {
     transform: scale(1.04);
 }
 
-.gallery-item:focus-visible {
+.galleryItem:focus-visible {
     outline: 3px solid var(--gold);
     outline-offset: 3px;
 }
 
-.gallery-item .cap {
+.galleryItem .caption {
     position: absolute;
     left: 0;
     right: 0;
@@ -1808,69 +1779,54 @@ header .btn-secondary:hover,
     background: linear-gradient(to top, rgba(11, 7, 5, 0.85), transparent);
 }
 
-/* Mosaic layout */
-.gallery-grid--mosaic {
-    grid-template-columns: repeat(4, 1fr);
-    grid-auto-rows: 230px;
-    grid-auto-flow: dense;
-    gap: 12px;
-}
-
-.gallery-grid--mosaic .gallery-item {
-    aspect-ratio: auto;
-    height: 100%;
-}
-
-.gallery-grid--mosaic .is-featured {
+.galleryGrid .featured {
     grid-column: span 2;
     grid-row: span 2;
 }
 
-.gallery-grid--mosaic .is-tall {
+.galleryGrid .tall {
     grid-row: span 2;
 }
 
-.gallery-grid--mosaic .is-wide {
+.galleryGrid .wide {
     grid-column: span 2;
 }
 
-.gallery-grid--mosaic .cap {
+.galleryGrid .caption {
     opacity: 0;
     transform: translateY(6px);
     transition: opacity 0.25s, transform 0.25s;
 }
 
-.gallery-grid--mosaic .gallery-item:hover .cap,
-.gallery-grid--mosaic .gallery-item:focus-visible .cap {
+.galleryGrid .galleryItem:hover .caption,
+.galleryGrid .galleryItem:focus-visible .caption {
     opacity: 1;
     transform: none;
 }
-/* ==========================================================================
-   Gallery fade / pop-in
-   ========================================================================== */
-.gallery-item.fade-in {
+
+.galleryItem.fadeIn {
     opacity: 0;
     transform: translateY(28px) scale(0.96);
     transition: opacity 0.55s ease, transform 0.55s ease;
 }
 
-.gallery-item.fade-in.visible {
+.galleryItem.fadeIn.visible {
     opacity: 1;
     transform: translateY(0) scale(1);
 }
 
-/* Keep image hover zoom separate from the card pop */
-.gallery-item.fade-in.visible:hover img {
+.galleryItem.fadeIn.visible:hover img {
     transform: scale(1.04);
 }
+
 @media (hover: none) {
-    .gallery-grid--mosaic .cap {
+    .galleryGrid .caption {
         opacity: 1;
         transform: none;
     }
 }
 
-.lightbox {
+.photoViewer {
     position: fixed;
     inset: 0;
     background: rgba(11, 7, 5, 0.94);
@@ -1883,15 +1839,15 @@ header .btn-secondary:hover,
     transition: opacity 0.25s ease;
 }
 
-.lightbox.is-open {
+.photoViewer.isOpen {
     opacity: 1;
 }
 
-.lightbox[hidden] {
+.photoViewer[hidden] {
     display: none;
 }
 
-.lightbox figure {
+.photoViewer figure {
     margin: 0;
     max-width: min(92vw, 1100px);
     display: flex;
@@ -1900,29 +1856,29 @@ header .btn-secondary:hover,
     gap: 12px;
     transform: scale(0.6);
     opacity: 0;
-    transform-origin: var(--ox, 50%) var(--oy, 50%);
+    transform-origin: var(--originX, 50%) var(--originY, 50%);
     transition: transform 0.35s cubic-bezier(0.2, 0.9, 0.25, 1), opacity 0.25s ease;
 }
 
-.lightbox.is-open figure {
+.photoViewer.isOpen figure {
     transform: none;
     opacity: 1;
 }
 
-.lightbox img {
+.photoViewer img {
     max-width: 100%;
     max-height: 78vh;
     object-fit: contain;
     border-radius: 8px;
 }
 
-.lightbox figcaption {
+.photoViewer figcaption {
     color: #f3f3f3;
     text-align: center;
     font-size: 15px;
 }
 
-.lb-btn {
+.viewerButton {
     position: absolute;
     width: 46px;
     height: 46px;
@@ -1935,58 +1891,84 @@ header .btn-secondary:hover,
     cursor: pointer;
 }
 
-.lb-btn:hover,
-.lb-btn:focus-visible {
+.viewerButton:hover,
+.viewerButton:focus-visible {
     background: var(--gold);
     color: #161515;
     outline: none;
 }
 
-.lb-close {
+.viewerCloseButton {
     top: 18px;
     right: 18px;
 }
 
-.lb-prev {
+.viewerPrevButton {
     left: 18px;
     top: 50%;
     transform: translateY(-50%);
 }
 
-.lb-next {
+.viewerNextButton {
     right: 18px;
     top: 50%;
     transform: translateY(-50%);
 }
 
+.photoViewer img.slideNext {
+    animation: viewerSlideNext 0.35s cubic-bezier(0.2, 0.9, 0.25, 1) both;
+}
 
-/* ==========================================================================
-   12. Footer, Loader, Toast
-   Used by: every page footer, .loader-wrapper, #toast. Script: §5, §9.
-   ========================================================================== */
+.photoViewer img.slidePrev {
+    animation: viewerSlidePrev 0.35s cubic-bezier(0.2, 0.9, 0.25, 1) both;
+}
+
+.viewerCounter {
+    position: absolute;
+    top: 26px;
+    left: 24px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+}
+
+@keyframes viewerSlideNext {
+    from { opacity: 0; transform: translateX(48px); }
+    to { opacity: 1; transform: none; }
+}
+
+@keyframes viewerSlidePrev {
+    from { opacity: 0; transform: translateX(-48px); }
+    to { opacity: 1; transform: none; }
+}
+
 footer {
-    background: var(--dark);
-    color: var(--text-light);
+    background: var(--darkBrown);
+    color: var(--textLight);
     padding: 70px 0 30px;
     position: relative;
     border-top: 4px solid var(--gold);
 }
 
-.footer-content {
+.footerContent {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 40px;
     margin-bottom: 50px;
 }
 
-.footer-column h3 {
+.footerColumn h3 {
     font-size: 22px;
     margin-bottom: 25px;
     position: relative;
     padding-bottom: 15px;
 }
 
-.footer-column h3::after {
+.footerColumn h3::after {
     content: '';
     position: absolute;
     bottom: 0;
@@ -1996,38 +1978,43 @@ footer {
     background: var(--gold);
 }
 
-.footer-links {
+.footerTagline {
+    color: var(--tan);
+    margin-bottom: 20px;
+}
+
+.footerLinks {
     list-style: none;
 }
 
-.footer-links li {
+.footerLinks li {
     margin-bottom: 15px;
 }
 
-.footer-links li i {
+.footerLinks li i {
     margin-right: 10px;
     color: var(--gold);
     width: 18px;
 }
 
-.footer-links a {
-    color: var(--accent);
+.footerLinks a {
+    color: var(--tan);
     text-decoration: none;
     transition: all 0.3s ease;
 }
 
-.footer-links a:hover {
+.footerLinks a:hover {
     color: var(--gold);
     padding-left: 5px;
 }
 
-.social-links {
+.socialLinks {
     display: flex;
     gap: 15px;
     margin-top: 20px;
 }
 
-.social-links a {
+.socialLinks a {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2040,7 +2027,7 @@ footer {
     transition: all 0.3s ease;
 }
 
-.social-links a:hover {
+.socialLinks a:hover {
     background: var(--gold);
     transform: translateY(-3px);
 }
@@ -2049,11 +2036,11 @@ footer {
     text-align: center;
     padding-top: 30px;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
-    color: var(--accent);
+    color: var(--tan);
     font-size: 15px;
 }
 
-.loader-wrapper {
+.pageLoader {
     width: 100%;
     height: 100%;
     position: fixed;
@@ -2067,13 +2054,13 @@ footer {
     transition: opacity 0.5s ease, visibility 0.5s ease;
 }
 
-.loader-wrapper.hidden {
+.pageLoader.loaderHidden {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
 }
 
-.loader-pill {
+.loaderCard {
     display: flex;
     align-items: center;
     background: #2a2a2a;
@@ -2085,7 +2072,7 @@ footer {
     max-width: 92vw;
 }
 
-.loader-logo {
+.loaderLogo {
     width: 78px;
     height: 78px;
     border-radius: 50%;
@@ -2097,7 +2084,7 @@ footer {
     overflow: hidden;
 }
 
-.loader-logo img {
+.loaderLogo img {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -2105,7 +2092,7 @@ footer {
     display: block;
 }
 
-.loader-divider {
+.loaderDivider {
     width: 2px;
     height: 48px;
     background: rgba(255, 255, 255, 0.25);
@@ -2113,7 +2100,7 @@ footer {
     flex-shrink: 0;
 }
 
-.loader-name {
+.loaderName {
     flex: 1;
     font-family: 'Playfair Display', serif;
     font-size: 28px;
@@ -2123,25 +2110,25 @@ footer {
     padding-right: 16px;
 }
 
-.loader-name span {
+.loaderName span {
     color: var(--gold);
 }
 
-.loader-fire {
+.loaderFlames {
     position: relative;
     width: 90px;
     height: 90px;
     flex-shrink: 0;
 }
 
-.loader-fire .flame {
+.loaderFlames .flame {
     position: absolute;
     bottom: 8px;
     border-radius: 0 50% 50% 50%;
     transform: rotate(45deg);
 }
 
-.loader-fire .flame:nth-child(1) {
+.loaderFlames .flame:nth-child(1) {
     left: 12px;
     width: 64px;
     height: 64px;
@@ -2150,7 +2137,7 @@ footer {
     animation: flicker 1.2s infinite ease-in-out alternate;
 }
 
-.loader-fire .flame:nth-child(2) {
+.loaderFlames .flame:nth-child(2) {
     left: 24px;
     bottom: 14px;
     width: 42px;
@@ -2159,7 +2146,7 @@ footer {
     animation: flicker 0.7s infinite ease-in-out alternate-reverse;
 }
 
-.loader-fire .flame:nth-child(3) {
+.loaderFlames .flame:nth-child(3) {
     left: 34px;
     bottom: 20px;
     width: 22px;
@@ -2194,20 +2181,36 @@ footer {
     transform: translateX(-50%) translateY(0);
 }
 
+.fadeIn {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+}
 
-/* ==========================================================================
-   13. Animations
-   Used by: .fade-in / .visible (Script §8), keyframes for loader and flame.
-   ========================================================================== */
+.fadeIn.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.fadeIn.delay1 {
+    transition-delay: 0.1s;
+}
+
+.fadeIn.delay2 {
+    transition-delay: 0.2s;
+}
+
+.fadeIn.delay3 {
+    transition-delay: 0.3s;
+}
+
+.fadeIn.delay4 {
+    transition-delay: 0.4s;
+}
+
 @keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(40px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes flicker {
@@ -2216,27 +2219,6 @@ footer {
     100% { transform: rotate(43deg) scale(0.98) skew(2deg, 2deg); opacity: 0.9; }
 }
 
-.fade-in {
-    opacity: 0;
-    transform: translateY(40px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
-}
-
-.fade-in.visible {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.fade-in.delay-1 { transition-delay: 0.1s; }
-.fade-in.delay-2 { transition-delay: 0.2s; }
-.fade-in.delay-3 { transition-delay: 0.3s; }
-.fade-in.delay-4 { transition-delay: 0.4s; }
-
-
-/* ==========================================================================
-   14. Light theme
-   Used by: body.light overrides (default theme). Script: §7b.
-   ========================================================================== */
 body.light {
     background: #FBF8F3;
     color: #2C2416;
@@ -2250,92 +2232,82 @@ body.light .hero::before {
     background: linear-gradient(135deg, #2C2416 0%, #3E2723 100%);
 }
 
-body.light .products {
-    background-color: #F5F0E9;
-}
-
-body.light .product-card {
-    background: #FFFFFF;
-    border: 1px solid #EDE6DC;
-}
-
-body.light .product-title {
-    color: #2C2416;
-}
-
-body.light .product-desc {
-    color: #5C4E42;
-}
-
-body.light .story-teaser,
-body.light .final-cta,
-body.light .sect-light {
-    background: #FFFFFF;
-}
-
-body.light .reviews,
-body.light .contact {
+body.light .menuSection,
+body.light .contactSection,
+body.light .darkSection {
     background: #F5F0E9;
 }
 
-body.light .review-card,
-body.light .contact-item,
-body.light .contact-form,
-body.light .map-container,
-body.light .event-card {
+body.light .menuCard {
     background: #FFFFFF;
     border: 1px solid #EDE6DC;
 }
 
-body.light .review-card p,
-body.light .contact-item h3,
-body.light .final-cta h2 {
+body.light .menuCardTitle {
     color: #2C2416;
 }
 
-body.light .contact-item p,
-body.light .final-cta p,
-body.light .section-desc,
-body.light .form-note,
-body.light .menu-hint,
-body.light .menu-cat-note {
+body.light .menuCardText {
     color: #5C4E42;
 }
 
-body.light .section-subtitle,
-body.light .products .section-title,
-body.light .contact .section-title,
-body.light .reviews .section-title,
-body.light .category-title,
-body.light .product-price,
-body.light .form-group label,
-body.light .cart-panel-header h3,
-body.light .cart-total,
-body.light .sect-dark .section-title,
-body.light .event-tag,
-body.light .event-link,
-body.light .form-receipt .receipt-icon,
-body.light .form-receipt h3,
-body.light .form-receipt dt {
+body.light .storySection,
+body.light .closingSection,
+body.light .lightSection {
+    background: #FFFFFF;
+}
+
+body.light .contactCard,
+body.light .formPanel,
+body.light .mapBox,
+body.light .eventCard {
+    background: #FFFFFF;
+    border: 1px solid #EDE6DC;
+}
+
+body.light .contactCard h3,
+body.light .closingSection h2 {
+    color: #2C2416;
+}
+
+body.light .contactCard p,
+body.light .closingSection p,
+body.light .sectionText,
+body.light .formNote,
+body.light .menuHint,
+body.light .categoryNote {
+    color: #5C4E42;
+}
+
+body.light .sectionLabel,
+body.light .menuSection .sectionTitle,
+body.light .contactSection .sectionTitle,
+body.light .categoryTitle,
+body.light .menuCardPrice,
+body.light .formField label,
+body.light .cartPanelHeader h3,
+body.light .cartPanelTotal,
+body.light .darkSection .sectionTitle,
+body.light .eventLabel,
+body.light .eventLink,
+body.light .receiptPanel .receiptIcon,
+body.light .receiptPanel h3,
+body.light .receiptPanel dt {
     color: #7A5C0A;
 }
 
-body.light .review-card h4 {
-    color: #6F4E37;
-}
-
-body.light .event-title,
-body.light .form-receipt dd {
+body.light .eventTitle,
+body.light .receiptPanel dd {
     color: #2C2416;
 }
 
-body.light .event-meta,
-body.light .event-desc,
-body.light .form-receipt .receipt-ref {
+body.light .eventDetails,
+body.light .eventText,
+body.light .receiptPanel .receiptHint {
     color: #5C4E42;
 }
 
-body.light .event-meta i {
+body.light .eventDetails i {
     color: #7A5C0A;
 }
 
@@ -2343,147 +2315,144 @@ body.light footer {
     background: #2C2416;
 }
 
-body.light .btn-primary {
+body.light .primaryButton {
     background: #C9A227;
     color: #2C2416;
 }
 
-body.light .btn-primary:hover {
+body.light .primaryButton:hover {
     background: #B8911F;
 }
 
-body.light .btn-secondary {
+body.light .secondaryButton {
     color: #2C2416;
     border-color: #2C2416;
 }
 
-body.light .btn-secondary:hover {
+body.light .secondaryButton:hover {
     background: rgba(44, 36, 22, 0.08);
 }
 
-body.light .theme-toggle {
+body.light .themeButton {
     border-color: #C9A227;
     color: #C9A227;
 }
 
-body.light .theme-toggle:hover {
+body.light .themeButton:hover {
     background: #C9A227;
     color: #2C2416;
 }
 
-body.light .hero-buttons .btn-secondary {
+body.light .heroButtons .secondaryButton {
     color: #ffffff;
     border-color: #ffffff;
 }
 
-body.light .hero-buttons .btn-secondary:hover {
+body.light .heroButtons .secondaryButton:hover {
     background: rgba(255, 255, 255, 0.15);
     color: #ffffff;
 }
 
-body.light header .btn-secondary,
-body.light .mobile-nav .btn-secondary {
+body.light header .secondaryButton,
+body.light .mobileMenu .secondaryButton {
     color: #FFFFFF;
     border-color: #FFFFFF;
     background: transparent;
 }
 
-body.light header .btn-secondary:hover,
-body.light .mobile-nav .btn-secondary:hover {
+body.light header .secondaryButton:hover,
+body.light .mobileMenu .secondaryButton:hover {
     background: rgba(255, 255, 255, 0.12);
     color: #FFFFFF;
 }
 
-body.light .sticky-cart {
+body.light .cartBar {
     background: #2C2416;
 }
 
-body.light .cart-panel {
+body.light .cartPanel {
     background: #FFFFFF;
     color: #2C2416;
 }
 
-body.light .cart-item {
+body.light .orderReceipt {
+    border-color: #C9A227;
+}
+
+body.light .orderReceiptTitle,
+body.light .orderReceiptTotal,
+body.light .orderHistoryTitle,
+body.light .orderHistoryItem button,
+body.light .orderHistoryClear {
+    color: #7A5C0A;
+}
+
+body.light .cartItem {
     border-bottom: 1px solid #EDE6DC;
 }
 
-body.light .cart-actions input,
-body.light .form-group input,
-body.light .form-group textarea {
+body.light .cartActions input,
+body.light .cartActions textarea,
+body.light .cartItemNote,
+body.light .formField input,
+body.light .formField textarea {
     background: #FBF8F3;
     color: #2C2416;
     border: 1px solid #EDE6DC;
 }
 
-body.light .add-to-cart-btn {
+body.light .addToCartButton {
     background: #C9A227;
     color: #2C2416;
 }
 
-body.light .menu-tabs,
-body.light .gallery-filters {
+body.light .menuFilterBar {
     background: #F5F0E9;
 }
 
-body.light .menu-tab {
+body.light .filterButton {
     color: #2C2416;
     border-color: #7A5C0A;
 }
 
-body.light .menu-tab:hover {
+body.light .filterButton:hover {
     background: rgba(122, 92, 10, 0.12);
 }
 
-body.light .menu-tab[aria-pressed="true"] {
+body.light .filterButton[aria-pressed="true"] {
     background: #C9A227;
     border-color: #C9A227;
     color: #2C2416;
 }
 
-body.light .gallery-sub {
+body.light .categoryChips {
     background: rgba(201, 162, 39, 0.08);
     border-color: rgba(122, 92, 10, 0.12);
 }
 
-body.light .placeholder-card {
-    border-color: #C9A227;
-}
-
-body.light .placeholder-card .product-tag {
-    color: #7A5C0A;
-    border-color: #7A5C0A;
-}
-
-body.light .sect-dark {
-    background: #F5F0E9;
+body.light .darkSection {
     color: #2C2416;
 }
 
-body.light .sect-dark .section-desc {
+body.light .darkSection .sectionText {
     color: #5C4E42;
 }
 
-body.light .highlights {
+body.light .highlightsBar {
     background: #2C2416;
 }
 
-body.light .error,
-body.light #orderMessage.err {
+body.light .fieldError,
+body.light .orderStatus.orderFailure {
     color: #c62828;
 }
 
-body.light .success,
-body.light #orderMessage.ok {
+body.light .orderStatus.orderSuccess {
     color: #2e7d32;
 }
 
-
-/* ==========================================================================
-   15. Responsive
-   Used by: tablet and phone breakpoints for all sections above.
-   ========================================================================== */
 @media (max-width: 1000px) {
-    .partner-grid {
+    .partnerGrid {
         grid-template-columns: repeat(2, 1fr);
     }
 }
@@ -2494,30 +2463,30 @@ body.light #orderMessage.ok {
         text-align: center;
     }
 
-    .hero-title {
+    .heroTitle {
         font-size: 2.8rem;
     }
 
-    .hero-title span {
+    .heroTitle span {
         font-size: 1.8rem;
     }
 
-    .hero-image {
+    .heroImages {
         max-width: 400px;
     }
 
-    .hero-image .hero-inset {
+    .heroImages .heroInset {
         left: -4%;
         bottom: -4%;
         width: 42%;
     }
 
-    .hero-buttons {
+    .heroButtons {
         justify-content: center;
     }
 
     nav,
-    .nav-buttons {
+    .navButtons {
         display: none;
     }
 
@@ -2525,39 +2494,38 @@ body.light #orderMessage.ok {
         display: flex;
     }
 
-    .story-content {
+    .storyLayout {
         grid-template-columns: 1fr;
         gap: 40px;
     }
 
-    .contact-bottom {
+    .contactLayout {
         grid-template-columns: 1fr;
     }
 
-    .map-container {
+    .mapBox {
         min-height: 350px;
     }
 
-    .product-grid,
-    .gallery-grid {
+    .menuGrid {
         grid-template-columns: repeat(2, 1fr);
     }
 
-    .gallery-grid--mosaic {
+    .galleryGrid {
         grid-template-columns: repeat(2, 1fr);
         grid-auto-rows: 200px;
     }
 
-    .explore-grid {
+    .menuTileGrid {
         grid-template-columns: repeat(2, 1fr);
     }
 
-    .sect-dark,
-    .sect-light {
+    .darkSection,
+    .lightSection {
         padding: 70px 0;
     }
 
-    .review-list {
+    .reviewList {
         grid-template-columns: 1fr;
         grid-auto-rows: auto;
         max-width: 640px;
@@ -2565,7 +2533,7 @@ body.light #orderMessage.ok {
 }
 
 @media (max-width: 640px) {
-    .gallery-sub {
+    .categoryChips {
         flex-wrap: nowrap;
         justify-content: flex-start;
         overflow-x: auto;
@@ -2575,11 +2543,11 @@ body.light #orderMessage.ok {
         border-radius: 10px;
     }
 
-    .gallery-sub::-webkit-scrollbar {
+    .categoryChips::-webkit-scrollbar {
         display: none;
     }
 
-    .gallery-sub .menu-tab {
+    .categoryChips .filterButton {
         flex: 0 0 auto;
         scroll-snap-align: start;
         white-space: nowrap;
@@ -2587,66 +2555,66 @@ body.light #orderMessage.ok {
 }
 
 @media (max-width: 600px) {
-    .mosaic:not(.mosaic--3) {
+    .photoPreview:not(.photoPreviewThree) {
         grid-template-columns: repeat(2, 1fr);
     }
 
-    .explore-label h3 {
+    .menuTileLabel h3 {
         font-size: 19px;
     }
 
-    .explore-label p {
+    .menuTileLabel p {
         display: none;
     }
 }
 
 @media (max-width: 560px) {
-    .product-grid,
-    .gallery-grid,
-    .partner-grid {
+    .menuGrid,
+    .galleryGrid,
+    .partnerGrid {
         grid-template-columns: 1fr;
     }
 }
 
 @media (max-width: 520px) {
-    .loader-pill {
+    .loaderCard {
         min-width: auto;
         padding: 10px 12px 10px 10px;
         border-radius: 60px;
     }
 
-    .loader-logo {
+    .loaderLogo {
         width: 58px;
         height: 58px;
     }
 
-    .loader-name {
+    .loaderName {
         font-size: 18px;
     }
 
-    .loader-divider {
+    .loaderDivider {
         margin: 0 12px;
         height: 34px;
     }
 
-    .loader-fire {
+    .loaderFlames {
         width: 70px;
         height: 70px;
     }
 
-    .loader-fire .flame:nth-child(1) {
+    .loaderFlames .flame:nth-child(1) {
         width: 48px;
         height: 48px;
         left: 8px;
     }
 
-    .loader-fire .flame:nth-child(2) {
+    .loaderFlames .flame:nth-child(2) {
         width: 32px;
         height: 32px;
         left: 18px;
     }
 
-    .loader-fire .flame:nth-child(3) {
+    .loaderFlames .flame:nth-child(3) {
         width: 16px;
         height: 16px;
         left: 26px;
@@ -2654,96 +2622,28 @@ body.light #orderMessage.ok {
 }
 
 @media (max-width: 480px) {
-    .gallery-grid--mosaic .is-featured {
+    .galleryGrid .featured {
         grid-column: span 2;
         grid-row: span 1;
     }
 
-    .gallery-grid--mosaic .is-tall {
+    .galleryGrid .tall {
         grid-row: span 2;
     }
 }
 
-/* ===== Lightbox: photo slide, counter, reduced motion =====
-   Used by: gallery.html #lightbox. Script: §11 show()/open()/close() add .is-open, .slide-next, .slide-prev. */
-.lightbox img.slide-next { animation: lbSlideNext 0.35s cubic-bezier(0.2, 0.9, 0.25, 1) both; }
-.lightbox img.slide-prev { animation: lbSlidePrev 0.35s cubic-bezier(0.2, 0.9, 0.25, 1) both; }
-@keyframes lbSlideNext { from { opacity: 0; transform: translateX(48px); } to { opacity: 1; transform: none; } }
-@keyframes lbSlidePrev { from { opacity: 0; transform: translateX(-48px); } to { opacity: 1; transform: none; } }
-
-.lb-count {
-    position: absolute;
-    top: 26px;
-    left: 24px;
-    padding: 6px 12px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.1);
-    color: #fff;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-}
-
 @media (prefers-reduced-motion: reduce) {
-    .lightbox, .lightbox figure { transition: none; }
-    .lightbox img.slide-next, .lightbox img.slide-prev { animation: none; }
-}
+    .heroVideo {
+        display: none;
+    }
 
-.page-top {
-    padding-top: 140px;
-}
+    .photoViewer,
+    .photoViewer figure {
+        transition: none;
+    }
 
-.story-card {
-    max-width: 800px;
-}
-
-.why-title {
-    margin-top: 30px;
-    color: var(--dark);
-}
-
-.why-list {
-    margin-left: 20px;
-    margin-top: 15px;
-    color: var(--text-dark);
-}
-
-.footer-tagline {
-    color: var(--accent);
-    margin-bottom: 20px;
-}
-
-.center-mt-16 {
-    text-align: center;
-    margin-top: 16px;
-}
-
-.center-mt-50 {
-    text-align: center;
-    margin-top: 50px;
-}
-
-.sizzle-left {
-    object-position: left center;
-}
-
-.sizzle-right {
-    object-position: right center;
-}
-
-#orderMessage {
-    margin-top: 15px;
-    text-align: center;
-    font-weight: 600;
-}
-
-/* Empty states (from script.js hardening) */
-.cart-empty {
-    text-align: center;
-    opacity: 0.7;
-}
-
-.events-empty {
-    grid-column: 1 / -1;
-    text-align: center;
+    .photoViewer img.slideNext,
+    .photoViewer img.slidePrev {
+        animation: none;
+    }
 }
