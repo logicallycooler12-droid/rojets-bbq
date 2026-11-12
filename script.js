@@ -1,39 +1,22 @@
-// Rojetz BBQ Station - script.js (used by every page)
-// TABLE OF CONTENTS
-//   1 Settings      2 Events         3 Smooth scroll   4 Hamburger
-//   5 Loader/Year   6 Foodpanda      7 Contact+Theme   8 Fade-in
-//   9 Prices+Cart  10 Menu filters  11 Gallery+Lightbox
-//  12 Start-up
-// Each section lists what it is "Linked" to (HTML ids/classes and styles.css sections).
+const messengerLink = 'https://m.me/rojetzbbqstation';
+const foodpandaLink = 'https://www.foodpanda.ph/restaurant/e7ij/rojetz-bbq-station-calmar-homes?lat=13.9603&lng=121.61661';
+const businessEmail = 'logicallycooler12@gmail.com';
 
-// ======================================================================
-// 1. SITE SETTINGS
-// Purpose : Links and options you may need to change. Edit only the values.
-// Linked  : MESSENGER_URL -> placeOrder() (§9); FOODPANDA_URL -> §6 buttons and the events list (§2); CONTACT_EMAIL -> contact form (§7)
-// ======================================================================
-// Check that this matches your Facebook page username (facebook.com/rojetzbbqstation).
-const MESSENGER_URL = 'https://m.me/rojetzbbqstation';
-// Foodpanda store link. The "Order on Foodpanda" buttons use it. Clear it to hide them.
-const FOODPANDA_URL = 'https://www.foodpanda.ph/restaurant/e7ij/rojetz-bbq-station-calmar-homes?lat=13.9603&lng=121.61661';
+function createElement(tag, className, text) {
+    const element = document.createElement(tag);
+    if (className) element.className = className;
+    if (text !== undefined) element.textContent = text;
+    return element;
+}
 
-// Contact form email. The contact form opens the visitor's email app with the message ready to send
-// to this address. Nothing is stored anywhere. If left empty, the form opens Messenger instead.
-const CONTACT_EMAIL = 'logicallycooler12@gmail.com';
+function createButton(text, onClick) {
+    const button = createElement('button', '', text);
+    button.addEventListener('click', onClick);
+    return button;
+}
 
-// ======================================================================
-// 2. CURRENT EVENTS (home page)
-// Purpose : The events list is the only place to add/remove event cards; renderEvents() builds them.
-// Linked  : index.html #eventsGrid; styles.css §7 (.event-card)
-// ======================================================================
-// Edit this list to change the cards. Fields:
-//   tag, title, desc  : text on the card
-//   img, imgAlt       : photo file (optional)
-//   date              : 'YYYY-MM-DD' shows a date badge and hides the card the day after
-//   until             : 'YYYY-MM-DD' hides the card the day after (for promos without a badge)
-//   meta              : small lines with an icon, e.g. { icon: 'fa-clock', text: '6:30 PM' }
-//   link, linkText    : optional link at the bottom of the card
-const events = [
- {
+const upcomingEvents = [
+    {
         tag: 'Store Hours',
         title: '2026 Undas Store Hours & Order Cut-Offs',
         desc: 'Special operating hours for Undas 2026 across Rojet\'z Grill brand',
@@ -51,7 +34,7 @@ const events = [
         imgAlt: 'Mercato Lucena night market entrance at night',
         meta: [
             { icon: 'fa-location-dot', text: 'Booth #69, Mercato Lucena' },
-            { icon: 'fa-clock', text: '6:30 PM \u2013 12:00 MN' }
+            { icon: 'fa-clock', text: '6:30 PM – 12:00 MN' }
         ],
         link: 'contact.html',
         linkText: 'Contact & hours'
@@ -63,770 +46,715 @@ const events = [
         img: 'bbq-siomai.jpg',
         imgAlt: 'Siomai and BBQ platter',
         meta: [{ icon: 'fa-motorcycle', text: 'Calmar Homes store' }],
-        link: FOODPANDA_URL,
+        link: foodpandaLink,
         linkText: 'Open Foodpanda'
     }
 ];
-/** Builds the event cards from the `events` list into #eventsGrid (index.html). Hides expired events. */
-function renderEvents() {
+
+function createEventCard(event) {
+    const card = createElement('article', 'eventCard');
+
+    const image = createElement('div', 'eventImage');
+    if (event.img) {
+        const photo = createElement('img');
+        photo.src = event.img;
+        photo.alt = event.imgAlt || '';
+        photo.loading = 'lazy';
+        image.appendChild(photo);
+    }
+    if (event.date) {
+        const date = new Date(event.date + 'T00:00:00');
+        const badge = createElement('div', 'eventDate');
+        badge.appendChild(createElement('span', 'eventDay', date.getDate()));
+        badge.appendChild(document.createTextNode(date.toLocaleString('en-US', { month: 'short' })));
+        image.appendChild(badge);
+    }
+    card.appendChild(image);
+
+    const body = createElement('div', 'eventBody');
+    body.appendChild(createElement('div', 'eventLabel', event.tag || ''));
+    body.appendChild(createElement('h3', 'eventTitle', event.title));
+
+    if (event.meta && event.meta.length) {
+        const details = createElement('ul', 'eventDetails');
+        event.meta.forEach(item => {
+            const line = createElement('li');
+            line.appendChild(createElement('i', `fa-solid ${item.icon}`));
+            line.appendChild(document.createTextNode(item.text));
+            details.appendChild(line);
+        });
+        body.appendChild(details);
+    }
+
+    body.appendChild(createElement('p', 'eventText', event.desc));
+
+    if (event.link) {
+        const link = createElement('a', 'eventLink', `${event.linkText || 'Learn more'} →`);
+        link.href = event.link;
+        body.appendChild(link);
+    }
+
+    card.appendChild(body);
+    return card;
+}
+
+function showEvents() {
     const grid = document.getElementById('eventsGrid');
     if (!grid) return;
 
     const now = new Date();
     const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-    const active = events
-        .filter(e => !(e.date && e.date < today) && !(e.until && e.until < today))
+    const activeEvents = upcomingEvents
+        .filter(event => !(event.date && event.date < today) && !(event.until && event.until < today))
         .sort((a, b) => (a.date || '9999').localeCompare(b.date || '9999'));
 
-        if (active.length === 0) {
-        const msg = document.createElement('p');
-        msg.className = 'section-desc events-empty';
-        msg.textContent = 'No events right now. Follow our Facebook page for the latest updates.';
-        grid.appendChild(msg);
+    if (activeEvents.length === 0) {
+        grid.appendChild(createElement('p', 'sectionText noEvents', 'No events right now. Follow our Facebook page for the latest updates.'));
         return;
     }
 
-    active.forEach(e => {
-        const card = document.createElement('article');
-        card.className = 'event-card';
-
-        const media = document.createElement('div');
-        media.className = 'event-media';
-        if (e.img) {
-            const img = document.createElement('img');
-            img.src = e.img;
-            img.alt = e.imgAlt || '';
-            img.loading = 'lazy';
-            media.appendChild(img);
-        }
-        if (e.date) {
-            const d = new Date(e.date + 'T00:00:00');
-            const badge = document.createElement('div');
-            badge.className = 'event-badge';
-            const day = document.createElement('span');
-            day.className = 'day';
-            day.textContent = d.getDate();
-            badge.appendChild(day);
-            badge.appendChild(document.createTextNode(d.toLocaleString('en-US', { month: 'short' })));
-            media.appendChild(badge);
-        }
-        card.appendChild(media);
-
-        const body = document.createElement('div');
-        body.className = 'event-body';
-
-        const tag = document.createElement('div');
-        tag.className = 'event-tag';
-        tag.textContent = e.tag || '';
-        body.appendChild(tag);
-
-        const title = document.createElement('h3');
-        title.className = 'event-title';
-        title.textContent = e.title;
-        body.appendChild(title);
-
-        if (e.meta && e.meta.length) {
-            const ul = document.createElement('ul');
-            ul.className = 'event-meta';
-            e.meta.forEach(m => {
-                const li = document.createElement('li');
-                const i = document.createElement('i');
-                i.className = `fa-solid ${m.icon}`;
-                li.appendChild(i);
-                li.appendChild(document.createTextNode(m.text));
-                ul.appendChild(li);
-            });
-            body.appendChild(ul);
-        }
-
-        const desc = document.createElement('p');
-        desc.className = 'event-desc';
-        desc.textContent = e.desc;
-        body.appendChild(desc);
-
-        if (e.link) {
-            const a = document.createElement('a');
-            a.className = 'event-link';
-            a.href = e.link;
-            a.textContent = `${e.linkText || 'Learn more'} →`;
-            body.appendChild(a);
-        }
-
-        card.appendChild(body);
-        grid.appendChild(card);
-    });
+    activeEvents.forEach(event => grid.appendChild(createEventCard(event)));
 }
 
-renderEvents();
+function setupMobileMenu() {
+    const hamburger = document.querySelector('.hamburger');
+    const mobileMenu = document.querySelector('.mobileMenu');
+    if (!hamburger || !mobileMenu) return;
 
-// ======================================================================
-// 3. SMOOTH SCROLLING
-// Purpose : Anchor links (#id) scroll smoothly and close the phone menu.
-// Linked  : All pages: header links; .mobile-nav (styles.css §2)
-// ======================================================================
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-        const href = this.getAttribute('href');
-        if (!href || href === '#') {
-            e.preventDefault();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            document.querySelector('.mobile-nav')?.classList.remove('active');
-            document.querySelector('.hamburger')?.classList.remove('active');
-            return;
-        }
-        const target = document.querySelector(href);
-        if (target) {
-            e.preventDefault();
-            target.scrollIntoView({ behavior: 'smooth' });
-        }
-        document.querySelector('.mobile-nav')?.classList.remove('active');
-        document.querySelector('.hamburger')?.classList.remove('active');
-    });
-});
-
-// ======================================================================
-// 4. MOBILE HAMBURGER MENU
-// Purpose : Opens/closes the phone navigation.
-// Linked  : Header .hamburger and .mobile-nav on every page; styles.css §2
-// ======================================================================
-const hamburger = document.querySelector('.hamburger');
-const mobileNav = document.querySelector('.mobile-nav');
-
-if (hamburger && mobileNav) {
     hamburger.addEventListener('click', () => {
         hamburger.classList.toggle('active');
-        mobileNav.classList.toggle('active');
+        mobileMenu.classList.toggle('active');
     });
 }
 
-// ======================================================================
-// 5. PAGE LOADER
-// Purpose : Logo splash on the first page of a visit only (sessionStorage 'rojetz-seen').
-// Linked  : Every page: .loader-wrapper; styles.css §12
-// ======================================================================
-(function () {
-    const loader = document.getElementById('loader');
+function setupPageLoader() {
+    const loader = document.getElementById('pageLoader');
     if (!loader) return;
 
-    let seen = false;
-    try {
-        seen = sessionStorage.getItem('rojetz-seen') === '1';
-        sessionStorage.setItem('rojetz-seen', '1');
-    } catch (e) {}
+    function hideLoader() {
+        loader.classList.add('loaderHidden');
+        setTimeout(() => loader.remove(), 600);
+    }
 
-    if (seen) {
+    if (document.readyState === 'complete') {
         loader.remove();
-    } else {
-        setTimeout(() => loader.classList.add('hidden'), 700);
+        return;
     }
-})();
 
-// ======================================================================
-// 5b. FOOTER YEAR
-// Purpose : Fills the current year in the footer.
-// Linked  : Every page: <span id="year">
-// ======================================================================
-const yearEl = document.getElementById('year');
-if (yearEl) yearEl.textContent = new Date().getFullYear();
-
-// ======================================================================
-// 6. FOODPANDA BUTTONS
-// Purpose : Shows every .foodpanda-link button and points it to FOODPANDA_URL.
-// Linked  : index.html hero / final CTA; services.html
-// ======================================================================
-document.querySelectorAll('.foodpanda-link').forEach(link => {
-    if (FOODPANDA_URL) {
-        link.href = FOODPANDA_URL;
-        link.hidden = false;
-    }
-});
-
-// ======================================================================
-// 7. CONTACT FORM
-// Purpose : Validates the form, opens the visitor's email app with the message ready to send (CONTACT_EMAIL; Messenger if empty) and shows a confirmation. No database or storage.
-// Linked  : contact.html #contactForm and #formReceipt; styles.css §9
-// ======================================================================
-/** True when the text looks like an email address. Used by the contact form. */
-function isValidEmail(email) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    window.addEventListener('load', hideLoader, { once: true });
+    setTimeout(hideLoader, 10000);
 }
 
-/** Opens the visitor's email app with the message ready to send (Messenger if CONTACT_EMAIL is empty). */
-function sendContactMessage(name, email, message) {
+function setupFooterYear() {
+    const year = document.getElementById('currentYear');
+    if (year) year.textContent = new Date().getFullYear();
+}
+
+function setupFoodpandaButtons() {
+    if (!foodpandaLink) return;
+
+    document.querySelectorAll('.foodpandaButton').forEach(button => {
+        button.href = foodpandaLink;
+        button.hidden = false;
+    });
+}
+
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function openEmailWithMessage(name, email, message) {
     const subject = 'Message from ' + name + ' (Rojetz BBQ website)';
     const text = message + '\n\n- ' + name + '\n' + email;
-    if (CONTACT_EMAIL) {
-        window.location.href = 'mailto:' + CONTACT_EMAIL +
+
+    if (businessEmail) {
+        window.location.href = 'mailto:' + businessEmail +
             '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(text);
     } else {
         if (navigator.clipboard) navigator.clipboard.writeText(text).catch(() => {});
-        window.open(MESSENGER_URL, '_blank', 'noopener');
+        window.open(messengerLink, '_blank', 'noopener');
     }
 }
 
-const contactForm = document.getElementById('contactForm');
-if (contactForm) {
-    const contactName = document.getElementById('contactName');
-    const contactEmail = document.getElementById('contactEmail');
-    const contactMessage = document.getElementById('contactMessage');
-    const nameError = document.getElementById('nameError');
-    const emailError = document.getElementById('emailError');
-    const messageError = document.getElementById('messageError');
+function setupContactForm() {
+    const form = document.getElementById('contactForm');
+    if (!form) return;
+
+    const nameInput = document.getElementById('contactName');
+    const emailInput = document.getElementById('contactEmail');
+    const messageInput = document.getElementById('contactMessage');
     const receipt = document.getElementById('formReceipt');
 
-    contactForm.addEventListener('submit', function(event) {
+    const fields = [
+        { input: nameInput, error: document.getElementById('nameError'),
+          isValid: value => value.length >= 2, errorText: 'Please enter your name (at least 2 letters).' },
+        { input: emailInput, error: document.getElementById('emailError'),
+          isValid: value => emailPattern.test(value), errorText: 'Please enter a valid email address.' },
+        { input: messageInput, error: document.getElementById('messageError'),
+          isValid: value => value.length >= 10, errorText: 'Your message should be at least 10 characters.' }
+    ];
+
+    form.addEventListener('submit', event => {
         event.preventDefault();
 
-        const name = contactName.value.trim();
-        const email = contactEmail.value.trim();
-        const message = contactMessage.value.trim();
-        let isValid = true;
+        let formIsValid = true;
+        fields.forEach(field => {
+            const valid = field.isValid(field.input.value.trim());
+            field.error.textContent = valid ? '' : field.errorText;
+            if (!valid) formIsValid = false;
+        });
+        if (!formIsValid) return;
 
-        if (nameError) nameError.textContent = '';
-        if (emailError) emailError.textContent = '';
-        if (messageError) messageError.textContent = '';
+        const name = nameInput.value.trim();
+        const email = emailInput.value.trim();
+        const message = messageInput.value.trim();
 
-        if (name.length < 2) {
-            if (nameError) nameError.textContent = 'Please enter your name (at least 2 letters).';
-            isValid = false;
-        }
-        if (!isValidEmail(email)) {
-            if (emailError) emailError.textContent = 'Please enter a valid email address.';
-            isValid = false;
-        }
-        if (message.length < 10) {
-            if (messageError) messageError.textContent = 'Your message should be at least 10 characters.';
-            isValid = false;
-        }
+        openEmailWithMessage(name, email, message);
 
-        if (!isValid) return;
-
-        sendContactMessage(name, email, message);
-
-        if (receipt) {
-            document.getElementById('receiptName').textContent = name;
-            document.getElementById('receiptEmail').textContent = email;
-            document.getElementById('receiptMessage').textContent = message;
-            contactForm.hidden = true;
-            receipt.hidden = false;
-            receipt.classList.add('visible');
-            receipt.focus();
-        }
-        contactForm.reset();
+        document.getElementById('receiptName').textContent = name;
+        document.getElementById('receiptEmail').textContent = email;
+        document.getElementById('receiptMessage').textContent = message;
+        form.hidden = true;
+        receipt.hidden = false;
+        receipt.classList.add('visible');
+        receipt.focus();
+        form.reset();
     });
 
-    document.getElementById('newMessageBtn')?.addEventListener('click', () => {
-        if (receipt) receipt.hidden = true;
-        contactForm.hidden = false;
-        contactName.focus();
+    document.getElementById('newMessageButton').addEventListener('click', () => {
+        receipt.hidden = true;
+        form.hidden = false;
+        nameInput.focus();
     });
 }
 
-// ======================================================================
-// 7b. THEME TOGGLE
-// Purpose : Light is the default; the choice is remembered in localStorage 'theme'.
-// Linked  : Header #themeToggle / #themeToggleMobile on every page; styles.css §3 and §14
-// ======================================================================
-const themeToggle = document.getElementById('themeToggle');
-const themeToggleMobile = document.getElementById('themeToggleMobile');
-const body = document.body;
+function setupThemeButtons() {
+    const themeButtons = [document.getElementById('themeButton'), document.getElementById('themeButtonMobile')];
+    const savedTheme = localStorage.getItem('theme');
 
-/** Switches the toggle icon (moon/sun) to match the current theme. */
-function updateThemeIcon(isLight) {
-    const icon = isLight ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
-    if (themeToggle) themeToggle.innerHTML = icon;
-    if (themeToggleMobile) themeToggleMobile.innerHTML = icon;
-}
-
-const savedTheme = localStorage.getItem('theme');
-
-if (savedTheme === 'dark') {
-    body.classList.remove('light');
-    updateThemeIcon(false);
-} else {
-    body.classList.add('light');
-    updateThemeIcon(true);
-    if (!savedTheme) {
-        localStorage.setItem('theme', 'light');
+    function updateThemeIcon() {
+        const isLight = document.body.classList.contains('light');
+        themeButtons.forEach(button => {
+            if (button) button.innerHTML = isLight ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+        });
     }
-}
 
-/** Flips light/dark, saves the choice, updates the icon. */
-function toggleTheme() {
-    body.classList.toggle('light');
-    const isLight = body.classList.contains('light');
-    localStorage.setItem('theme', isLight ? 'light' : 'dark');
-    updateThemeIcon(isLight);
-}
+    document.body.classList.toggle('light', savedTheme !== 'dark');
+    if (!savedTheme) localStorage.setItem('theme', 'light');
+    updateThemeIcon();
 
-if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
-if (themeToggleMobile) themeToggleMobile.addEventListener('click', toggleTheme);
-
-// ======================================================================
-// 8. SCROLL FADE-IN
-// Purpose : Adds .visible to .fade-in elements when they scroll into view.
-// Linked  : styles.css §13 (.fade-in, .visible); used on all pages
-// ======================================================================
-const fadeElements = document.querySelectorAll(
-    '.section-header, .product-card, .review-card, .review-row, .story-content > *, .contact-item, .location-card, .contact-form, .map-container, .final-cta .container > *, .hero-content, .hero-image, .highlight, .explore-tile, .event-card, .find-card, .mosaic a, .gallery-item, .partner-card'
-);
-
-fadeElements.forEach((el, index) => {
-    el.classList.add('fade-in');
-      if (
-        el.classList.contains('product-card') ||
-        el.classList.contains('review-card') ||
-        el.classList.contains('review-row') ||
-        el.classList.contains('contact-item') ||
-        el.classList.contains('gallery-item')
-    ) {
-        el.classList.add(`delay-${(index % 4) + 1}`);
-    }
-});
-
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-        }
+    themeButtons.forEach(button => {
+        if (!button) return;
+        button.addEventListener('click', () => {
+            document.body.classList.toggle('light');
+            localStorage.setItem('theme', document.body.classList.contains('light') ? 'light' : 'dark');
+            updateThemeIcon();
+        });
     });
-}, {
-    threshold: 0.15,
-    rootMargin: '0px 0px -40px 0px'
-});
+}
 
-fadeElements.forEach(el => observer.observe(el));
+function setupFadeIn() {
+    const fadeSelectors = [
+        '.sectionHeader', '.menuCard', '.storyLayout > *', '.contactCard', '.introCard', '.formPanel', '.mapBox',
+        '.closingSection .container > *', '.heroContent', '.heroImages', '.highlight', '.menuTile', '.eventCard',
+        '.visitCard', '.photoPreview a', '.galleryItem'
+    ].join(', ');
+    const staggeredClasses = ['menuCard', 'contactCard', 'galleryItem'];
 
-// ======================================================================
-// 9. MENU PRICES & CART
-// Purpose : menuItems = one price per item (Foodpanda prices). Cart is saved in localStorage 'rojetz-cart'.
-// Linked  : services.html cards [data-id], #stickyCart, #cartPanel, #cartOverlay, #toast; index.html showcase cards; styles.css §10
-//           NOTE: id g8 (Betamax) has no card yet - it is ignored until a card with data-id="g8" is added.
-// ======================================================================
-// One price per item, following the Foodpanda menu. The menu cards show these same prices.
-// To add an item to the cart: add it here, then give its card a matching data-id in services.html.
+    const fadeElements = document.querySelectorAll(fadeSelectors);
+
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) entry.target.classList.add('visible');
+        });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+    fadeElements.forEach((element, index) => {
+        element.classList.add('fadeIn');
+        if (staggeredClasses.some(name => element.classList.contains(name))) {
+            element.classList.add(`delay${(index % 4) + 1}`);
+        }
+        observer.observe(element);
+    });
+}
+
 const menuItems = [
-    { id: "g1", name: "Rojet'z Pork BBQ (box of 5)", price: 289, unit: "/ box of 5" },
-    { id: "g2", name: "Chicken BBQ (box of 5)", price: 289, unit: "/ box of 5" },
-    { id: "g3", name: "Inihaw na Liempo (box of 4)", price: 555, unit: "/ box of 4" },
-    { id: "g4", name: "Jumbo Hotdog (box of 5)", price: 239, unit: "/ box of 5" },
-    { id: "g5", name: "Hungarian Sausage (box of 4)", price: 489, unit: "/ box of 4" },
-    { id: "g6", name: "Tenga (box of 5)", price: 279, unit: "/ box of 5" },
-    { id: "g7", name: "Isaw (box of 5)", price: 140, unit: "/ box of 5" },
-    { id: "sk1", name: "Sulit Kasalo 1 (SK1)", price: 718, unit: "" },
-    { id: "sk2", name: "Sulit Kasalo 2 (SK2)", price: 865, unit: "" },
-    { id: "sk3", name: "Sulit Kasalo 3 (SK3)", price: 695, unit: "" },
-    { id: "sk4", name: "Sulit Kasalo 4 (SK4)", price: 870, unit: "" },
-    { id: "sk5", name: "Sulit Kasalo 5 (SK5)", price: 955, unit: "" },
-    { id: "sk6", name: "Sulit Kasalo 6 (SK6)", price: 828, unit: "" },
-    { id: "sk7", name: "Sulit Kasalo 7 (SK7)", price: 820, unit: "" },
-    { id: "sk8", name: "Sulit Kasalo 8 (SK8)", price: 708, unit: "" },
-    { id: "sk9", name: "Sulit Kasalo 9 (SK9)", price: 255, unit: "" },
-    { id: "s1", name: "Simply Pork Siomai (box of 6)", price: 166, unit: "/ box of 6" },
-    { id: "s2", name: "Simply Chicken Siomai (box of 6)", price: 166, unit: "/ box of 6" },
-    { id: "s3", name: "Mixed Siomai (Pork & Chicken) (1 dozen)", price: 324, unit: "/ 1 dozen" },
-    { id: "s4", name: "Simply Siomai Wonton-Style", price: 175, unit: "/ bowl" },
-    { id: "f1", name: "Half Fried Chicken", price: 289, unit: "" },
-    { id: "f2", name: "Jumbo Fried Chicken", price: 569, unit: "" },
-    { id: "f3", name: "Sulit Cuts Fried Chicken (box of 4)", price: 399, unit: "/ box of 4" },
-    { id: "b1", name: "Citrus Moringa", price: 139, unit: "" },
-    { id: "b2", name: "Sakura Blizz", price: 159, unit: "" },
-    { id: "b3", name: "Coco Aloe", price: 159, unit: "" },
-    { id: "b4", name: "Berry Smash", price: 159, unit: "" },
-    { id: "b5", name: "Passion Fruit", price: 139, unit: "" },
-    { id: "b6", name: "Choco Chill", price: 159, unit: "" },
-    { id: "b7", name: "Lemonada", price: 139, unit: "" },
-    { id: "b8", name: "Yakumangga", price: 159, unit: "" },
-    { id: "b9", name: "Cuculime", price: 139, unit: "" },
-    { id: "b10", name: "Creamy Matcha", price: 179, unit: "" },
-    { id: "b11", name: "Scarlet Mint Tea", price: 139, unit: "" },
-    { id: "b12", name: "Yakulychee", price: 159, unit: "" },
-    { id: "b13", name: "Yakulada", price: 159, unit: "" },
-    { id: "c1", name: "OG Black", price: 139, unit: "" },
-    { id: "c2", name: "Sweet Black", price: 159, unit: "" },
-    { id: "c3", name: "Milky Drip", price: 159, unit: "" },
-    { id: "c4", name: "Dirty Matcha", price: 168, unit: "" },
-    { id: "c5", name: "Vanilla Milky", price: 179, unit: "" },
-    { id: "c6", name: "Choco Latte", price: 179, unit: "" },
-    { id: "c7", name: "Hot Malaysian Coffee", price: 179, unit: "" },
-    { id: "p1", name: "B1 – 50pcs. Rojet'z BBQ", price: 1530, unit: "" },
-    { id: "p2", name: "B2 – 24pcs. Fried Chicken", price: 1120, unit: "" },
-    { id: "p3", name: "B3 – 50pcs. Rojet'z BBQ + 12pcs. Fried Chicken", price: 2080, unit: "" },
-    { id: "p4", name: "B4 – 10pcs. Chicken BBQ + 10pcs. Pork BBQ + 20pcs. Tenga + 20pcs. Isaw", price: 1560, unit: "" },
-    { id: "p5", name: "B5 – 10pcs. Liempo + Family Java Rice", price: 968, unit: "" },
-    { id: "p6", name: "B6 – 51pcs. Siomai (chicken, pork or mixed)", price: 795, unit: "" },
-    { id: "p7", name: "B7 – 30pcs. Rojet'z BBQ + 30pcs. Simply Siomai", price: 1390, unit: "" },
-    { id: "p8m", name: "B8 Chami Lucena (Medium)", price: 398, unit: "" },
-    { id: "p8l", name: "B8 Chami Lucena (Large)", price: 548, unit: "" },
-    { id: "pjr", name: "Family Java Rice (good for 10-12 pax)", price: 248, unit: "" },
+    { id: "rojetzPorkBBQ", name: "Rojet'z Pork BBQ (box of 5)", price: 289, unit: "/ box of 5" },
+    { id: "chickenBBQ", name: "Chicken BBQ (box of 5)", price: 289, unit: "/ box of 5" },
+    { id: "inihawNaLiempo", name: "Inihaw na Liempo (box of 4)", price: 555, unit: "/ box of 4" },
+    { id: "jumboHotdog", name: "Jumbo Hotdog (box of 5)", price: 239, unit: "/ box of 5" },
+    { id: "hungarianSausage", name: "Hungarian Sausage (box of 4)", price: 489, unit: "/ box of 4" },
+    { id: "tenga", name: "Tenga (box of 5)", price: 279, unit: "/ box of 5" },
+    { id: "isaw", name: "Isaw (box of 5)", price: 140, unit: "/ box of 5" },
+    { id: "sulitKasalo1", name: "Sulit Kasalo 1 (SK1)", price: 718, unit: "" },
+    { id: "sulitKasalo2", name: "Sulit Kasalo 2 (SK2)", price: 865, unit: "" },
+    { id: "sulitKasalo3", name: "Sulit Kasalo 3 (SK3)", price: 695, unit: "" },
+    { id: "sulitKasalo4", name: "Sulit Kasalo 4 (SK4)", price: 870, unit: "" },
+    { id: "sulitKasalo5", name: "Sulit Kasalo 5 (SK5)", price: 955, unit: "" },
+    { id: "sulitKasalo6", name: "Sulit Kasalo 6 (SK6)", price: 828, unit: "" },
+    { id: "sulitKasalo7", name: "Sulit Kasalo 7 (SK7)", price: 820, unit: "" },
+    { id: "sulitKasalo8", name: "Sulit Kasalo 8 (SK8)", price: 708, unit: "" },
+    { id: "sulitKasalo9", name: "Sulit Kasalo 9 (SK9)", price: 255, unit: "" },
+    { id: "simplyPorkSiomai", name: "Simply Pork Siomai (box of 6)", price: 166, unit: "/ box of 6" },
+    { id: "simplyChickenSiomai", name: "Simply Chicken Siomai (box of 6)", price: 166, unit: "/ box of 6" },
+    { id: "mixedSiomaiPorkChicken", name: "Mixed Siomai (Pork & Chicken) (1 dozen)", price: 324, unit: "/ 1 dozen" },
+    { id: "simplySiomaiWontonStyle", name: "Simply Siomai Wonton-Style", price: 175, unit: "/ bowl" },
+    { id: "halfFriedChicken", name: "Half Fried Chicken", price: 289, unit: "" },
+    { id: "jumboFriedChicken", name: "Jumbo Fried Chicken", price: 569, unit: "" },
+    { id: "sulitCutsFriedChicken", name: "Sulit Cuts Fried Chicken (box of 4)", price: 399, unit: "/ box of 4" },
+    { id: "citrusMoringa", name: "Citrus Moringa", price: 139, unit: "" },
+    { id: "sakuraBlizz", name: "Sakura Blizz", price: 159, unit: "" },
+    { id: "cocoAloe", name: "Coco Aloe", price: 159, unit: "" },
+    { id: "berrySmash", name: "Berry Smash", price: 159, unit: "" },
+    { id: "passionFruit", name: "Passion Fruit", price: 139, unit: "" },
+    { id: "chocoChill", name: "Choco Chill", price: 159, unit: "" },
+    { id: "lemonada", name: "Lemonada", price: 139, unit: "" },
+    { id: "yakumangga", name: "Yakumangga", price: 159, unit: "" },
+    { id: "cuculime", name: "Cuculime", price: 139, unit: "" },
+    { id: "creamyMatcha", name: "Creamy Matcha", price: 179, unit: "" },
+    { id: "scarletMintTea", name: "Scarlet Mint Tea", price: 139, unit: "" },
+    { id: "yakulychee", name: "Yakulychee", price: 159, unit: "" },
+    { id: "yakulada", name: "Yakulada", price: 159, unit: "" },
+    { id: "ogBlack", name: "OG Black", price: 139, unit: "" },
+    { id: "sweetBlack", name: "Sweet Black", price: 159, unit: "" },
+    { id: "milkyDrip", name: "Milky Drip", price: 159, unit: "" },
+    { id: "dirtyMatcha", name: "Dirty Matcha", price: 168, unit: "" },
+    { id: "vanillaMilky", name: "Vanilla Milky", price: 179, unit: "" },
+    { id: "chocoLatte", name: "Choco Latte", price: 179, unit: "" },
+    { id: "hotMalaysianCoffee", name: "Hot Malaysian Coffee", price: 179, unit: "" },
+    { id: "b1Platter", name: "B1 – 50pcs. Rojet'z BBQ", price: 1530, unit: "" },
+    { id: "b2Platter", name: "B2 – 24pcs. Fried Chicken", price: 1120, unit: "" },
+    { id: "b3Platter", name: "B3 – 50pcs. Rojet'z BBQ + 12pcs. Fried Chicken", price: 2080, unit: "" },
+    { id: "b4Platter", name: "B4 – 10pcs. Chicken BBQ + 10pcs. Pork BBQ + 20pcs. Tenga + 20pcs. Isaw", price: 1560, unit: "" },
+    { id: "b5Platter", name: "B5 – 10pcs. Liempo + Family Java Rice", price: 968, unit: "" },
+    { id: "b6Platter", name: "B6 – 51pcs. Siomai (chicken, pork or mixed)", price: 795, unit: "" },
+    { id: "b7Platter", name: "B7 – 30pcs. Rojet'z BBQ + 30pcs. Simply Siomai", price: 1390, unit: "" },
+    { id: "b8ChamiLucenaMedium", name: "B8 Chami Lucena (Medium)", price: 398, unit: "" },
+    { id: "b8ChamiLucenaLarge", name: "B8 Chami Lucena (Large)", price: 548, unit: "" },
+    { id: "familyJavaRice", name: "Family Java Rice (good for 10-12 pax)", price: 248, unit: "" }
 ];
 
-/** Returns the display text for an item price, e.g. "₱289 / box of 5". */
 function formatPrice(item) {
     return `₱${item.price}${item.unit ? ' ' + item.unit : ''}`;
 }
 
-/** Writes each menuItems price into every card with a matching data-id. */
-function initPrices() {
-    document.querySelectorAll('.product-card[data-id]').forEach(card => {
-        const item = menuItems.find(i => i.id === card.dataset.id);
-        const priceEl = card.querySelector('.product-price');
-        if (item && priceEl) priceEl.textContent = formatPrice(item);
+function fillMenuPrices() {
+    document.querySelectorAll('.menuCard[data-itemid]').forEach(card => {
+        const item = menuItems.find(menuItem => menuItem.id === card.dataset.itemid);
+        const priceElement = card.querySelector('.menuCardPrice');
+        if (item && priceElement) priceElement.textContent = formatPrice(item);
     });
 }
 
-let cart = [];
-try {
-    cart = JSON.parse(localStorage.getItem('rojetz-cart')) || [];
-    if (!Array.isArray(cart)) cart = [];
-} catch (e) {
-    cart = [];
+function readSaved(key) {
+    try {
+        const value = JSON.parse(localStorage.getItem(key));
+        return Array.isArray(value) ? value : [];
+    } catch (error) {
+        return [];
+    }
 }
 
-/** Saves the cart to localStorage and refreshes the bottom bar. */
-function saveCart() {
-    localStorage.setItem('rojetz-cart', JSON.stringify(cart));
+function writeSaved(key, value) {
+    try {
+        localStorage.setItem(key, JSON.stringify(value));
+    } catch (error) {}
 }
 
-/** Sum of price x quantity for the whole cart. */
-function getTotal() {
+let cart = readSaved('rojetzCart')
+    .map(saved => {
+        const menuItem = menuItems.find(item => item.id === saved.id);
+        if (!menuItem || !(saved.qty > 0)) return null;
+        return { id: menuItem.id, name: menuItem.name, price: menuItem.price, qty: Math.floor(saved.qty), note: String(saved.note || '') };
+    })
+    .filter(Boolean);
+
+let orderHistory = readSaved('rojetzOrders');
+
+function getCartTotal() {
     return cart.reduce((sum, item) => sum + item.price * item.qty, 0);
 }
 
-/** Shows a short pop-up message (#toast). */
 function showToast(message) {
     const toast = document.getElementById('toast');
     if (!toast) return;
 
     toast.textContent = message;
     toast.classList.add('show');
-
-    setTimeout(() => {
-        toast.classList.remove('show');
-    }, 1800);
+    setTimeout(() => toast.classList.remove('show'), 1800);
 }
 
-/** Updates the bottom cart bar (#stickyCart): count, total, visibility. */
-function updateStickyCart() {
-    const sticky = document.getElementById('stickyCart');
-    const countEl = document.getElementById('cartCount');
-    const totalEl = document.getElementById('cartTotal');
+function updateCartBar() {
+    const bar = document.getElementById('cartBar');
+    const count = document.getElementById('cartCount');
+    const total = document.getElementById('cartTotal');
+    if (!bar || !count || !total) return;
 
-    if (!sticky || !countEl || !totalEl) return;
-
-    const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
-    const total = getTotal();
-
-    countEl.textContent = totalQty;
-    totalEl.textContent = `₱${total}`;
-
-    sticky.classList.toggle('visible', totalQty > 0);
+    const totalQuantity = cart.reduce((sum, item) => sum + item.qty, 0);
+    count.textContent = totalQuantity;
+    total.textContent = `₱${getCartTotal()}`;
+    bar.classList.toggle('visible', totalQuantity > 0);
 }
 
-// Fully dynamic cart panel rendering (No inline JS / onclick attributes)
-/** Redraws the item list inside the slide-in cart panel (#cartPanel). */
-function showCartPanel() {
-    const container = document.getElementById('cartItems');
-    const totalEl = document.getElementById('cartPanelTotal');
+function updateOrderButtons() {
+    const placeOrderButton = document.getElementById('placeOrderButton');
+    const clearCartButton = document.getElementById('clearCartButton');
+    if (placeOrderButton) placeOrderButton.disabled = cart.length === 0;
+    if (clearCartButton) clearCartButton.disabled = cart.length === 0;
+}
 
-    if (!container || !totalEl) return;
+function drawCartItems() {
+    const list = document.getElementById('cartItems');
+    const total = document.getElementById('cartPanelTotal');
+    if (!list || !total) return;
 
-    container.innerHTML = '';
+    list.innerHTML = '';
 
     if (cart.length === 0) {
-        container.innerHTML = '<p class="cart-empty">Your cart is empty.</p>';
-    } else {
-        cart.forEach(item => {
-            const itemRow = document.createElement('div');
-            itemRow.className = 'cart-item';
+        const emptyBox = createElement('div', 'emptyCartBox');
+        emptyBox.appendChild(createElement('p', 'emptyCart', 'Your cart is empty. Pick something from the menu and tap Add to Cart.'));
+        const browseButton = createButton('Browse the menu', () => setCartOpen(false));
+        browseButton.className = 'button primaryButton emptyCartButton';
+        emptyBox.appendChild(browseButton);
+        list.appendChild(emptyBox);
+    }
 
-            // Thumbnail: reuse the picture of the menu card with the same data-id (none if the card has no photo)
-            const cardImg = document.querySelector(`.product-card[data-id="${item.id}"] .product-img img`);
-            const thumb = document.createElement('img');
-            thumb.className = 'cart-item-img';
-            thumb.alt = '';
-            if (cardImg) thumb.src = cardImg.getAttribute('src');
-            else thumb.hidden = true;
+    cart.forEach(item => {
+        const row = createElement('div', 'cartItem');
 
-            const nameDiv = document.createElement('div');
-            nameDiv.className = 'cart-item-name';
-            nameDiv.textContent = `${item.name} × ${item.qty}`;
+        const cardImage = document.querySelector(`.menuCard[data-itemid="${item.id}"] .menuCardImage img`);
+        const thumbnail = createElement('img', 'cartItemImage');
+        thumbnail.alt = '';
+        if (cardImage) thumbnail.src = cardImage.getAttribute('src');
+        else thumbnail.hidden = true;
 
-            const controlsDiv = document.createElement('div');
-            controlsDiv.className = 'cart-item-controls';
+        const controls = createElement('div', 'cartItemControls');
+        controls.appendChild(createElement('span', '', `₱${item.price * item.qty}`));
+        controls.appendChild(createButton('−', () => changeQuantity(item.id, -1)));
+        controls.appendChild(createButton('+', () => changeQuantity(item.id, 1)));
+        controls.appendChild(createButton('✕', () => removeFromCart(item.id)));
 
-            const priceSpan = document.createElement('span');
-            priceSpan.textContent = `₱${item.price * item.qty}`;
-
-            const minusBtn = document.createElement('button');
-            minusBtn.textContent = '−';
-            minusBtn.addEventListener('click', () => changeQty(item.id, -1));
-
-            const plusBtn = document.createElement('button');
-            plusBtn.textContent = '+';
-            plusBtn.addEventListener('click', () => changeQty(item.id, 1));
-
-            const removeBtn = document.createElement('button');
-            removeBtn.textContent = '✕';
-            removeBtn.addEventListener('click', () => removeFromCart(item.id));
-
-            controlsDiv.appendChild(priceSpan);
-            controlsDiv.appendChild(minusBtn);
-            controlsDiv.appendChild(plusBtn);
-            controlsDiv.appendChild(removeBtn);
-
-            itemRow.appendChild(thumb);
-            itemRow.appendChild(nameDiv);
-            itemRow.appendChild(controlsDiv);
-            container.appendChild(itemRow);
+        const note = createElement('input', 'cartItemNote');
+        note.type = 'text';
+        note.maxLength = 80;
+        note.placeholder = 'Note for this item (optional)';
+        note.value = item.note;
+        note.addEventListener('input', () => {
+            item.note = note.value;
+            writeSaved('rojetzCart', cart);
         });
-    }
 
-    totalEl.textContent = `Total: ₱${getTotal()}`;
+        row.appendChild(thumbnail);
+        row.appendChild(createElement('div', 'cartItemName', `${item.name} × ${item.qty}`));
+        row.appendChild(controls);
+        row.appendChild(note);
+        list.appendChild(row);
+    });
+
+    total.textContent = `Total: ₱${getCartTotal()}`;
 }
 
-/** Adds one item by menuItems id, or increases its quantity. */
-function addToCart(id) {
-    const product = menuItems.find(item => item.id === id);
-    if (!product) return;
+function refreshCart() {
+    writeSaved('rojetzCart', cart);
+    updateCartBar();
+    drawCartItems();
+    updateOrderButtons();
+}
 
-    const existing = cart.find(item => item.id === id);
-    if (existing) {
-        existing.qty += 1;
+function addToCart(id, quantity = 1, note = '') {
+    const menuItem = menuItems.find(item => item.id === id);
+    if (!menuItem) return false;
+
+    const cartItem = cart.find(item => item.id === id);
+    if (cartItem) {
+        cartItem.qty += quantity;
+        if (note && !cartItem.note) cartItem.note = note;
     } else {
-        cart.push({
-            id: product.id,
-            name: product.name,
-            price: product.price,
-            qty: 1
-        });
+        cart.push({ id: menuItem.id, name: menuItem.name, price: menuItem.price, qty: quantity, note });
     }
-
-    saveCart();
-    updateStickyCart();
-    showCartPanel();
-    showToast(`${product.name} added!`);
+    return true;
 }
 
-/** Changes an item's quantity by +1/-1; removes it at zero. */
-function changeQty(id, amount) {
-    const item = cart.find(i => i.id === id);
-    if (!item) return;
+function changeQuantity(id, amount) {
+    const cartItem = cart.find(item => item.id === id);
+    if (!cartItem) return;
 
-    item.qty += amount;
-    if (item.qty <= 0) {
-        cart = cart.filter(i => i.id !== id);
-    }
-
-    saveCart();
-    updateStickyCart();
-    showCartPanel();
+    cartItem.qty += amount;
+    if (cartItem.qty <= 0) cart = cart.filter(item => item.id !== id);
+    refreshCart();
 }
 
-/** Removes one item from the cart. */
 function removeFromCart(id) {
-    cart = cart.filter(i => i.id !== id);
-    saveCart();
-    updateStickyCart();
-    showCartPanel();
+    cart = cart.filter(item => item.id !== id);
+    refreshCart();
 }
 
-/** Empties the cart. */
+function showOrderMessage(text, isSuccess) {
+    const message = document.getElementById('orderMessage');
+    message.className = text ? `orderStatus ${isSuccess ? 'orderSuccess' : 'orderFailure'}` : 'orderStatus';
+    message.textContent = text;
+}
+
 function clearCart() {
     cart = [];
-    saveCart();
-    updateStickyCart();
-    showCartPanel();
-
-    const msg = document.getElementById('orderMessage');
-    if (msg) {
-        msg.textContent = '';
-        msg.className = '';
-    }
+    refreshCart();
+    showOrderMessage('', false);
 }
 
-// Copies the order text and opens Messenger. The order is confirmed there, so the cart stays
-// until the customer clears it.
-/** Copies the order text, then opens Messenger (MESSENGER_URL) so the customer can paste it. */
+function setCartOpen(isOpen) {
+    document.getElementById('cartPanel').classList.toggle('open', isOpen);
+    document.getElementById('cartOverlay').classList.toggle('visible', isOpen);
+    if (isOpen) drawCartItems();
+}
+
+function addCartButtons() {
+    if (!document.getElementById('cartBar')) return;
+
+    document.querySelectorAll('.menuCard[data-itemid]').forEach(card => {
+        const menuItem = menuItems.find(item => item.id === card.dataset.itemid);
+        const body = card.querySelector('.menuCardBody');
+        if (!menuItem || !body || card.querySelector('.addToCartButton')) return;
+
+        const button = createButton('Add to Cart', () => {
+            addToCart(menuItem.id);
+            refreshCart();
+            showToast(`${menuItem.name} added!`);
+        });
+        button.className = 'addToCartButton';
+        body.appendChild(button);
+    });
+}
+
+function makeOrderNumber(date = new Date()) {
+    const two = number => String(number).padStart(2, '0');
+    return `RJ-${String(date.getFullYear()).slice(2)}${two(date.getMonth() + 1)}${two(date.getDate())}-${two(date.getHours())}${two(date.getMinutes())}${two(date.getSeconds())}`;
+}
+
+function formatOrderDate(order) {
+    return new Date(order.date).toLocaleString('en-PH', { dateStyle: 'medium', timeStyle: 'short' });
+}
+
+function buildOrderText(order) {
+    const lines = order.items.map(item =>
+        `${item.qty} x ${item.name} (₱${item.price * item.qty})` + (item.note ? `\n   Note: ${item.note}` : ''));
+    return [`Order ${order.number}`, ...lines, `Total: ₱${order.total}`, `Name: ${order.name}`,
+        ...(order.note ? [`Order note: ${order.note}`] : [])].join('\n');
+}
+
+function escapeHtml(text) {
+    return String(text).replace(/[&<>"']/g, character =>
+        ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]));
+}
+
+function printReceipt(order) {
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+        showToast('Please allow pop-ups to print the receipt.');
+        return;
+    }
+
+    const lines = order.items.map(item =>
+        `<tr><td>${escapeHtml(item.name)} × ${item.qty}${item.note ? `<br><small>Note: ${escapeHtml(item.note)}</small>` : ''}</td><td class="price">₱${item.price * item.qty}</td></tr>`).join('');
+
+    printWindow.document.write(`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Order ${order.number}</title>
+<style>body{font-family:Arial,sans-serif;max-width:420px;margin:30px auto;color:#222}h1{text-align:center;margin:0}p{margin:4px 0}
+table{width:100%;border-collapse:collapse;margin:16px 0}td{padding:6px 0;border-bottom:1px dotted #999;vertical-align:top}.price{text-align:right}
+.total{font-size:20px;font-weight:bold;text-align:right}.center{text-align:center}small{color:#555}</style></head><body>
+<h1>Rojetz BBQ Station</h1><p class="center">Order summary (not an official receipt)</p><p class="center">${order.number} · ${escapeHtml(formatOrderDate(order))}</p>
+<p>Name: ${escapeHtml(order.name)}</p><table>${lines}</table><p class="total">Total: ₱${order.total}</p>
+${order.note ? `<p>Order note: ${escapeHtml(order.note)}</p>` : ''}
+<p class="center"><small>Send this order in our Messenger chat to confirm. Payment is arranged there.</small></p></body></html>`);
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+}
+
+function setPanelView(view) {
+    document.getElementById('orderForm').hidden = view !== 'form';
+    document.getElementById('orderReceipt').hidden = view !== 'receipt';
+    document.getElementById('orderHistory').hidden = view !== 'form' || orderHistory.length === 0;
+}
+
+function showReceipt(order) {
+    const receipt = document.getElementById('orderReceipt');
+    receipt.innerHTML = '';
+
+    receipt.appendChild(createElement('h3', 'orderReceiptTitle', 'Order Summary'));
+    receipt.appendChild(createElement('p', 'orderReceiptMeta', `${order.number} · ${formatOrderDate(order)}`));
+
+    order.items.forEach(item => {
+        const line = createElement('div', 'orderReceiptLine');
+        line.appendChild(createElement('span', '', `${item.name} × ${item.qty}`));
+        line.appendChild(createElement('span', '', `₱${item.price * item.qty}`));
+        receipt.appendChild(line);
+        if (item.note) receipt.appendChild(createElement('p', 'orderReceiptNote', `Note: ${item.note}`));
+    });
+
+    const total = createElement('div', 'orderReceiptTotal');
+    total.appendChild(createElement('span', '', 'Total'));
+    total.appendChild(createElement('span', '', `₱${order.total}`));
+    receipt.appendChild(total);
+
+    receipt.appendChild(createElement('p', 'orderReceiptNote', `Name: ${order.name}`));
+    if (order.note) receipt.appendChild(createElement('p', 'orderReceiptNote', `Order note: ${order.note}`));
+    receipt.appendChild(createElement('p', 'orderReceiptFooter',
+        'Your order was copied. Paste it in our Messenger chat to confirm. This is an order summary, not an official receipt.'));
+
+    const buttons = createElement('div', 'orderReceiptButtons');
+    const copyButton = createButton('Copy Order Again', () => {
+        const copied = navigator.clipboard ? navigator.clipboard.writeText(buildOrderText(order)) : Promise.reject();
+        copied.then(() => showToast('Order copied!'), () => showToast('Could not copy. Please select the text instead.'));
+    });
+    const printButton = createButton('Print Receipt', () => printReceipt(order));
+    const messengerButton = createButton('Open Messenger', () => window.open(messengerLink, '_blank', 'noopener'));
+    const newOrderButton = createButton('Start a New Order', startNewOrder);
+    [copyButton, printButton, messengerButton, newOrderButton].forEach((button, index) => {
+        button.className = `button ${index === 3 ? 'primaryButton' : 'secondaryButton'}`;
+        buttons.appendChild(button);
+    });
+    receipt.appendChild(buttons);
+
+    setPanelView('receipt');
+    receipt.scrollIntoView({ block: 'start' });
+}
+
 function placeOrder() {
-    const nameInput = document.getElementById('customerName');
-    const message = document.getElementById('orderMessage');
-
-    if (!nameInput || !message) return;
-
-    const name = nameInput.value.trim();
-
-    if (!name) {
-        message.className = 'err';
-        message.textContent = 'Please enter your name.';
-        return;
-    }
     if (cart.length === 0) {
-        message.className = 'err';
-        message.textContent = 'Your cart is empty.';
+        showOrderMessage('Your cart is empty. Add something from the menu first.', false);
         return;
     }
 
-    const total = getTotal();
-    const summary = cart.map(i => `${i.qty} x ${i.name} (₱${i.price * i.qty})`).join('\n')
-        + `\nTotal: ₱${total}\nName: ${name}`;
+    const name = document.getElementById('customerName').value.trim();
+    if (!name) {
+        showOrderMessage('Please enter your name.', false);
+        return;
+    }
 
-    navigator.clipboard?.writeText(summary).catch(() => {});
-    message.className = 'ok';
-    message.textContent = 'Order copied. Paste it in our Messenger chat to confirm.';
-    window.open(MESSENGER_URL, '_blank', 'noopener');
+    const order = {
+        number: makeOrderNumber(),
+        date: new Date().toISOString(),
+        name,
+        note: document.getElementById('orderNote').value.trim(),
+        total: getCartTotal(),
+        items: cart.map(item => ({ id: item.id, name: item.name, price: item.price, qty: item.qty, note: item.note }))
+    };
+
+    navigator.clipboard?.writeText(buildOrderText(order)).catch(() => {});
+    window.open(messengerLink, '_blank', 'noopener');
+
+    orderHistory = [order, ...orderHistory].slice(0, 5);
+    writeSaved('rojetzOrders', orderHistory);
+    drawOrderHistory();
+    showOrderMessage('', false);
+    showReceipt(order);
 }
 
-/** Opens the cart panel and overlay. */
-function openCart() {
-    const panel = document.getElementById('cartPanel');
-    const overlay = document.getElementById('cartOverlay');
-    if (!panel || !overlay) return;
-
-    panel.classList.add('open');
-    overlay.classList.add('visible');
-    showCartPanel();
+function startNewOrder() {
+    cart = [];
+    document.getElementById('orderNote').value = '';
+    refreshCart();
+    showOrderMessage('', false);
+    setPanelView('form');
 }
 
-/** Closes the cart panel and overlay. */
-function closeCart() {
-    const panel = document.getElementById('cartPanel');
-    const overlay = document.getElementById('cartOverlay');
-    if (!panel || !overlay) return;
-
-    panel.classList.remove('open');
-    overlay.classList.remove('visible');
-}
-
-// Add to Cart buttons go on every card that has a data-id matching an item in menuItems
-/** Adds an "Add to Cart" button to every priced card (cards with data-id). */
-function initAddToCartButtons() {
-    if (!document.getElementById('stickyCart')) return;
-
-    document.querySelectorAll('.product-card[data-id]').forEach(card => {
-        const product = menuItems.find(item => item.id === card.dataset.id);
-        if (!product) return;
-
-        if (card.querySelector('.add-to-cart-btn')) return;
-
-        const btn = document.createElement('button');
-        btn.className = 'add-to-cart-btn';
-        btn.textContent = 'Add to Cart';
-        btn.addEventListener('click', () => addToCart(product.id));
-
-        const info = card.querySelector('.product-info');
-        if (info) {
-            info.appendChild(btn);
-        }
-    });
-}
-
-// Cart Event Listeners
-document.getElementById('openCartBtn')?.addEventListener('click', openCart);
-document.getElementById('closeCartBtn')?.addEventListener('click', closeCart);
-document.getElementById('cartOverlay')?.addEventListener('click', closeCart);
-document.getElementById('placeOrderBtn')?.addEventListener('click', placeOrder);
-document.getElementById('clearCartBtn')?.addEventListener('click', clearCart);
-
-// ======================================================================
-// 10. MENU FILTER TABS
-// Purpose : Two levels: group buttons (All/Food/Drinks) + category chips. Opens a category from links like services.html#sk.
-// Linked  : services.html .menu-tabs, #menuSub, .menu-category[data-cat]; styles.css §6
-// ======================================================================
-// Group buttons: All / Food / Drinks. Category chips show when a group has more than one section.
-// Links like services.html#sk or #blends open that category. #food / #drinks open the group.
-/** Sets up the two-level menu filter, hash deep links and scroll-to-top of the menu. */
-function initMenuTabs() {
-    const cats = Array.from(document.querySelectorAll('.menu-category'));
-    if (!cats.length) return;
-
-    const groupBtns = Array.from(document.querySelectorAll('[data-group-btn]'));
-    const subWrap = document.getElementById('menuSub');
-    const subBtns = subWrap ? Array.from(subWrap.querySelectorAll('[data-filter]')) : [];
-    if (!groupBtns.length) return;
-
-    const existing = new Set(cats.map(c => c.dataset.cat));
-    subBtns.forEach(b => {
-        b.dataset.count = existing.has(b.dataset.filter) ? '1' : '0';
+function orderAgain(order) {
+    let addedAny = false;
+    order.items.forEach(item => {
+        if (addToCart(item.id, item.qty, item.note || '')) addedAny = true;
     });
 
-    // Old deep links still work after renames
-    const hashAlias = { street: 'sk', desserts: 'coffee', combos: 'sizzling', SK: 'sk' };
+    if (!addedAny) {
+        showToast('Those items are no longer on the menu.');
+        return;
+    }
+    refreshCart();
+    setPanelView('form');
+    showToast(`${order.number} added to your cart`);
+}
 
-    let group = 'all';
-    let cat = null;
+function drawOrderHistory() {
+    const list = document.getElementById('orderHistoryList');
+    if (!list) return;
+
+    list.innerHTML = '';
+    orderHistory.forEach(order => {
+        const itemCount = order.items.reduce((sum, item) => sum + item.qty, 0);
+        const row = createElement('div', 'orderHistoryItem');
+        row.appendChild(createElement('span', '', `${order.number} · ${itemCount} items · ₱${order.total}`));
+        row.appendChild(createButton('Order Again', () => orderAgain(order)));
+        list.appendChild(row);
+    });
+    document.getElementById('orderHistory').hidden = orderHistory.length === 0 || !document.getElementById('orderForm').hidden;
+}
+
+function clearOrderHistory() {
+    orderHistory = [];
+    writeSaved('rojetzOrders', orderHistory);
+    drawOrderHistory();
+}
+
+function setupCart() {
+    if (!document.getElementById('cartBar')) return;
+
+    document.getElementById('openCartButton').addEventListener('click', () => setCartOpen(true));
+    document.getElementById('closeCartButton').addEventListener('click', () => setCartOpen(false));
+    document.getElementById('cartOverlay').addEventListener('click', () => setCartOpen(false));
+    document.getElementById('placeOrderButton').addEventListener('click', placeOrder);
+    document.getElementById('clearCartButton').addEventListener('click', clearCart);
+    document.getElementById('clearHistoryButton').addEventListener('click', clearOrderHistory);
+
+    drawOrderHistory();
+    updateOrderButtons();
+}
+
+function createTwoLevelFilter(categoryBar, onChange, onUserClick) {
+    const groupButtons = Array.from(document.querySelectorAll('[data-showgroup]'));
+    const categoryButtons = categoryBar ? Array.from(categoryBar.querySelectorAll('[data-showcategory]')) : [];
+    const filter = { group: 'all', category: null, groupButtons, categoryButtons, shows: () => true };
+
+    filter.hasContent = button => Number(button.dataset.count) > 0;
+
+    filter.refresh = function () {
+        const groupCategories = categoryButtons.filter(button => button.dataset.group === filter.group && filter.hasContent(button));
+        const showChips = filter.group !== 'all' && groupCategories.length > 1;
+        const allowed = new Set(groupCategories.map(button => button.dataset.showcategory));
+
+        if (categoryBar) categoryBar.hidden = !showChips;
+        categoryButtons.forEach(button => {
+            const inGroup = button.dataset.group === filter.group && filter.hasContent(button);
+            button.hidden = !(showChips && inGroup);
+            button.setAttribute('aria-pressed', String(button.dataset.showcategory === filter.category));
+        });
+        groupButtons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.showgroup === filter.group)));
+
+        filter.shows = name => filter.group === 'all' || (filter.category ? name === filter.category : allowed.has(name));
+        onChange(filter);
+    };
+
+    groupButtons.forEach(button => button.addEventListener('click', () => {
+        filter.group = button.dataset.showgroup;
+        filter.category = null;
+        filter.refresh();
+        if (onUserClick) onUserClick('group');
+    }));
+
+    categoryButtons.forEach(button => button.addEventListener('click', () => {
+        filter.category = filter.category === button.dataset.showcategory ? null : button.dataset.showcategory;
+        filter.refresh();
+        if (onUserClick) onUserClick('category');
+    }));
+
+    return filter;
+}
+
+function setupMenuFilter() {
+    const categories = Array.from(document.querySelectorAll('.menuCategory'));
+    if (!categories.length) return;
+
+    const chips = document.getElementById('menuCategoryChips');
 
     function setHash(value) {
         try {
             history.replaceState(null, '', value ? '#' + value : location.pathname + location.search);
-        } catch (e) {}
-    }
-
-    function render() {
-        const groupCats = subBtns.filter(b => b.dataset.group === group && Number(b.dataset.count) > 0);
-        const showSubs = group !== 'all' && groupCats.length > 1;
-
-        if (subWrap) subWrap.hidden = !showSubs;
-
-        subBtns.forEach(b => {
-            const inGroup = b.dataset.group === group && Number(b.dataset.count) > 0;
-            b.hidden = !(showSubs && inGroup);
-            b.setAttribute('aria-pressed', String(b.dataset.filter === cat));
-        });
-        groupBtns.forEach(b => {
-            b.setAttribute('aria-pressed', String(b.dataset.groupBtn === group));
-        });
-
-        const allowed = new Set(groupCats.map(b => b.dataset.filter));
-        cats.forEach(c => {
-            const cCat = c.dataset.cat;
-            const show = group === 'all' ? true : (cat ? cCat === cat : allowed.has(cCat));
-            c.hidden = !show;
-            if (show) c.querySelectorAll('.fade-in').forEach(el => el.classList.add('visible'));
-        });
-    }
-
-    groupBtns.forEach(b => b.addEventListener('click', () => {
-        group = b.dataset.groupBtn;
-        cat = null;
-        render();
-        setHash(group === 'all' ? '' : group);
-        const active = groupBtns.find(btn => btn.dataset.groupBtn === group);
-        if (active) active.scrollIntoView({ inline: 'center', block: 'nearest' });
-    }));
-
-    subBtns.forEach(b => b.addEventListener('click', () => {
-        // click again to clear category and show the whole group
-        cat = (cat === b.dataset.filter) ? null : b.dataset.filter;
-        render();
-        setHash(cat || (group === 'all' ? '' : group));
-    }));
-
-    function fromHash(scroll) {
-        let hash = location.hash.replace('#', '');
-        if (hashAlias[hash]) hash = hashAlias[hash];
-
-        const asGroup = groupBtns.find(b => b.dataset.groupBtn === hash);
-        if (asGroup) {
-            group = hash;
-            cat = null;
-            render();
-            if (scroll) scrollToMenuTop();
-            return;
-        }
-
-        const asCat = subBtns.find(b => b.dataset.filter === hash && Number(b.dataset.count) > 0);
-        if (asCat) {
-            group = asCat.dataset.group;
-            cat = hash;
-            render();
-            if (scroll) scrollToMenuTop();
-            return;
-        }
-
-        group = 'all';
-        cat = null;
-        render();
+        } catch (error) {}
     }
 
     function scrollToMenuTop() {
@@ -834,215 +762,211 @@ function initMenuTabs() {
         if (top) window.scrollTo({ top: top.getBoundingClientRect().top + window.scrollY - 90 });
     }
 
-    window.addEventListener('hashchange', () => fromHash(true));
-    fromHash(true);
-}
+    const filter = createTwoLevelFilter(chips, activeFilter => {
+        categories.forEach(category => {
+            const show = activeFilter.shows(category.dataset.category);
+            category.hidden = !show;
+            if (show) category.querySelectorAll('.fadeIn').forEach(element => element.classList.add('visible'));
+        });
+    }, kind => {
+        setHash(filter.category || (filter.group === 'all' ? '' : filter.group));
+        if (kind === 'group') {
+            const activeButton = filter.groupButtons.find(button => button.dataset.showgroup === filter.group);
+            if (activeButton) activeButton.scrollIntoView({ inline: 'center', block: 'nearest' });
+        }
+    });
+    if (!filter.groupButtons.length) return;
 
-// ======================================================================
-// 11. GALLERY FILTERS & LIGHTBOX
-// Purpose : Two-level filter, tile pop-in animation, and the popup photo viewer (zoom, slide, swipe, keyboard).
-// Linked  : gallery.html .gallery-groups, #gallerySub, #galleryGrid, #lightbox; styles.css §11
-// ======================================================================
-/** Sets up the gallery filters, tile animation and the lightbox viewer. */
-function initGallery() {
-    const grid = document.getElementById('galleryGrid');
-    if (!grid) return;
-
-    const items = Array.from(grid.querySelectorAll('.gallery-item'));
-    const groupBtns = Array.from(document.querySelectorAll('[data-group-btn]'));
-    const subWrap = document.getElementById('gallerySub');
-    const subBtns = subWrap ? Array.from(subWrap.querySelectorAll('[data-filter]')) : [];
-    const lightbox = document.getElementById('lightbox');
-    const lbImg = document.getElementById('lbImg');
-    const lbCap = document.getElementById('lbCap');
-    let current = -1;
-    let lastFocus = null;
-    let isFirstRender = true;
-
-    function visibleItems() {
-        return items.filter(i => !i.hidden);
-    }
-
-    // Count photos per category and add the number to each button. Empty categories stay hidden.
-    const counts = {};
-    items.forEach(i => { counts[i.dataset.cat] = (counts[i.dataset.cat] || 0) + 1; });
-    subBtns.forEach(b => {
-        const n = counts[b.dataset.filter] || 0;
-        b.dataset.count = n;
-        if (n) b.textContent = `${b.textContent} (${n})`;
+    const existingCategories = new Set(categories.map(category => category.dataset.category));
+    filter.categoryButtons.forEach(button => {
+        button.dataset.count = existingCategories.has(button.dataset.showcategory) ? '1' : '0';
     });
 
-    let group = 'all';
-    let cat = null;
+    function openFromHash() {
+        const hash = location.hash.replace('#', '');
+        const groupButton = filter.groupButtons.find(button => button.dataset.showgroup === hash);
+        const categoryButton = filter.categoryButtons.find(button => button.dataset.showcategory === hash && filter.hasContent(button));
 
-    function popIn(el) {
-        // Hard reset so the transition always restarts, even from display:none
-        el.classList.remove('visible');
-        el.style.transition = 'none';
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(28px) scale(0.96)';
-        void el.offsetWidth; // force reflow
-        el.style.transition = '';
-        el.style.opacity = '';
-        el.style.transform = '';
-
-        // Double rAF: wait until the browser has painted the "hidden" state
-        requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-                el.classList.add('visible');
-            });
-        });
+        if (groupButton) {
+            filter.group = hash;
+            filter.category = null;
+        } else if (categoryButton) {
+            filter.group = categoryButton.dataset.group;
+            filter.category = hash;
+        } else {
+            filter.group = 'all';
+            filter.category = null;
+        }
+        filter.refresh();
+        if (groupButton || categoryButton) scrollToMenuTop();
     }
 
-    function render() {
-        const groupCats = subBtns.filter(b => b.dataset.group === group && Number(b.dataset.count) > 0);
-        // category buttons only show when the group has more than one category
-        const showSubs = group !== 'all' && groupCats.length > 1;
-        if (subWrap) subWrap.hidden = !showSubs;
-        subBtns.forEach(b => {
-            const inGroup = b.dataset.group === group && Number(b.dataset.count) > 0;
-            b.hidden = !(showSubs && inGroup);
-            b.setAttribute('aria-pressed', String(b.dataset.filter === cat));
+    window.addEventListener('hashchange', openFromHash);
+    openFromHash();
+}
+
+function popIn(element) {
+    element.classList.remove('visible');
+    element.style.transition = 'none';
+    element.style.opacity = '0';
+    element.style.transform = 'translateY(28px) scale(0.96)';
+    void element.offsetWidth;
+    element.style.transition = '';
+    element.style.opacity = '';
+    element.style.transform = '';
+
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => element.classList.add('visible'));
+    });
+}
+
+function setupGalleryFilter(items, chips) {
+    let isFirstRender = true;
+
+    const filter = createTwoLevelFilter(chips, activeFilter => {
+        const shownItems = [];
+        items.forEach(item => {
+            const show = activeFilter.shows(item.dataset.category);
+            item.hidden = !show;
+            if (show) shownItems.push(item);
+            else item.classList.remove('visible');
         });
-        groupBtns.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.groupBtn === group)));
-        const allowed = new Set(groupCats.map(b => b.dataset.filter));
-        const toShow = [];
 
-        items.forEach(i => {
-            const c = i.dataset.cat;
-            const show = group === 'all' ? true : (cat ? c === cat : allowed.has(c));
-
-            if (!show) {
-                i.hidden = true;
-                i.classList.remove('visible');
-                return;
-            }
-
-            i.hidden = false;
-            toShow.push(i);
-        });
-
-        // First load: let IntersectionObserver handle scroll fade-in
         if (isFirstRender) {
             isFirstRender = false;
             return;
         }
+        shownItems.forEach((item, index) => setTimeout(() => popIn(item), index * 40));
+    });
 
-        // Filter change: re-pop every visible item
-        toShow.forEach((el, index) => {
-            setTimeout(() => popIn(el), index * 40);
-        });
+    const counts = {};
+    items.forEach(item => { counts[item.dataset.category] = (counts[item.dataset.category] || 0) + 1; });
+    filter.categoryButtons.forEach(button => {
+        const count = counts[button.dataset.showcategory] || 0;
+        button.dataset.count = count;
+        if (count) button.textContent = `${button.textContent} (${count})`;
+    });
+
+    const hash = location.hash.replace('#', '');
+    const hashButton = filter.categoryButtons.find(button => button.dataset.showcategory === hash && filter.hasContent(button));
+    if (hashButton) {
+        filter.group = hashButton.dataset.group;
+        filter.category = hash;
     }
+    filter.refresh();
+}
 
-    groupBtns.forEach(b => b.addEventListener('click', () => {
-        group = b.dataset.groupBtn;
-        cat = null;
-        render();
-    }));
-    subBtns.forEach(b => b.addEventListener('click', () => {
-        cat = (cat === b.dataset.filter) ? null : b.dataset.filter; // click again to go back to the whole group
-        render();
-    }));
-
-    // Links like gallery.html#sk open that category directly
-    const hashCat = location.hash.replace('#', '');
-    const hashBtn = subBtns.find(b => b.dataset.filter === hashCat && Number(b.dataset.count) > 0);
-    if (hashBtn) { group = hashBtn.dataset.group; cat = hashCat; }
-    render();
-
-    // ----- Lightbox (popup viewer) with animations -----
+function setupPhotoViewer(items) {
+    const viewer = document.getElementById('photoViewer');
+    const viewerImage = document.getElementById('viewerImage');
+    const viewerCaption = document.getElementById('viewerCaption');
+    const viewerFigure = viewer.querySelector('figure');
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const lbFigure = lightbox.querySelector('figure');
-    let lbCount = lightbox.querySelector('.lb-count');
-    if (!lbCount) {
-        lbCount = document.createElement('div');
-        lbCount.className = 'lb-count';
-        lbCount.setAttribute('aria-live', 'polite');
-        lightbox.appendChild(lbCount);
-    }
+    let currentIndex = -1;
+    let lastFocusedElement = null;
     let closeTimer = null;
 
-    function show(index, direction) {
+    const viewerCounter = createElement('div', 'viewerCounter');
+    viewerCounter.setAttribute('aria-live', 'polite');
+    viewer.appendChild(viewerCounter);
+
+    function visibleItems() {
+        return items.filter(item => !item.hidden);
+    }
+
+    function showPhoto(index, direction) {
         const list = visibleItems();
         if (!list.length) return;
-        current = (index + list.length) % list.length;
-        const item = list[current];
+        currentIndex = (index + list.length) % list.length;
+        const item = list[currentIndex];
 
-        lbImg.classList.remove('slide-next', 'slide-prev');
+        viewerImage.classList.remove('slideNext', 'slidePrev');
         if (direction && !reduceMotion) {
-            void lbImg.offsetWidth; // restart the animation
-            lbImg.classList.add(direction > 0 ? 'slide-next' : 'slide-prev');
+            void viewerImage.offsetWidth;
+            viewerImage.classList.add(direction > 0 ? 'slideNext' : 'slidePrev');
         }
-        lbImg.src = item.dataset.full;
-        lbImg.alt = item.querySelector('img')?.alt || '';
-        lbCap.textContent = item.dataset.caption || '';
-        lbCount.textContent = `${current + 1} / ${list.length}`;
+        viewerImage.src = item.dataset.fullimage;
+        viewerImage.alt = item.querySelector('img')?.alt || '';
+        viewerCaption.textContent = item.dataset.caption || '';
+        viewerCounter.textContent = `${currentIndex + 1} / ${list.length}`;
 
-        // Load the neighbours in advance so next/prev feels instant
-        [current + 1, current - 1].forEach(n => {
-            const nb = list[(n + list.length) % list.length];
-            if (nb) new Image().src = nb.dataset.full;
+        [currentIndex + 1, currentIndex - 1].forEach(neighbourIndex => {
+            const neighbour = list[(neighbourIndex + list.length) % list.length];
+            if (neighbour) new Image().src = neighbour.dataset.fullimage;
         });
     }
 
-    function open(item) {
+    function openViewer(item) {
         clearTimeout(closeTimer);
-        lastFocus = document.activeElement;
+        lastFocusedElement = document.activeElement;
 
-        // Zoom the popup out of the thumbnail that was clicked
-        const r = item.getBoundingClientRect();
-        lightbox.style.setProperty('--ox', `${r.left + r.width / 2}px`);
-        lightbox.style.setProperty('--oy', `${r.top + r.height / 2}px`);
+        const box = item.getBoundingClientRect();
+        viewer.style.setProperty('--originX', `${box.left + box.width / 2}px`);
+        viewer.style.setProperty('--originY', `${box.top + box.height / 2}px`);
 
-        lightbox.hidden = false;
+        viewer.hidden = false;
         document.body.style.overflow = 'hidden';
-        show(visibleItems().indexOf(item));
-        void lightbox.offsetWidth;
-        lightbox.classList.add('is-open');
-        document.getElementById('lbClose').focus();
+        showPhoto(visibleItems().indexOf(item));
+        void viewer.offsetWidth;
+        viewer.classList.add('isOpen');
+        document.getElementById('viewerClose').focus();
     }
 
-    function close() {
-        lightbox.classList.remove('is-open');
+    function closeViewer() {
+        viewer.classList.remove('isOpen');
         document.body.style.overflow = '';
         const finish = () => {
-            lightbox.hidden = true;
-            if (lastFocus) lastFocus.focus();
+            viewer.hidden = true;
+            if (lastFocusedElement) lastFocusedElement.focus();
         };
         if (reduceMotion) finish(); else closeTimer = setTimeout(finish, 260);
     }
 
-    items.forEach(i => i.addEventListener('click', () => open(i)));
-    document.getElementById('lbClose').addEventListener('click', close);
-    document.getElementById('lbPrev').addEventListener('click', () => show(current - 1, -1));
-    document.getElementById('lbNext').addEventListener('click', () => show(current + 1, 1));
-    lightbox.addEventListener('click', e => { if (e.target === lightbox || e.target === lbFigure) close(); });
-
-    document.addEventListener('keydown', e => {
-        if (lightbox.hidden) return;
-        if (e.key === 'Escape') close();
-        if (e.key === 'ArrowLeft') show(current - 1, -1);
-        if (e.key === 'ArrowRight') show(current + 1, 1);
+    items.forEach(item => item.addEventListener('click', () => openViewer(item)));
+    document.getElementById('viewerClose').addEventListener('click', closeViewer);
+    document.getElementById('viewerPrev').addEventListener('click', () => showPhoto(currentIndex - 1, -1));
+    document.getElementById('viewerNext').addEventListener('click', () => showPhoto(currentIndex + 1, 1));
+    viewer.addEventListener('click', event => {
+        if (event.target === viewer || event.target === viewerFigure) closeViewer();
     });
 
-    // Swipe left / right on touch screens
-    let touchX = null;
-    lightbox.addEventListener('touchstart', e => { touchX = e.changedTouches[0].clientX; }, { passive: true });
-    lightbox.addEventListener('touchend', e => {
-        if (touchX === null) return;
-        const dx = e.changedTouches[0].clientX - touchX;
-        touchX = null;
-        if (Math.abs(dx) > 50) show(current + (dx < 0 ? 1 : -1), dx < 0 ? 1 : -1);
+    document.addEventListener('keydown', event => {
+        if (viewer.hidden) return;
+        if (event.key === 'Escape') closeViewer();
+        if (event.key === 'ArrowLeft') showPhoto(currentIndex - 1, -1);
+        if (event.key === 'ArrowRight') showPhoto(currentIndex + 1, 1);
+    });
+
+    let touchStartX = null;
+    viewer.addEventListener('touchstart', event => { touchStartX = event.changedTouches[0].clientX; }, { passive: true });
+    viewer.addEventListener('touchend', event => {
+        if (touchStartX === null) return;
+        const distance = event.changedTouches[0].clientX - touchStartX;
+        touchStartX = null;
+        if (Math.abs(distance) > 50) showPhoto(currentIndex + (distance < 0 ? 1 : -1), distance < 0 ? 1 : -1);
     }, { passive: true });
 }
 
-// ======================================================================
-// 12. START-UP
-// Purpose : Runs the setup for this page. Each init exits quietly when its page elements are missing.
-// Linked  : Order matters: filters first, then prices, then cart buttons.
-// ======================================================================
-initMenuTabs();
-initGallery();
-initPrices();
-initAddToCartButtons();
-updateStickyCart();
+function setupGallery() {
+    const grid = document.getElementById('galleryGrid');
+    if (!grid) return;
+
+    const items = Array.from(grid.querySelectorAll('.galleryItem'));
+    setupGalleryFilter(items, document.getElementById('galleryCategoryChips'));
+    setupPhotoViewer(items);
+}
+
+showEvents();
+setupMobileMenu();
+setupPageLoader();
+setupFooterYear();
+setupFoodpandaButtons();
+setupContactForm();
+setupThemeButtons();
+setupFadeIn();
+setupCart();
+setupMenuFilter();
+setupGallery();
+fillMenuPrices();
+addCartButtons();
+updateCartBar();
