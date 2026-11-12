@@ -2,12 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!-- ======================================================================
-         PAGE: CONTACT (contact.html)
-         Purpose : Branch details, hours, contact form and map.
-         Styles  : styles.css §9
-         Script  : script.js "Contact Form"
-         ====================================================================== -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact | Rojetz BBQ</title>
     <meta name="description" content="Find Rojetz BBQ Station in Lucena City: the Calmar Homes branch and Booth #69 at Mercato Lucena night market. Hours, map and contact form.">
@@ -24,18 +18,12 @@
 </head>
 <body>
 
-    <!-- ======================================================================
-         PAGE LOADER
-         Purpose : Full-screen logo animation on the first page view of a visit.
-         Styles  : styles.css §12 (.loader-wrapper, .loader-pill, .flame)
-         Script  : script.js "Page Loader": fades out after 0.7s, removed on later pages (sessionStorage key rojetz-seen)
-         ====================================================================== -->
-    <div class="loader-wrapper" id="loader">
-        <div class="loader-pill">
-            <div class="loader-logo"><img src="logo.jpg" alt="Rojetz BBQ logo"></div>
-            <div class="loader-divider"></div>
-            <div class="loader-name">Rojetz <span>BBQ</span></div>
-            <div class="loader-fire">
+    <div class="pageLoader" id="pageLoader">
+        <div class="loaderCard">
+            <div class="loaderLogo"><img src="logo.jpg" alt="Rojetz BBQ logo"></div>
+            <div class="loaderDivider"></div>
+            <div class="loaderName">Rojetz <span>BBQ</span></div>
+            <div class="loaderFlames">
                 <div class="flame"></div>
                 <div class="flame"></div>
                 <div class="flame"></div>
@@ -43,16 +31,10 @@
         </div>
     </div>
 
-    <!-- ======================================================================
-         HEADER & NAVIGATION
-         Purpose : Logo, main menu, View Menu / Find Us buttons, theme toggle. The .mobile-nav block is the phone version of the same menu.
-         Styles  : styles.css §2-3 (header, nav, .hamburger, .mobile-nav, .btn, .theme-toggle)
-         Script  : script.js "Mobile Hamburger Menu Toggle" (.hamburger toggles .mobile-nav), "Theme Toggle" (#themeToggle, #themeToggleMobile)
-         ====================================================================== -->
     <header>
-        <div class="container header-container">
+        <div class="container headerContainer">
             <a href="index.html" class="logo">
-                <div class="logo-text">Rojetz <span>BBQ</span></div>
+                <div class="logoText">Rojetz <span>BBQ</span></div>
             </a>
             <nav>
                 <ul>
@@ -66,15 +48,15 @@
             <button class="hamburger" aria-label="Toggle menu">
                 <span></span><span></span><span></span>
             </button>
-            <div class="nav-buttons">
-                <a href="services.html" class="btn btn-secondary">View Menu</a>
-                <a href="contact.html" class="btn btn-primary">Find Us</a>
-                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+            <div class="navButtons">
+                <a href="services.html" class="button secondaryButton">View Menu</a>
+                <a href="contact.html" class="button primaryButton">Find Us</a>
+                <button class="themeButton" id="themeButton" aria-label="Toggle theme">
                     <i class="fas fa-moon"></i>
                 </button>
             </div>
         </div>
-        <div class="mobile-nav">
+        <div class="mobileMenu">
             <ul>
                 <li><a href="index.html">Home</a></li>
                 <li><a href="services.html">Menu</a></li>
@@ -82,149 +64,116 @@
                 <li><a href="about.html">About</a></li>
                 <li><a href="contact.html">Contact</a></li>
             </ul>
-            <div class="mobile-nav-buttons">
-                <a href="services.html" class="btn btn-secondary">View Menu</a>
-                <a href="contact.html" class="btn btn-primary">Find Us</a>
-                <button class="theme-toggle" id="themeToggleMobile" aria-label="Toggle theme">
+            <div class="mobileMenuButtons">
+                <a href="services.html" class="button secondaryButton">View Menu</a>
+                <a href="contact.html" class="button primaryButton">Find Us</a>
+                <button class="themeButton" id="themeButtonMobile" aria-label="Toggle theme">
                     <i class="fas fa-moon"></i>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- ======================================================================
-         CONTACT SECTION
-         Purpose : Wraps the info cards, the form, the receipt and the map.
-         Styles  : styles.css §9 (.contact, .contact-grid)
-         ====================================================================== -->
-    <section class="contact page-top">
+    <section class="contactSection pageTop">
         <div class="container">
-            <div class="section-header">
-                <div class="section-subtitle">Get In Touch</div>
-                <h2 class="section-title">Contact Us</h2>
-                <p class="section-desc">Come visit or message us!</p>
+            <div class="sectionHeader">
+                <div class="sectionLabel">Get In Touch</div>
+                <h2 class="sectionTitle">Contact Us</h2>
+                <p class="sectionText">Come visit or message us!</p>
             </div>
 
-            <!-- ======================================================================
-                 CONTACT INFO CARDS
-                 Purpose : Calmar Homes branch, Mercato Lucena booth, hours.
-                 Styles  : styles.css §9 (.contact-item)
-                 Script  : Hours here must match the footer and the home page
-                 ====================================================================== -->
-            <div class="contact-grid">
-                <div class="contact-item">
+            <div class="contactCards">
+                <div class="contactCard">
                     <i class="fa-solid fa-location-dot"></i>
                     <h3>Calmar Homes Branch</h3>
                     <p>Ph5a Kalayaan Extension, Calmar Homes<br>Banahaw Street, Brgy. Mayao Kanluran<br>Lucena City, Quezon</p>
-                    <img class="contact-photo contact-photo--banner" src="Banner.jpg" alt="Rojet'z The Main, Ph5a Kalayaan Ext., Calmar Homes: free delivery within Lucena City" loading="lazy">
+                    <img class="contactPhoto contactPhotoSquare" src="Banner.jpg" alt="Rojet'z The Main, Ph5a Kalayaan Ext., Calmar Homes: free delivery within Lucena City" loading="lazy">
                 </div>
-                <div class="contact-item">
+                <div class="contactCard">
                     <i class="fa-solid fa-store"></i>
                     <h3>Mercato Lucena</h3>
                     <p>Booth #69, Mercato Lucena (Night Market)<br>6:30 PM – 12:00 MN</p>
-                    <img class="contact-photo" src="merc.jpg" alt="Mercato Lucena night market entrance at night" loading="lazy">
+                    <img class="contactPhoto" src="merc.jpg" alt="Mercato Lucena night market entrance at night" loading="lazy">
                 </div>
-                <div class="contact-item">
+                <div class="contactCard">
                     <i class="fa-solid fa-clock"></i>
                     <h3>Hours</h3>
                     <p>12:30 p.m. – 10:30 p.m. <br>(Check Facebook for daily updates)</p>
                 </div>
             </div>
 
-            <div class="contact-bottom">
-
-                <!-- ======================================================================
-                     CONTACT FORM
-                     Purpose : Name, email and message. Validated in the browser; error text goes into the <small class="error"> lines.
-                     Styles  : styles.css §9 (.contact-form, .form-group, .error)
-                     Script  : script.js "Contact Form": validates, opens the email app via sendContactMessage() (CONTACT_EMAIL) and shows the confirmation
-                     ====================================================================== -->
-                <form id="contactForm" class="contact-form" novalidate>
-                    <div class="form-group">
+            <div class="contactLayout">
+                <form id="contactForm" class="formPanel" novalidate>
+                    <div class="formField">
                         <label for="contactName">Name</label>
                         <input type="text" id="contactName" autocomplete="name">
-                        <small id="nameError" class="error"></small>
+                        <small id="nameError" class="fieldError"></small>
                     </div>
-                    <div class="form-group">
+                    <div class="formField">
                         <label for="contactEmail">Email</label>
                         <input type="email" id="contactEmail" autocomplete="email">
-                        <small id="emailError" class="error"></small>
+                        <small id="emailError" class="fieldError"></small>
                     </div>
-                    <div class="form-group">
+                    <div class="formField">
                         <label for="contactMessage">Message</label>
                         <textarea id="contactMessage" rows="6"></textarea>
-                        <small id="messageError" class="error"></small>
+                        <small id="messageError" class="fieldError"></small>
                     </div>
-                    <button type="submit" class="btn btn-primary">Send Message</button>
-                    <p class="form-note">Sending opens your email app with the message ready. For a quick reply, message us on Facebook.</p>
+                    <button type="submit" class="button primaryButton">Send Message</button>
+                    <p class="formNote">Sending opens your email app with the message ready. For a quick reply, message us on Facebook.</p>
                 </form>
 
-                <!-- ======================================================================
-                     FORM RECEIPT
-                     Purpose : Hidden until a message is sent. script.js fills receiptName, receiptEmail, receiptMessage.
-                     Styles  : styles.css §9 (.form-receipt)
-                     Script  : script.js "Contact Form"
-                     ====================================================================== -->
-                <!-- Shown after a message is submitted. It repeats back what was prepared. -->
-                <div id="formReceipt" class="contact-form form-receipt" tabindex="-1" aria-live="polite" hidden>
-                    <div class="receipt-icon"><i class="fa-solid fa-circle-check"></i></div>
+                <div id="formReceipt" class="formPanel receiptPanel" tabindex="-1" aria-live="polite" hidden>
+                    <div class="receiptIcon"><i class="fa-solid fa-circle-check"></i></div>
                     <h3>Your message is ready</h3>
-                    <p class="receipt-ref">Press <strong>Send</strong> in your email app to deliver it.</p>
+                    <p class="receiptHint">Press <strong>Send</strong> in your email app to deliver it.</p>
                     <dl>
                         <div><dt>Name</dt><dd id="receiptName"></dd></div>
                         <div><dt>Email</dt><dd id="receiptEmail"></dd></div>
                         <div><dt>Message</dt><dd id="receiptMessage"></dd></div>
                     </dl>
-                    <button type="button" class="btn btn-primary" id="newMessageBtn">Send Another Message</button>
-                    <p class="form-note">Need a fast reply? Message us on Facebook.</p>
+                    <button type="button" class="button primaryButton" id="newMessageButton">Send Another Message</button>
+                    <p class="formNote">Need a fast reply? Message us on Facebook.</p>
                 </div>
 
-                <!-- ======================================================================
-                     MAP
-                     Purpose : Google Maps embed of the Calmar Homes branch.
-                     Styles  : styles.css §9 (.map-container)
-                     ====================================================================== -->
-                <div class="map-container">
+                <div class="mapBox">
                     <iframe
-    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15488.799176970899!2d121.63885145474936!3d13.946706287503225!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33bd4d231a643d05%3A0xde83309dc49ecf62!2sRojet%E2%80%99z%20BBQ%20Station!5e0!3m2!1sen!2sph!4v1793985637470!5m2!1sen!2sph"
-    title="Map of Rojet'z BBQ Station"
-    width="100%"
-    height="450"
-    allowfullscreen=""
-    loading="lazy"
-    referrerpolicy="strict-origin-when-cross-origin"></iframe>
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15488.799176970899!2d121.63885145474936!3d13.946706287503225!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33bd4d231a643d05%3A0xde83309dc49ecf62!2sRojet%E2%80%99z%20BBQ%20Station!5e0!3m2!1sen!2sph!4v1793985637470!5m2!1sen!2sph"
+                    title="Map of Rojet'z BBQ Station"
+                    width="100%"
+                    height="450"
+                    allowfullscreen=""
+                    loading="lazy"
+                    referrerpolicy="strict-origin-when-cross-origin"></iframe>
                 </div>
-                <p class="center-mt-16">
-    <a href="https://maps.app.goo.gl/voi5ETFKDDvrAwhAA" ... class="btn btn-primary">Open in Google Maps</a>
-</p>
+                <p class="mapLinkRow">
+                    <a href="https://maps.app.goo.gl/voi5ETFKDDvrAwhAA"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="button primaryButton">Open in Google Maps</a>
+                </p>
             </div>
 
-            <div class="center-mt-50">
-    <a href="https://www.facebook.com/rojetzbbqstation" ... class="btn btn-primary">Facebook Page</a>
-</div>
+            <div class="facebookRow">
+                <a href="https://www.facebook.com/rojetzbbqstation" target="_blank" rel="noopener noreferrer" class="button primaryButton">Facebook Page</a>
+            </div>
         </div>
     </section>
 
-    <!-- ======================================================================
-         FOOTER
-         Purpose : Brand line, social links, quick links, branch addresses and hours. Same block on every page.
-         Styles  : styles.css §12 (footer, .footer-content, .social-links)
-         Script  : script.js "Footer Year" fills <span id="year">
-         ====================================================================== -->
     <footer>
         <div class="container">
-            <div class="footer-content">
-                <div class="footer-column">
+            <div class="footerContent">
+                <div class="footerColumn">
                     <h3>About Rojetz</h3>
-                    <p class="footer-tagline">Lucena's Favorite Ihaw-ihaw. Sarap Sulit... Mapapaulit!</p>
-                    <div class="social-links">
+                    <p class="footerTagline">Lucena's Favorite Ihaw-ihaw. Sarap Sulit... Mapapaulit!</p>
+                    <div class="socialLinks">
                         <a href="https://www.facebook.com/rojetzbbqstation" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
                         <a href="https://www.instagram.com/rojetzbbqstation" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
                     </div>
                 </div>
-                <div class="footer-column">
+                <div class="footerColumn">
                     <h3>Quick Links</h3>
-                    <ul class="footer-links">
+                    <ul class="footerLinks">
                         <li><a href="index.html">Home</a></li>
                         <li><a href="services.html">Menu</a></li>
                         <li><a href="gallery.html">Gallery</a></li>
@@ -232,23 +181,19 @@
                         <li><a href="contact.html">Contact</a></li>
                     </ul>
                 </div>
-                <div class="footer-column">
+                <div class="footerColumn">
                     <h3>Contact Us</h3>
-                    <ul class="footer-links">
+                    <ul class="footerLinks">
                         <li><i class="fa-solid fa-location-dot"></i> Calmar Homes Branch<br>Ph5a Kalayaan Extension, Calmar Homes<br>Banahaw Street, Brgy. Mayao Kanluran<br>Lucena City, Quezon</li>
                         <li><i class="fa-solid fa-store"></i> Booth #69, Mercato Lucena (Night Market)</li>
-                        <li><i class="fa-solid fa-clock"></i> 12:30 P.M. – 10:30 P.M. </li>
+                        <li><i class="fa-solid fa-clock"></i> 12:30 P.M. – 10:30 P.M.</li>
                     </ul>
                 </div>
             </div>
-            <div class="copyright">&copy; <span id="year">2026</span> Rojetz BBQ Station | Lucena City, Quezon</div>
+            <div class="copyright">&copy; <span id="currentYear">2026</span> Rojetz BBQ Station | Lucena City, Quezon</div>
         </div>
     </footer>
 
-    <!-- ======================================================================
-         SCRIPT
-         Purpose : Loads script.js. At the bottom of that file the init calls wire up everything on this page; parts that do not apply to this page are skipped automatically.
-         ====================================================================== -->
     <script src="script.js"></script>
 </body>
 </html>
